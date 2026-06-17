@@ -4,7 +4,7 @@ You are working with the full DataCo Global Logistics dataset (180,000+ rows). B
 
 Step 1: Prepare the Environment
 
-Ensure DataCoSupplyChainDataset.csv is in your Unit_16_Capstone/ directory.
+Ensure DataCoSupplyChainDataset.csv is in your Unit_16_Capstone/data directory.
 
 Step 2: Initialize Staging
 
@@ -14,7 +14,7 @@ Step 3: Execute the Bulk Import
 
 Open your terminal and ensure you are in the project root. Run this command:
 
-psql -U postgres -d cosc2409 -c "\copy raw_staging FROM 'Unit_16_Capstone/DataCoSupplyChainDataset.csv' WITH CSV HEADER;"
+psql -U postgres -d cosc2409 -c "\copy raw_staging FROM 'Unit_16_Capstone/data/DataCoSupplyChainDataset.csv' WITH CSV HEADER;"
 
 
 Note: If you see COPY 180519, the ingestion was successful.
