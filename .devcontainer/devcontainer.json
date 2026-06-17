@@ -1,0 +1,10 @@
+{
+  "name": "SQL Dev Container",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "forwardPorts": [5432],
+  "remoteEnv": {
+    "DATABASE_URL": "postgresql://postgres:postgres@db:5432/mydb"
+  }
+}
