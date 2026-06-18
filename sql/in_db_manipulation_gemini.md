@@ -122,26 +122,26 @@ Once your raw data is loaded in raw\_staging, you must normalize it into your ta
 ### **Basic Extraction (The DML Pattern)**
 
 To populate a basic, unlinked dimension table (like Locations), you must pull unique occurrences of these values from the staging area.
-
-\-- Step 1: Drop the existing table to allow a clean write during testing  
+```
+-- Step 1: Drop the existing table to allow a clean write during testing
 DROP TABLE IF EXISTS Locations CASCADE;
 
-\-- Step 2: Create the target Locations dimension table with structural constraints  
-CREATE TABLE Locations (  
-    LocationID SERIAL PRIMARY KEY,  
-    City VARCHAR(100) NOT NULL,  
-    State VARCHAR(100),  
-    Country VARCHAR(100) NOT NULL,  
-    UNIQUE (City, State, Country)  
+-- Step 2: Create the target Locations dimension table with structural constraints
+CREATE TABLE Locations (
+    LocationID SERIAL PRIMARY KEY,
+    City VARCHAR(100) NOT NULL,
+    State VARCHAR(100),
+    Country VARCHAR(100) NOT NULL,
+    UNIQUE (City, State, Country)
 );
 
-\-- Step 3: Extract unique geographical records from the staging landing strip  
-INSERT INTO Locations (City, State, Country)  
-SELECT DISTINCT customer\_city, customer\_state, customer\_country  
-FROM raw\_staging  
-WHERE customer\_city IS NOT NULL   
-  AND customer\_country IS NOT NULL;
-
+-- Step 3: Extract unique geographical records from the staging landing strip
+INSERT INTO Locations (City, State, Country)
+SELECT DISTINCT customer_city, customer_state, customer_country
+FROM raw_staging
+WHERE customer_city IS NOT NULL 
+  AND customer_country IS NOT NULL;
+```
 ### **Technical Breakdown of Basic Extraction**
 
 * **DROP TABLE IF EXISTS Locations CASCADE;** The CASCADE modifier ensures that any dependent objects (such as child tables with Foreign Keys or Views referencing this table) are also dropped or detached safely, avoiding dependency locks.  
@@ -155,29 +155,31 @@ WHERE customer\_city IS NOT NULL
 
 When inserting into a table that requires a foreign key pointing to another table, you must join the staging table to your newly created parent table to grab the generated primary keys.
 
-\-- Step 1: Drop existing table to clean workspace  
+```
+-- Step 1: Drop existing table to clean workspace
 DROP TABLE IF EXISTS Customers CASCADE;
 
-\-- Step 2: Create the Customers table with a Foreign Key relationship  
-CREATE TABLE Customers (  
-    CustomerID INT PRIMARY KEY,  
-    FirstName VARCHAR(100) NOT NULL,  
-    LastName VARCHAR(100) NOT NULL,  
-    LocationID INT REFERENCES Locations(LocationID)  
+-- Step 2: Create the Customers table with a Foreign Key relationship
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY,
+    FirstName VARCHAR(100) NOT NULL,
+    LastName VARCHAR(100) NOT NULL,
+    LocationID INT REFERENCES Locations(LocationID)
 );
 
-\-- Step 3: Populate Customers by matching staging text to Locations IDs  
-INSERT INTO Customers (CustomerID, FirstName, LastName, LocationID)  
-SELECT DISTINCT   
-    r.customer\_id,   
-    r.customer\_fname,   
-    r.customer\_lname,   
-    l.LocationID  
-FROM raw\_staging r  
-JOIN Locations l ON r.customer\_city \= l.City   
-                 AND COALESCE(r.customer\_state, '') \= COALESCE(l.State, '')   
-                 AND r.customer\_country \= l.Country  
-WHERE r.customer\_id IS NOT NULL;
+-- Step 3: Populate Customers by matching staging text to Locations IDs
+INSERT INTO Customers (CustomerID, FirstName, LastName, LocationID)
+SELECT DISTINCT 
+    r.customer_id, 
+    r.customer_fname, 
+    r.customer_lname, 
+    l.LocationID
+FROM raw_staging r
+JOIN Locations l ON r.customer_city = l.City 
+                 AND COALESCE(r.customer_state, '') = COALESCE(l.State, '') 
+                 AND r.customer_country = l.Country
+WHERE r.customer_id IS NOT NULL;
+```
 
 ### **Technical Breakdown of Complex Extraction**
 
