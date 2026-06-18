@@ -14,7 +14,7 @@ Step 3: Execute the Bulk Import
 
 Open your terminal and ensure you are in the project root. Run this command:
 
-psql -U postgres -d cosc2409 -c "\copy raw_staging FROM 'Unit_16_Capstone/data/DataCoSupplyChainDataset.csv' WITH CSV HEADER;"
+PGPASSWORD=postgres psql -U postgres -h db -d mydb -c "\copy raw_staging FROM 'Unit_16_Capstone/data/DataCoSupplyChainDataset.csv' WITH CSV HEADER ENCODING 'LATIN1';"
 
 
 Note: If you see COPY 180519, the ingestion was successful.
