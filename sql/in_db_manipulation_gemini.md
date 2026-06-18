@@ -21,9 +21,9 @@ There are two primary ways to load flat files (like CSVs) into PostgreSQL: via t
 ### **Method A: Command-Line Ingestion via \\copy**
 
 The \\copy command is a client-side instruction. It reads a file on your local machine and streams it directly to the database port. This avoids permissions issues common with the server-side COPY command.
-
+```
 PGPASSWORD=postgres psql \-U postgres \-h db \-d mydb \-c "\\copy raw\_staging FROM 'Unit\_16\_Capstone/data/DataCoSupplyChainDataset.csv' WITH CSV HEADER ENCODING 'LATIN1';"
-
+```
 ### **Technical Breakdown of the Command-Line Ingestion**
 
 This single-line terminal command combines shell environment variables, PostgreSQL client execution flags, and internal database SQL engine arguments. Here is exactly what every individual segment does:
@@ -198,7 +198,7 @@ Sometimes, transformations are too complex to perform in a single INSERT INTO ..
 ### **Tool 1: Temporary Tables (CREATE TEMP TABLE)**
 
 Temporary tables exist only for the duration of your current database session. They are automatically dropped when you close your connection. They are excellent for processing intermediate steps in a multi-step ETL script.
-
+```
 \-- Step 1: Create a persistent target table for the final data  
 DROP TABLE IF EXISTS HighValueRegistry CASCADE;
 
@@ -227,7 +227,7 @@ CREATE INDEX idx\_temp\_order\_id ON temp\_high\_value\_orders(order\_id);
 INSERT INTO HighValueRegistry (OrderID, CustomerID, OrderTotal, OrderDate)  
 SELECT order\_id, customer\_id, sales, formatted\_date   
 FROM temp\_high\_value\_orders;
-
+```
 ### **Technical Breakdown of Temporary Tables**
 
 * **CREATE TEMP TABLE temp\_high\_value\_orders AS** The TEMP modifier creates this table inside a specialized, private system schema. It is entirely invisible to other concurrent connections. If 50 students run this query at the same time, they will each work in their own isolated memory space.  
@@ -241,7 +241,7 @@ FROM temp\_high\_value\_orders;
 CTEs (created using the WITH keyword) are temporary result sets that exist only for the execution of a single query. What many developers don't know is that you can perform write operations (INSERT, UPDATE, DELETE) inside CTEs.
 
 This allows you to write "chained" migrations in a single SQL statement:
-
+```
 \-- Step 1: Create target tables for our chained write demo  
 DROP TABLE IF EXISTS Inventory CASCADE;  
 DROP TABLE IF EXISTS Products CASCADE;
@@ -269,7 +269,7 @@ WITH inserted\_product AS (
 INSERT INTO Inventory (ProductID, StockLevel, WarehouseCode)  
 SELECT ProductID, 100, 'WH-EAST'   
 FROM inserted\_product;
-
+```
 ### **Technical Breakdown of Writable CTEs**
 
 This single, continuous statement writes to the database, generates dynamic sequence keys, captures those keys, and writes them to a completely different table without storing anything on your physical client machine.
@@ -293,7 +293,7 @@ This single, continuous statement writes to the database, generates dynamic sequ
 ### **1\. Always Use Transactions**
 
 Wrap your migration scripts in BEGIN; and COMMIT;.
-
+```
 \-- Step 1: Open the transaction block  
 BEGIN;
 
@@ -312,13 +312,13 @@ WHERE City \= 'Cheyenne'
 
 \-- Step 4: Write all changes permanently to physical disk  
 COMMIT;
-
+```
 * **Why?** A transaction is an "all-or-nothing" execution package. If your insert script contains 50 queries to migrate 180,000 rows, and query 42 crashes due to a data mismatch, a transaction rollback will undo the entire script, leaving the database clean. Without a transaction block, you are left with a half-migrated database, forcing you to manually hunt down where the process stopped.
 
 ### **2\. Explicit Type Casting**
 
 Do not rely on the database engine to guess your data types. Always cast staging text data into explicit, native formats.
-
+```
 \-- Complete query demonstrating type transformation during staging reads  
 SELECT   
     order\_id,  
@@ -327,18 +327,19 @@ SELECT
     CAST(customer\_id AS INTEGER) AS typed\_customer\_id  
 FROM raw\_staging  
 LIMIT 5;
-
+```
 * **Why?** Raw CSV imports write dates, integers, and decimals as simple strings of text. If you attempt to run mathematical functions or temporal sort queries on string data, your results will be slow and inaccurate. Explicitly casting using CAST(col AS type) guarantees that the downstream engine receives formatted, predictable binary representations.
 
 ### **3\. Handle Duplicates First**
 
 Relational systems enforce primary and unique key integrity. You must deduplicate your staging records *before* trying to append them to your production schemas.
-
+```
 \-- Complete example using aggregation to isolate unique records from raw staging duplicates  
 INSERT INTO Products (ProductName, CategoryName)  
 SELECT DISTINCT product\_name, category\_name  
 FROM raw\_staging  
 WHERE product\_name IS NOT NULL   
   AND category\_name IS NOT NULL;
+```
 
 * **Why?** The staging table can contain hundreds of rows representing transactions for a single product. If you try to write all of these occurrences directly into your Products table, your query will fail immediately due to primary/unique key constraint checks. Running a deduplication step like SELECT DISTINCT or a grouping analysis cleans your dataset before it hits target constraints.
