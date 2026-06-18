@@ -55,40 +55,44 @@ When loading large datasets with Python, **never** use standard SQL INSERT loops
 import os  
 import psycopg2
 
-def load\_csv\_to\_postgres(csv\_filepath, target\_table):  
-    \# Establish connection using environment variables or explicit config  
-    conn \= psycopg2.connect(  
-        host="db",  
-        database="mydb",  
-        user="postgres",  
-        password="postgres"  
-    )  
-    cursor \= conn.cursor()  
-      
-    try:  
-        print(f"Starting ingestion of {csv\_filepath}...")  
-          
-        \# 1\. Open the CSV file locally  
-        with open(csv\_filepath, 'r', encoding='latin1') as f:  
-            \# 2\. Use copy\_expert to stream the raw file straight to PostgreSQL  
-            \# This is significantly faster than using pandas or execute\_many  
-            sql\_command \= f"COPY {target\_table} FROM STDIN WITH CSV HEADER;"  
-            cursor.copy\_expert(sql=sql\_command, file=f)  
-              
-        conn.commit()  
-        print("Bulk ingestion completed successfully.")  
-          
-    except Exception as e:  
-        conn.rollback()  
-        print(f"Error during ingestion: {e}")  
-        raise e  
-          
-    finally:  
-        cursor.close()  
+import os
+import psycopg2
+
+def load_csv_to_postgres(csv_filepath, target_table):
+    # Establish connection using environment variables or explicit config
+    conn = psycopg2.connect(
+        host="db",
+        database="mydb",
+        user="postgres",
+        password="postgres"
+    )
+    cursor = conn.cursor()
+    
+    try:
+        print(f"Starting ingestion of {csv_filepath}...")
+        
+        # 1. Open the CSV file locally
+        with open(csv_filepath, 'r', encoding='latin1') as f:
+            # 2. Use copy_expert to stream the raw file straight to PostgreSQL
+            # This is significantly faster than using pandas or execute_many
+            sql_command = f"COPY {target_table} FROM STDIN WITH CSV HEADER;"
+            cursor.copy_expert(sql=sql_command, file=f)
+            
+        conn.commit()
+        print("Bulk ingestion completed successfully.")
+        
+    except Exception as e:
+        conn.rollback()
+        print(f"Error during ingestion: {e}")
+        raise e
+        
+    finally:
+        cursor.close()
         conn.close()
 
-if \_\_name\_\_ \== "\_\_main\_\_":  
-    load\_csv\_to\_postgres("Unit\_16\_Capstone/data/DataCoSupplyChainDataset.csv", "raw\_staging")
+if __name__ == "__main__":
+    load_csv_to_postgres("Unit_16_Capstone/data/DataCoSupplyChainDataset.csv", "raw_staging")
+
 
 ### **Technical Breakdown of the Python Script**
 
