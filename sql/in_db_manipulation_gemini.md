@@ -51,7 +51,7 @@ This single-line terminal command combines shell environment variables, PostgreS
 In a professional production pipeline, you will often schedule Python scripts (using tools like Apache Airflow or Prefect) to run imports.
 
 When loading large datasets with Python, **never** use standard SQL INSERT loops—they are extremely slow. Instead, stream the data using PostgreSQL's bulk copy protocol via psycopg2.
-
+```
 import os  
 import psycopg2
 
@@ -92,7 +92,7 @@ def load_csv_to_postgres(csv_filepath, target_table):
 
 if __name__ == "__main__":
     load_csv_to_postgres("Unit_16_Capstone/data/DataCoSupplyChainDataset.csv", "raw_staging")
-
+```
 
 ### **Technical Breakdown of the Python Script**
 
