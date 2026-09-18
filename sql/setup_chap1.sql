@@ -94,8 +94,6 @@ INSERT INTO employees (first_name, last_name, department, title, hire_date, sala
 ('Geralt', 'Riv', 'Security', 'Contractor', '2015-05-19', 85000.00, NULL, 3, TRUE),
 ('Yennefer', 'Vengerberg', 'Research', 'Consultant', '2015-05-19', 140000.00, 20000.00, 1, TRUE),
 ('Shala', 'Swarm', 'Medical', 'First Assist Practitioner', '2018-03-12', 125000.00, NULL, 1, TRUE),
-('Kaia', 'Swarm', 'Marketing', 'Intern', '2025-05-15', 35000.00, NULL, 1, TRUE),
-('Leah', 'Swarm', 'Support', 'Medical Liaison', '2024-06-01', 52000.00, 1000.00, 8, TRUE),
 ('Lando', 'Pyrenees', 'Security', 'Guard Dog', '2021-03-01', 30000.00, 100.00, 1, TRUE),
 ('Bonitto', 'Pyrenees', 'Security', 'Trainee', '2025-11-10', 20000.00, 50.00, 1, TRUE),
 ('Casper', 'Cat', 'Operations', 'Pest Control Lead', '2020-07-15', 25000.00, NULL, 1, TRUE),
