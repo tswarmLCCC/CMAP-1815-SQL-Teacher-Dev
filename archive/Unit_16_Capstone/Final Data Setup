@@ -1,0 +1,31 @@
+Capstone Data Import Guide
+
+You are working with the full DataCo Global Logistics dataset (180,000+ rows). Because of this scale, you cannot simply copy-paste data. You must use the PostgreSQL command-line utility to ingest the raw file.
+
+Step 1: Prepare the Environment
+
+Ensure DataCoSupplyChainDataset.csv is in your Unit_16_Capstone/data directory.
+
+Step 2: Initialize Staging
+
+Run Setup_Staging.sql to create the raw_staging table. This table is a flat, unnormalized container designed to hold the raw CSV import before you transform it into your 3NF schema.
+
+Step 3: Execute the Bulk Import
+
+Open your terminal and ensure you are in the project root. Run this command:
+
+PGPASSWORD=postgres psql -U postgres -h db -d mydb -c "\copy raw_staging FROM 'Unit_16_Capstone/data/DataCoSupplyChainDataset.csv' WITH CSV HEADER ENCODING 'LATIN1';"
+
+
+Note: If you see COPY 180519, the ingestion was successful.
+
+Performance Tip: If the import takes more than a few seconds, it is normal. You are moving roughly 15MB of structured data.
+
+Step 4: Verification
+
+Once the data is ingested, perform a quick check to ensure the rows exist before you start your INSERT INTO ... SELECT DISTINCT migrations:
+
+SELECT count(*) FROM raw_staging;
+
+
+You are now ready to write your init_schema.sql and normalize the data.
