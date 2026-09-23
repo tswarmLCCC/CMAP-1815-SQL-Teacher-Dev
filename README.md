@@ -1,196 +1,65 @@
-# COSC-2409-SQL-Labs
+# CMAP 1815: Introduction to Modern SQL
 
-A GitHub Codespaces environment for SQL labs. Everything runs in the browser — no local installs needed.
-
----
-
-## Getting Started
-
-1. Go to this repo → click **"Use this template"** → **"Create a new repository"**
-2. Open your new repo → click **"Code"** → **"Open in Codespaces"**
-3. Wait ~2 minutes for setup to complete (you'll see `>>> Done!` in the terminal)
-4. Open a `lab.sql` file, write your queries, run them with SQLTools (**Ctrl+Shift+P → SQLTools: Run Current File**)
-5. Commit and push when done
+Welcome to the curriculum repository for **CMAP 1815: Introduction to Modern SQL**. This course is designed as an accelerated **8-week hybrid course** combining **150 minutes of synchronous active learning/labs** with **150 minutes of structured asynchronous guided study** per week.
 
 ---
 
-## Connecting to the Database
+## Quick Start with GitHub Codespaces
 
-Your Codespace runs a PostgreSQL server automatically. Connect to it from the terminal:
+Everything runs directly in your browser—no local database installation required!
 
-```bash
-psql $DATABASE_URL
-```
-
-You'll see a prompt like:
-
-```
-psql (16.x)
-Type "help" for help.
-
-mydb=#
-```
-
-Type `\q` to exit.
-
-The `DATABASE_URL` environment variable is pre-configured — you don't need to set anything up.
+1. Click **Code** (green button) $\rightarrow$ **Codespaces** $\rightarrow$ **Create codespace on main**.
+2. Wait ~2 minutes for the automated PostgreSQL 16 container to build.
+3. Open a terminal and connect:
+   ```bash
+   psql $DATABASE_URL
+   ```
+4. Run sample queries or use the VS Code SQLTools extension.
 
 ---
 
-## Basic psql Commands
+## Curriculum Structure
 
-Once connected with `psql $DATABASE_URL`:
-
-| Command | What it does |
-|--------|--------------|
-| `\l` | List all databases |
-| `\c dbname` | Switch to a different database |
-| `\dt` | List tables in the current database |
-| `\d tablename` | Describe a table's columns |
-| `\i file.sql` | Run a SQL file |
-| `\q` | Quit |
-
----
-
-## Working with Databases
-
-### The default database
-
-The default database is called `mydb`. It's created automatically when the Codespace starts.
-
-### Creating a new database
-
-```sql
-CREATE DATABASE lab2;
 ```
-
-### Switching to a different database
-
-```bash
-psql $DATABASE_URL   -- connects to mydb by default
-```
-
-Or connect directly to a specific database:
-
-```bash
-psql postgresql://postgres:postgres@db:5432/lab2
-```
-
-Or switch inside psql:
-
-```sql
-\c lab2
-```
-
-### Dropping a database
-
-```sql
-DROP DATABASE lab2;
+.
+├── .devcontainer/             # Automated PostgreSQL 16 container configuration
+├── .vscode/                   # Pre-configured SQLTools database connections
+├── course_specs/              # Master Course Governance
+│   ├── course_learning_outcomes.md       # CLOs 1–6, Bloom's & AI Practitioner mapping
+│   ├── syllabus_master.md                # 8-week hybrid schedule & time budgeting
+│   ├── database_schema_spec.md           # Mermaid ERD, table DDL & Data Dictionaries
+│   ├── grading_and_assessment_policy.md  # 40% Labs, 20% Quizzes, 30% Capstone
+│   ├── external_resources_guide.md       # Verified PostgreSQL tutorials & FreeCodeCamp timestamps
+│   └── canvas_api_browser_sync_guide.md  # Browser DevTools session sync guide
+│
+├── units/                     # 8 Modular Units
+│   ├── unit_01_selection_and_fundamentals/
+│   ├── unit_02_filtering_and_logic/
+│   ├── unit_03_joins_and_relations/
+│   ├── unit_04_aggregation_and_pivoting/
+│   ├── unit_05_safe_dml_and_temp_tables/
+│   ├── unit_06_ctes_and_window_functions/
+│   ├── unit_07_schema_design_and_ddl/
+│   └── unit_08_indexing_and_capstone/
+│
+├── shared_assets/             # Core Datasets & Seed Scripts
+│   └── datasets/              # setup_chap1.sql, superstore.csv
+│
+└── archive/                   # Consolidated Legacy Materials
+    └── v1_original_drafts/    # Original brainstorms and early unit drafts (also tagged in Git)
 ```
 
 ---
 
-## Loading Data
+## 8-Week Course Roadmap
 
-### Run a SQL file from the terminal
-
-```bash
-psql $DATABASE_URL -f yourfile.sql
-```
-
-### Run a SQL file from inside psql
-
-```sql
-\i yourfile.sql
-```
-
-### Paste SQL directly
-
-Just connect with `psql $DATABASE_URL` and type or paste your SQL at the prompt.
-
-### Load a CSV file into a table
-
-First create the table, then use `COPY`:
-
-```sql
-CREATE TABLE students (
-    id SERIAL PRIMARY KEY,
-    name TEXT,
-    grade INTEGER
-);
-
-COPY students FROM '/workspace/data/students.csv' DELIMITER ',' CSV HEADER;
-```
-
-Make sure your CSV is inside the `/workspace` folder in your Codespace.
-
----
-
-## Exporting Data
-
-### Export a table to CSV
-
-```bash
-psql $DATABASE_URL -c "\COPY tablename TO '/workspace/output.csv' CSV HEADER"
-```
-
-### Export query results to CSV
-
-```bash
-psql $DATABASE_URL -c "\COPY (SELECT * FROM students WHERE grade > 80) TO '/workspace/results.csv' CSV HEADER"
-```
-
-### Dump an entire database to a SQL file
-
-```bash
-pg_dump $DATABASE_URL > /workspace/backup.sql
-```
-
-### Restore a database from a dump
-
-```bash
-psql $DATABASE_URL < /workspace/backup.sql
-```
-
----
-
-## Seed Data (Auto-loaded on Start)
-
-Any `.sql` files placed in the `sql/` folder at the root of the repo are automatically run when the database first starts. Use this to pre-load schema and sample data for labs:
-
-```
-sql/
-  01_schema.sql    ← CREATE TABLE statements
-  02_seed.sql      ← INSERT sample data
-```
-
-Files run in alphabetical order. **This only runs on the very first start** — if you need to reset, see below.
-
----
-
-## Resetting the Database
-
-If you need a clean slate:
-
-```bash
-psql $DATABASE_URL -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
-```
-
-Then reload your seed data:
-
-```bash
-psql $DATABASE_URL -f sql/01_schema.sql
-psql $DATABASE_URL -f sql/02_seed.sql
-```
-
----
-
-## Troubleshooting
-
-**`psql: command not found`** — the Codespace didn't finish building. Wait for the terminal to show `>>> Done!` and try again, or run **Ctrl+Shift+P → "Codespaces: Rebuild Container"**.
-
-**`could not connect to server`** — the database container isn't running yet. Wait 30 seconds and try again. If it keeps failing, rebuild the container.
-
-**`psql $DATABASE_URL` hangs** — same as above. Rebuild the container.
-
-**Changes disappeared after reopening** — data in the database persists as long as the Codespace exists. If you deleted and recreated the Codespace, the database is fresh. Re-run your seed files.
+| Week | Unit Theme | Key Concepts | Lab & Assessment |
+| :---: | :--- | :--- | :--- |
+| **1** | **Selection & Fundamentals** | Relational Model, Projection ("The Flashlight"), SELECT, FROM, ORDER BY, DISTINCT, Aliases | System Catalog Exploration & SELECT Lab |
+| **2** | **Targeted Retrieval & Logic** | Filtering ("The Scalpel"), WHERE, Comparison Operators, BETWEEN, IN, LIKE/ILIKE, IS NULL, LIMIT | Targeted Inventory & Tenure Audit Lab |
+| **3** | **Relational Joins** | Primary/Foreign Keys, INNER JOIN, Multi-Table Joins, LEFT JOIN, Anti-Join Anomaly Detection | 4-Table Superstore Integration & Dead Inventory Audit |
+| **4** | **Summarization & Pivoting** | Aggregate Functions (COUNT, SUM, AVG), GROUP BY, HAVING, Set Operations (UNION), CASE Pivoting | Executive Business Reporting & Pivoting Lab |
+| **5** | **Safe DML & Temp Tables** | INSERT, UPDATE, DELETE, Pre-Execution SELECTs, Transaction Boundaries, Local Temp Tables | Safe Data Cleanup & Archiving Lab |
+| **6** | **CTEs & Window Functions** | Subqueries vs. WITH CTEs, Window Partitions (OVER, PARTITION BY), Ranking (ROW_NUMBER), Moving Averages | Advanced Analytics & Deduplication Lab |
+| **7** | **Schema Design & DDL** | Normalization (1NF to 3NF), CREATE TABLE, Constraints (PK, FK, CHECK, UNIQUE, NOT NULL), Views | "The Denormalized Nightmare" DDL Lab |
+| **8** | **Indexing & Capstone** | B-Tree Indexes, EXPLAIN ANALYZE, Read vs. Write Trade-offs, Audit Trails, Capstone Defense | Comprehensive Capstone Defense Project |
