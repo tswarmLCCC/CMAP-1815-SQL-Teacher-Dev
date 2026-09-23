@@ -710,6 +710,51 @@ def render_designplus_html(title: str, lead_html: str, panels: list, page_id: st
 </body>
 </html>"""
 
+def render_ribbon_sections_page_html(title: str, lead_html: str, sections: list, page_id: str, workflow_state: str = "active") -> str:
+    """
+    Renders HTML pages with DesignPLUS ribbon headers for each major section/chapter,
+    with an overall descriptive lead card on top.
+    """
+    sections_html = []
+    for heading, content in sections:
+        sec = f"""  <div class="dp-header-wrapper" style="margin-top: 2.5rem; margin-bottom: 1.25rem;">
+    <header class="dp-header dp-basic-bar dp-header-s-brdr-l dp-header-brdr-w-4 dp-header-out-dp-secondary dp-header-pre-s-brdr-r dp-header-pre-font-sm dp-header-pre-out-dp-secondary dp-header-sub-brdr-w-0 dp-header-desc-txt-dp-primary dp-header-desc-out-dp-primary dp-header-sub-bg-dp-white dp-header-sub-txt-dp-primary dp-header-sub-out-dp-primary">
+      <h2 class="dp-heading dp-locked"><span class="dp-header-title">{html.escape(heading)}</span></h2>
+    </header>
+  </div>
+  <div class="dp-section-body" style="line-height: 1.6; color: #1e293b; margin-bottom: 2rem; padding: 0 0.25rem;">
+    {content}
+  </div>"""
+        sections_html.append(sec)
+
+    body_sections = "\n".join(sections_html)
+    lead_block = ""
+    if lead_html:
+        lead_block = f"""  <div class="dp-content-block" style="background: #f8fafc; border-left: 4px solid #1e3a8a; padding: 1.25rem 1.5rem; margin-top: 1.5rem; margin-bottom: 2rem; border-radius: 0 6px 6px 0; font-size: 1.05em; line-height: 1.6; color: #334155;">
+    {lead_html}
+  </div>"""
+
+    return f"""<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>{html.escape(title)}</title>
+<meta name="identifier" content="{page_id}"/>
+<meta name="editing_roles" content="teachers"/>
+<meta name="workflow_state" content="{workflow_state}"/>
+<meta name="editor_type" content="rce"/>
+</head>
+<body>
+<div id="dp-wrapper" class="dp-wrapper dp-hdg-i-cp-brdr-h2-dp-primary dp-hdg-txt-h3-dp-primary dp-hdg-txt-h4-dp-primary dp-hdg-txt-h5-dp-primary dp-hdg-i-cp-brdr-h5-dp-primary dp-hdg-b-h2-brdr-b dp-hdg-txt-h6-dp-primary dp-hdg-i-cp-brdr-h6-dp-primary dp-hdg-i-styl-h2-pill dp-hdg-i-styl-h3-pill dp-hdg-cp-brdr-h3-dp-secondary dp-hdg-cp-brdr-h2-dp-secondary dp-hdg-brdr-h2-1 dp-hdg-brdr-h3-1 dp-hdg-brdr-h4-1 dp-hdg-brdr-h5-1 dp-hdg-brdr-h6-1 dp-hdg-i-sz-h2-fill dp-hdg-i-sz-h3-fill dp-hdg-i-sz-h5-fill dp-hdg-i-sz-h6-fill dp-hdg-i-brdr-h5-2 dp-hdg-i-brdr-h6-2 dp-hdg-b-h3-brdr-b dp-hdg-txt-h2-dp-primary dp-hdg-i-brdr-h2-1 dp-hdg-i-brdr-h3-1 dp-hdg-i-sz-h4-fill dp-hdg-i-cp-brdr-h3-dp-primary dp-hdg-i-brdr-h4-1 dp-hdg-i-bg-h2-dp-primary dp-hdg-i-bg-h3-dp-primary dp-hdg-b-h4-brdr-b dp-hdg-d-h4-table-l dp-hdg-i-styl-h4-pill dp-hdg-i-cp-brdr-h4-dp-primary">
+  <header class="dp-header dp-basic-bar dp-header-s-brdr-l dp-header-brdr-w-4 dp-header-out-dp-secondary dp-header-pre-s-brdr-r dp-header-pre-font-sm dp-header-pre-out-dp-secondary dp-header-sub-brdr-w-0 dp-header-desc-txt-dp-primary dp-header-desc-out-dp-primary dp-header-sub-bg-dp-white dp-header-sub-txt-dp-primary dp-header-sub-out-dp-primary">
+    <h1 class="dp-heading dp-locked"><span class="dp-header-title">{html.escape(title)}</span></h1>
+    <p>&nbsp;</p>
+  </header>
+{lead_block}
+{body_sections}
+</div>
+</body>
+</html>"""
+
 def render_video_embed(title: str, video_id: str, start_sec: int) -> str:
     """Generates a clean responsive 16:9 embedded YouTube player."""
     mins = start_sec // 60
@@ -1023,11 +1068,17 @@ def main():
         with open(src_docx, "rb") as sf, open(dst_docx_path, "wb") as df:
             df.write(sf.read())
 
-    # Copy Course Banner Image to web_resources/images
+    # Copy Course Banner & Thumbnail Images to web_resources/images
     src_banner = os.path.join(COURSE_SPECS_DIR, "sql_course_banner.jpg")
     dst_banner = os.path.join(images_dir, "sql_course_banner.jpg")
     if os.path.exists(src_banner):
         with open(src_banner, "rb") as sf, open(dst_banner, "wb") as df:
+            df.write(sf.read())
+
+    src_thumb = os.path.join(COURSE_SPECS_DIR, "sql_course_thumbnail.jpg")
+    dst_thumb = os.path.join(images_dir, "sql_course_thumbnail.jpg")
+    if os.path.exists(src_thumb):
+        with open(src_thumb, "rb") as sf, open(dst_thumb, "wb") as df:
             df.write(sf.read())
 
     # Build Native Syllabus HTML
@@ -1315,11 +1366,18 @@ def main():
         pages_manifest.append((overview_file, f"{u_short} Overview: {u_topic}", overview_id))
 
         # ----------------------------------------------------
-        # Page 2: Required Readings & Video Lectures (Embedded) - Clean Standard Page
+        # Page 2: Required Readings, Concepts & Video Lectures - DesignPLUS Multi-Ribbon Page
         # ----------------------------------------------------
         reading_id = make_id(f"page_u{u_num}_readings")
         reading_file = f"unit-{u_num:02d}-readings-and-media.html"
-        reading_lead = f"<p>This page houses the required reading descriptions and embedded lecture video chapters for <strong>{u_short}</strong>. Review these materials thoroughly as part of your asynchronous preparation.</p>"
+        reading_lead = f"""<p><strong>Welcome to the core instructional lecture and study hub for {u_title}.</strong> This page organizes all weekly learning materials into four structured chapters:</p>
+<ol style="padding-left: 1.5rem; margin: 0.75rem 0; line-height: 1.7;">
+  <li><strong>1. Instructor Lecture &amp; Conceptual Deep Dive:</strong> Master the core concepts, mental models, syntax rules, and guided live exercises authored specifically for this unit.</li>
+  <li><strong>2. Required Readings &amp; PostgreSQL Tutorial Guides:</strong> Review curated reference guides and official PostgreSQL 16 documentation links.</li>
+  <li><strong>3. Required Micro-Video Lectures (Embedded):</strong> Watch high-definition video chapters with verified timestamp navigation to observe queries executed in live environments.</li>
+  <li><strong>4. Institutional Video Lecture Embeds:</strong> Access campus-specific video recordings and announcements uploaded by your instructor.</li>
+</ol>
+<p style="margin-top: 0.75rem; margin-bottom: 0; color: #64748b; font-size: 0.95em;"><em>Work through each section in sequence as part of your 150-minute asynchronous self-study allocation before starting the applied laboratory assignment.</em></p>"""
         
         # Format Readings Descriptions HTML
         readings_lis = []
@@ -1340,14 +1398,22 @@ def main():
         overview_md = load_and_clean_unit_overview(u_num)
         overview_html = parse_markdown_to_html(overview_md) if overview_md else ""
 
+        # Section 4: Institutional Video Embeds Placeholder
+        institutional_embed_html = """<div style="background: #f8fafc; border: 2px dashed #94a3b8; border-radius: 6px; padding: 1.5rem; margin: 1rem 0; text-align: center;">
+  <p style="font-size: 1.1em; font-weight: 600; color: #1e3a8a; margin-top: 0; margin-bottom: 0.5rem;"><i class="fas fa-video"></i> Custom Institutional Video Embed Slot</p>
+  <p style="color: #475569; margin-bottom: 0.5rem; font-size: 0.95em;">This section is reserved for custom institutional lecture recordings (Canvas Studio, Panopto, Kaltura, or unlisted media embeds).</p>
+  <p style="color: #64748b; font-size: 0.85em; margin-bottom: 0;"><em>[Instructor Notice: Use the Canvas Rich Content Editor to insert your Canvas Studio or campus video iframe directly into this placeholder.]</em></p>
+</div>"""
+
         reading_panels = []
         if overview_html:
-            reading_panels.append(("Instructor Lecture & Conceptual Deep Dive", overview_html))
-        reading_panels.append(("Required Readings & Authoritative PostgreSQL Guides", readings_body))
-        reading_panels.append(("Required Video Lecture Chapters (Embedded)", videos_body))
+            reading_panels.append(("1. Instructor Lecture & Conceptual Deep Dive", overview_html))
+        reading_panels.append(("2. Required Readings & PostgreSQL Tutorial Guides", readings_body))
+        reading_panels.append(("3. Required Micro-Video Lectures (Embedded)", videos_body))
+        reading_panels.append(("4. Institutional Video Lecture Embeds", institutional_embed_html))
 
         with open(os.path.join(wiki_dir, reading_file), "w", encoding="utf-8") as f:
-            f.write(render_standard_page_html(f"{u_short}: Required Readings, Concepts & Video Lectures", reading_lead, reading_panels, reading_id))
+            f.write(render_ribbon_sections_page_html(f"{u_short}: Required Readings, Concepts & Video Lectures", reading_lead, reading_panels, reading_id))
         pages_manifest.append((reading_file, f"{u_short}: Required Readings, Concepts & Video Lectures", reading_id))
 
         # ----------------------------------------------------
@@ -1667,6 +1733,12 @@ def main():
     course_banner_res_id = make_id("res_course_banner")
     resources_xml.append(f"""    <resource identifier="{course_banner_res_id}" type="webcontent" href="web_resources/images/sql_course_banner.jpg">
       <file href="web_resources/images/sql_course_banner.jpg"/>
+    </resource>""")
+
+    # Course Thumbnail Image Resource
+    course_thumb_res_id = make_id("res_course_thumbnail")
+    resources_xml.append(f"""    <resource identifier="{course_thumb_res_id}" type="webcontent" href="web_resources/images/sql_course_thumbnail.jpg">
+      <file href="web_resources/images/sql_course_thumbnail.jpg"/>
     </resource>""")
 
     # Wiki Pages Resources
