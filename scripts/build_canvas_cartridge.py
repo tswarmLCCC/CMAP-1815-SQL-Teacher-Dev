@@ -397,8 +397,228 @@ TEACHER_GUIDE_DATA = {
     }
 }
 
+def format_inline(s: str) -> str:
+    """Formats inline markdown syntax to HTML."""
+    s = re.sub(r'`([^`]+)`', r'<code style="background: #f1f5f9; color: #0369a1; padding: 0.15rem 0.35rem; border-radius: 3px; font-size: 0.9em; font-family: Consolas, monospace; font-weight: 600;">\1</code>', s)
+    s = re.sub(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', s)
+    s = re.sub(r'\*([^*]+)\*', r'<em>\1</em>', s)
+    s = s.replace(r'$\rightarrow$', '&rarr;')
+    s = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2" target="_blank" rel="noopener">\1</a>', s)
+    return s
+
+def parse_markdown_to_html(md: str) -> str:
+    """Converts structured markdown (tables, code blocks, lists, details) into clean styled HTML."""
+    if not md:
+        return ""
+
+    code_blocks = []
+    def code_block_sub(match):
+        lang = match.group(1) or ''
+        code = match.group(2)
+        idx = len(code_blocks)
+        code_html = f'<div style="background: #0f172a; color: #f8fafc; padding: 1rem 1.25rem; border-radius: 6px; overflow-x: auto; margin: 1.25rem 0; font-family: Consolas, Monaco, monospace; font-size: 0.9em; line-height: 1.5;"><pre style="margin: 0; background: transparent; color: inherit;"><code>{html.escape(code.strip())}</code></pre></div>'
+        code_blocks.append(code_html)
+        return f'__CODE_BLOCK_{idx}__'
+
+    text = re.sub(r'```([a-zA-Z0-9_-]*)\r?\n(.*?)\r?\n```', code_block_sub, md, flags=re.DOTALL)
+
+    lines = text.splitlines()
+    output = []
+    in_table = False
+    table_rows = []
+    in_list = False
+    list_type = None
+
+    def flush_table():
+        nonlocal in_table, table_rows
+        if not table_rows:
+            in_table = False
+            return ''
+        html_table = ['<div style="overflow-x: auto; margin: 1.25rem 0;"><table style="width: 100%; border-collapse: collapse; border: 1px solid #cbd5e1; font-size: 0.95em;">']
+        header_cells = table_rows[0]
+        html_table.append('<thead><tr style="background-color: #1e3a8a; color: #ffffff;">')
+        for c in header_cells:
+            html_table.append(f'<th style="padding: 10px 14px; border: 1px solid #94a3b8; font-weight: 600;">{format_inline(c)}</th>')
+        html_table.append('</tr></thead><tbody>')
+        for row_idx, row in enumerate(table_rows[1:]):
+            bg = '#f8fafc' if row_idx % 2 == 0 else '#ffffff'
+            html_table.append(f'<tr style="background-color: {bg};">')
+            for c in row:
+                html_table.append(f'<td style="padding: 8px 14px; border: 1px solid #cbd5e1;">{format_inline(c)}</td>')
+            html_table.append('</tr>')
+        html_table.append('</tbody></table></div>')
+        in_table = False
+        table_rows = []
+        return ''.join(html_table)
+
+    def flush_list():
+        nonlocal in_list, list_type
+        if not in_list:
+            return ''
+        tag = list_type
+        in_list = False
+        list_type = None
+        return f'</{tag}>\n'
+
+    for line in lines:
+        trimmed = line.strip()
+
+        if trimmed.startswith('|') and trimmed.endswith('|'):
+            cells = [c.strip() for c in trimmed[1:-1].split('|')]
+            if re.match(r'^[:\- ]+$', ''.join(cells)):
+                pass
+            else:
+                if not in_table:
+                    if in_list:
+                        output.append(flush_list())
+                    in_table = True
+                    table_rows = [cells]
+                else:
+                    table_rows.append(cells)
+            continue
+        elif in_table:
+            output.append(flush_table())
+
+        if not trimmed:
+            if in_list:
+                output.append(flush_list())
+            continue
+
+        cb_match = re.match(r'^__CODE_BLOCK_(\d+)__$', trimmed)
+        if cb_match:
+            if in_list:
+                output.append(flush_list())
+            idx = int(cb_match.group(1))
+            output.append(code_blocks[idx])
+            continue
+
+        h_match = re.match(r'^(#{1,6})\s+(.*)$', trimmed)
+        if h_match:
+            if in_list:
+                output.append(flush_list())
+            level = len(h_match.group(1))
+            h_text = format_inline(h_match.group(2).strip())
+            if level == 1:
+                output.append(f'<h2 style="color: #1e3a8a; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.4rem; margin-top: 1.5rem; margin-bottom: 0.75rem;">{h_text}</h2>')
+            elif level == 2:
+                output.append(f'<h3 style="color: #1e3a8a; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.3rem; margin-top: 1.5rem; margin-bottom: 0.75rem;">{h_text}</h3>')
+            elif level == 3:
+                output.append(f'<h4 style="color: #0f172a; margin-top: 1.25rem; margin-bottom: 0.5rem; font-size: 1.15em;">{h_text}</h4>')
+            else:
+                output.append(f'<h5 style="color: #334155; margin-top: 1rem; margin-bottom: 0.5rem; font-size: 1.05em;">{h_text}</h5>')
+            continue
+
+        if trimmed in ('---', '***', '___'):
+            if in_list:
+                output.append(flush_list())
+            output.append('<hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 1.5rem 0;"/>')
+            continue
+
+        if trimmed.startswith('<details>'):
+            if in_list:
+                output.append(flush_list())
+            output.append('<details style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0.75rem 1.25rem; margin: 1rem 0;">')
+            continue
+        if trimmed.startswith('</details>'):
+            if in_list:
+                output.append(flush_list())
+            output.append('</details>')
+            continue
+        if trimmed.startswith('<summary>') and trimmed.endswith('</summary>'):
+            if in_list:
+                output.append(flush_list())
+            sum_text = trimmed[9:-10].strip()
+            sum_text = re.sub(r'<\/?b>', '', sum_text)
+            output.append(f'<summary style="cursor: pointer; font-weight: 600; color: #1e3a8a; padding: 0.25rem 0;">{format_inline(sum_text)}</summary><div style="margin-top: 0.75rem; padding-top: 0.5rem; border-top: 1px dashed #cbd5e1;">')
+            continue
+        if trimmed.startswith('</summary>'):
+            continue
+
+        if trimmed.startswith('>'):
+            if in_list:
+                output.append(flush_list())
+            bq_text = format_inline(trimmed.lstrip('>').strip())
+            output.append(f'<div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 0.75rem 1.25rem; margin: 1rem 0; border-radius: 0 4px 4px 0; color: #1e3a8a;">{bq_text}</div>')
+            continue
+
+        ul_match = re.match(r'^[*•-]\s+(.*)$', trimmed)
+        ol_match = re.match(r'^\d+\.\s+(.*)$', trimmed)
+        if ul_match:
+            if not in_list or list_type != 'ul':
+                if in_list:
+                    output.append(flush_list())
+                in_list = True
+                list_type = 'ul'
+                output.append('<ul style="padding-left: 1.5rem; margin: 0.75rem 0;">')
+            output.append(f'<li style="margin-bottom: 0.35rem;">{format_inline(ul_match.group(1))}</li>')
+            continue
+        elif ol_match:
+            if not in_list or list_type != 'ol':
+                if in_list:
+                    output.append(flush_list())
+                in_list = True
+                list_type = 'ol'
+                output.append('<ol style="padding-left: 1.5rem; margin: 0.75rem 0;">')
+            output.append(f'<li style="margin-bottom: 0.35rem;">{format_inline(ol_match.group(1))}</li>')
+            continue
+
+        if in_list:
+            output.append(flush_list())
+        
+        output.append(f'<p style="margin: 0.75rem 0; line-height: 1.6;">{format_inline(trimmed)}</p>')
+
+    if in_table:
+        output.append(flush_table())
+    if in_list:
+        output.append(flush_list())
+
+    result = '\n'.join(output)
+    result = result.replace('</details>', '</div></details>')
+
+    for idx, cb in enumerate(code_blocks):
+        result = result.replace(f'__CODE_BLOCK_{idx}__', cb)
+    return result
+
+def render_standard_page_html(title: str, lead_html: str, sections: list, page_id: str, workflow_state: str = "active") -> str:
+    """
+    Renders clean, modern, native Canvas HTML pages without the ribbon header,
+    ideal for lab guides, reading pages, study drills, and AI practice.
+    """
+    sections_html = []
+    for heading, content in sections:
+        sec = f"""  <div style="margin-bottom: 2rem;">
+    <h2 style="color: #1e3a8a; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.4rem; margin-top: 1.75rem; margin-bottom: 1rem;">{html.escape(heading)}</h2>
+    <div style="line-height: 1.6; color: #1e293b;">
+      {content}
+    </div>
+  </div>"""
+        sections_html.append(sec)
+
+    body_sections = "\n".join(sections_html)
+    lead_block = ""
+    if lead_html:
+        lead_block = f"""  <div style="background: #f8fafc; border-left: 4px solid #1e3a8a; padding: 1rem 1.25rem; margin-bottom: 1.75rem; border-radius: 0 4px 4px 0; font-size: 1.05em; line-height: 1.5; color: #334155;">
+    {lead_html}
+  </div>"""
+
+    return f"""<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>{html.escape(title)}</title>
+<meta name="identifier" content="{page_id}"/>
+<meta name="editing_roles" content="teachers"/>
+<meta name="workflow_state" content="{workflow_state}"/>
+<meta name="editor_type" content="rce"/>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1e293b; padding: 1.5rem; max-width: 1000px; margin: 0 auto;">
+  <h1 style="color: #1e3a8a; margin-top: 0; margin-bottom: 1.25rem;">{html.escape(title)}</h1>
+{lead_block}
+{body_sections}
+</body>
+</html>"""
+
 def render_designplus_html(title: str, lead_html: str, panels: list, page_id: str, workflow_state: str = "active") -> str:
-    """Renders HTML strictly adhering to the DesignPLUS classes from the user's institution."""
+    """Renders HTML strictly adhering to DesignPLUS styles for Unit Overviews, Home, and Start Here."""
     panels_html = []
     for heading, content in panels:
         panels_html.append(f"""    <div class="dp-panel-group">
@@ -436,15 +656,15 @@ def render_designplus_html(title: str, lead_html: str, panels: list, page_id: st
 </html>"""
 
 def render_video_embed(title: str, video_id: str, start_sec: int) -> str:
-    """Generates a clean responsive 16:9 embedded YouTube player matching DesignPLUS styles."""
+    """Generates a clean responsive 16:9 embedded YouTube player."""
     mins = start_sec // 60
     secs = start_sec % 60
     return f"""<div style="margin-bottom: 2rem;">
-  <h4 style="margin-bottom: 0.5rem;">{html.escape(title)} <span style="font-size: 0.9em; font-weight: normal; color: #555;">(Starts at {mins}:{secs:02d})</span></h4>
+  <h4 style="margin-bottom: 0.5rem; color: #1e293b;">{html.escape(title)} <span style="font-size: 0.9em; font-weight: normal; color: #64748b;">(Starts at {mins}:{secs:02d})</span></h4>
   <div class="dp-embed-wrapper" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 6px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 0.5rem;">
     <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" title="{html.escape(title)}" src="https://www.youtube.com/embed/{video_id}?start={start_sec}" loading="lazy" allowfullscreen="allowfullscreen" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
   </div>
-  <p style="font-size: 0.85em; color: #666; margin-top: 0.25rem;"><a href="https://www.youtube.com/watch?v={video_id}&amp;t={start_sec}s" target="_blank" rel="noopener">Open video segment in new tab ({mins}:{secs:02d})</a></p>
+  <p style="font-size: 0.85em; color: #64748b; margin-top: 0.25rem;"><a href="https://www.youtube.com/watch?v={video_id}&amp;t={start_sec}s" target="_blank" rel="noopener">Open video segment in new tab ({mins}:{secs:02d})</a></p>
 </div>"""
 
 def parse_quiz_md(filepath):
@@ -946,12 +1166,12 @@ def main():
         ("The AI Pair Programmer Philosophy",
          "<p>Writing SQL with AI is NOT about asking an AI to 'do the homework for you.' Blindly pasting AI-generated SQL into production environments causes catastrophic data outages, Cartesian product server crashes, and silent NULL propagation bugs.</p><p>Instead, in this course you will practice <strong>Active Socratic Learning with AI</strong>: you will assign the AI specialized roles to challenge your reasoning, test edge cases, and simulate real-world stakeholder requests.</p>"),
         ("The Big Four 100% Free AI Platforms",
-         "<p>Every AI exercise in this course is designed for <strong>100% free web chat tools</strong>. You do NOT need any paid account or API key:</p><ul><li><strong>ChatGPT Free:</strong> <a href='https://chatgpt.com' target='_blank'>chatgpt.com</a> (select GPT-4o-mini / Free tier).</li><li><strong>Claude Free:</strong> <a href='https://claude.ai' target='_blank'>claude.ai</a> (free web tier).</li><li><strong>Google Gemini Free:</strong> <a href='https://gemini.google.com' target='_blank'>gemini.google.com</a> (free with any Google account).</li><li><strong>Microsoft Copilot Free:</strong> <a href='https://copilot.microsoft.com' target='_blank'>copilot.microsoft.com</a> (free web chat).</li></ul>"),
+         "<p>Every AI exercise in this course is designed for <strong>100% free web chat tools</strong>. You do NOT need any paid account or API key:</p><ul><li><strong>ChatGPT Free:</strong> <a href='https://chatgpt.com' target='_blank' rel='noopener'>chatgpt.com</a> (select GPT-4o-mini / Free tier).</li><li><strong>Claude Free:</strong> <a href='https://claude.ai' target='_blank' rel='noopener'>claude.ai</a> (free web tier).</li><li><strong>Google Gemini Free:</strong> <a href='https://gemini.google.com' target='_blank' rel='noopener'>gemini.google.com</a> (free with any Google account).</li><li><strong>Microsoft Copilot Free:</strong> <a href='https://copilot.microsoft.com' target='_blank' rel='noopener'>copilot.microsoft.com</a> (free web chat).</li></ul>"),
         ("The Verification Protocol: Grounded in PostgreSQL 16",
          "<p>Never assume an AI's SQL answer is correct! The Golden Rule of CMAP 1815: <strong>Every single SQL snippet must be executed and verified against your live PostgreSQL 16 database in GitHub Codespaces before submission!</strong></p>")
     ]
     with open(os.path.join(wiki_dir, p_orient_ai_file), "w", encoding="utf-8") as f:
-        f.write(render_designplus_html("Orientation: Learn with AI — Course Guidelines & Free Tools", orient_ai_lead, orient_ai_panels, p_orient_ai_id))
+        f.write(render_standard_page_html("Orientation: Learn with AI — Course Guidelines & Free Tools", orient_ai_lead, orient_ai_panels, p_orient_ai_id))
     pages_manifest.append((p_orient_ai_file, "Orientation: Learn with AI — Course Guidelines & Free Tools", p_orient_ai_id))
 
     # Page: Database Setup Guide
@@ -962,10 +1182,10 @@ def main():
         ("GitHub Codespaces Cloud Environment (Recommended)",
          "<p>Your repository includes a pre-configured <code>.devcontainer</code> that provisions a PostgreSQL 16 server automatically upon startup.</p><ol><li>Open the course GitHub repository in your browser.</li><li>Click the green <strong>Code</strong> button, navigate to the <strong>Codespaces</strong> tab, and click <strong>Create codespace on main</strong>.</li><li>Once loaded, open the integrated terminal and type <code>psql -U postgres</code> to access the database immediately!</li></ol>"),
         ("Database Schema & Sample Datasets",
-         "<p>The course schema includes five core relational entities: <code>employees</code>, <code>locations</code>, <code>products</code>, <code>orders</code>, and <code>order_lines</code>, alongside the 10,000-row <code>superstore</code> dataset.</p><p>To initialize or reset your database at any time, run:</p><pre><code>psql -U postgres -d postgres -f shared_assets/datasets/setup_chap1.sql</code></pre>")
+         "<p>The course schema includes five core relational entities: <code>employees</code>, <code>locations</code>, <code>products</code>, <code>orders</code>, and <code>order_lines</code>, alongside the 10,000-row <code>superstore</code> dataset.</p><p>To initialize or reset your database at any time, run:</p><div style='background: #0f172a; color: #f8fafc; padding: 0.75rem 1rem; border-radius: 6px; font-family: Consolas, monospace;'><pre style='margin: 0; background: transparent; color: inherit;'><code>psql -U postgres -d postgres -f shared_assets/datasets/setup_chap1.sql</code></pre></div>")
     ]
     with open(os.path.join(wiki_dir, p_setup_file), "w", encoding="utf-8") as f:
-        f.write(render_designplus_html("Database Setup & Environment Guide", setup_lead, setup_panels, p_setup_id))
+        f.write(render_standard_page_html("Database Setup & Environment Guide", setup_lead, setup_panels, p_setup_id))
     pages_manifest.append((p_setup_file, "Database Setup & Environment Guide", p_setup_id))
 
     # Page: External Resources Guide
@@ -976,10 +1196,10 @@ def main():
         ("Authoritative FreeCodeCamp Video Chapters",
          "<p>Official PostgreSQL Course (Timestamps verified to video description):</p><ul><li><strong>Unit 1:</strong> What is a Database (0:03:16) &amp; Relational Databases (0:05:17)</li><li><strong>Unit 2:</strong> Comparison Operators (1:50:18) &amp; Handling NULLs (2:15:42)</li><li><strong>Unit 3:</strong> Primary Keys (2:31:23) &amp; Foreign Key Joins (3:16:41)</li><li><strong>Unit 4:</strong> Aggregate Functions (2:36:14) &amp; GROUP BY (2:45:30)</li><li><strong>Unit 5:</strong> INSERT Operations (0:55:55) &amp; Safe DELETE/UPDATE (2:54:45)</li><li><strong>Unit 7:</strong> CREATE TABLE (0:41:37) &amp; Constraints (0:49:12)</li><li><strong>Unit 8:</strong> Exporting Results to CSV (3:47:27)</li></ul>"),
         ("Authoritative PostgreSQL Tutorial Guides",
-         "<p>All units link directly to <a href='https://www.postgresqltutorial.com/' target='_blank'>PostgreSQLTutorial.com</a> and the <a href='https://www.postgresql.org/docs/current/' target='_blank'>Official PostgreSQL 16 Documentation</a>.</p>")
+         "<p>All units link directly to <a href='https://www.postgresqltutorial.com/' target='_blank' rel='noopener'>PostgreSQLTutorial.com</a> and the <a href='https://www.postgresql.org/docs/current/' target='_blank' rel='noopener'>Official PostgreSQL 16 Documentation</a>.</p>")
     ]
     with open(os.path.join(wiki_dir, p_res_file), "w", encoding="utf-8") as f:
-        f.write(render_designplus_html("External Learning Resources & Media Guide", res_lead, res_panels, p_res_id))
+        f.write(render_standard_page_html("External Learning Resources & Media Guide", res_lead, res_panels, p_res_id))
     pages_manifest.append((p_res_file, "External Learning Resources & Media Guide", p_res_id))
 
     # Add Orientation Module
@@ -1005,7 +1225,7 @@ def main():
         print(f"Processing {u_short} ({u_folder})...")
 
         # ----------------------------------------------------
-        # Page 1: Unit Overview (Walks through the entire unit)
+        # Page 1: Unit Overview (DesignPLUS Ribbon Banner + Accordion)
         # ----------------------------------------------------
         overview_id = make_id(f"page_u{u_num}_overview")
         overview_file = f"unit-{u_num:02d}-overview.html"
@@ -1031,7 +1251,7 @@ def main():
         pages_manifest.append((overview_file, f"{u_short} Overview: {u_topic}", overview_id))
 
         # ----------------------------------------------------
-        # Page 2: Required Readings & Video Lectures (Embedded)
+        # Page 2: Required Readings & Video Lectures (Embedded) - Clean Standard Page
         # ----------------------------------------------------
         reading_id = make_id(f"page_u{u_num}_readings")
         reading_file = f"unit-{u_num:02d}-readings-and-media.html"
@@ -1042,9 +1262,9 @@ def main():
         for name, url, desc in unit["readings"]:
             readings_lis.append(f"""<li style="margin-bottom: 1rem;">
   <strong><a href="{url}" target="_blank" rel="noopener">{html.escape(name)}</a></strong>
-  <p style="margin-top: 0.25rem; margin-bottom: 0;">{html.escape(desc)}</p>
+  <p style="margin-top: 0.25rem; margin-bottom: 0; color: #475569;">{html.escape(desc)}</p>
 </li>""")
-        readings_body = f"<ul style='padding-left: 1.5rem;'>{''.join(readings_lis)}</ul>"
+        readings_body = f"<ul style='padding-left: 1.5rem; line-height: 1.6;'>{''.join(readings_lis)}</ul>"
 
         # Format Embedded Videos HTML
         video_embeds = []
@@ -1057,25 +1277,24 @@ def main():
             ("Required Video Lecture Chapters (Embedded)", videos_body)
         ]
         with open(os.path.join(wiki_dir, reading_file), "w", encoding="utf-8") as f:
-            f.write(render_designplus_html(f"{u_short}: Required Readings & Video Lectures", reading_lead, reading_panels, reading_id))
+            f.write(render_standard_page_html(f"{u_short}: Required Readings & Video Lectures", reading_lead, reading_panels, reading_id))
         pages_manifest.append((reading_file, f"{u_short}: Required Readings & Video Lectures", reading_id))
 
         # ----------------------------------------------------
-        # Page 3: Asynchronous Preparation & Drills
+        # Page 3: Asynchronous Preparation & Drills - Clean Standard Page
         # ----------------------------------------------------
         study_id = make_id(f"page_u{u_num}_async_study")
         study_file = f"unit-{u_num:02d}-async-study.html"
         study_lead = f"<p>Complete these conceptual reflection questions and formative self-check drills online before executing the lab assignment for <strong>{u_short}</strong>.</p>"
 
-        # Load Self Check Drills
+        # Load and parse Self Check Drills
         drills_path = os.path.join(UNITS_DIR, u_folder, "async", "self_check_drills.md")
         drills_html = "<p>Complete the formative self-check drills provided in your course repository under <code>async/self_check_drills.md</code>.</p>"
         if os.path.exists(drills_path):
             with open(drills_path, "r", encoding="utf-8") as df:
-                d_text = df.read()
-                drills_html = f"<pre style='max-height: 400px; overflow-y: auto;'><code>{html.escape(d_text)}</code></pre>"
+                drills_html = parse_markdown_to_html(df.read())
 
-        # Focus Questions
+        # Load and parse Focus Questions
         study_guide_path = os.path.join(UNITS_DIR, u_folder, "async", "study_guide.md")
         focus_questions_html = "<p>Reflect on the core concepts covered in the readings and video lectures.</p>"
         if os.path.exists(study_guide_path):
@@ -1083,7 +1302,7 @@ def main():
                 sg_text = sgf.read()
                 fq_match = re.search(r"## Step 4: Focus Questions.*?(?=## Step 5|\Z)", sg_text, re.DOTALL)
                 if fq_match:
-                    focus_questions_html = f"<pre style='white-space: pre-wrap; font-family: inherit;'>{html.escape(fq_match.group(0).strip())}</pre>"
+                    focus_questions_html = parse_markdown_to_html(fq_match.group(0).strip())
 
         study_panels = [
             ("Pre-Class Focus Questions", focus_questions_html),
@@ -1092,47 +1311,44 @@ def main():
              "<p>Before proceeding to the lab assignment, verify that you have:</p><ul><li>Read all tutorial guides on PostgreSQLTutorial.com.</li><li>Watched each embedded video chapter.</li><li>Answered the self-check drills without peeking at the solutions first.</li><li>Logged into your GitHub Codespaces PostgreSQL 16 environment.</li></ul>")
         ]
         with open(os.path.join(wiki_dir, study_file), "w", encoding="utf-8") as f:
-            f.write(render_designplus_html(f"{u_short}: Asynchronous Preparation & Drills", study_lead, study_panels, study_id))
+            f.write(render_standard_page_html(f"{u_short}: Asynchronous Preparation & Drills", study_lead, study_panels, study_id))
         pages_manifest.append((study_file, f"{u_short}: Asynchronous Preparation & Drills", study_id))
 
         # ----------------------------------------------------
-        # Page 4: Applied SQL Lab Assignment Guide (Page)
+        # Page 4: Applied SQL Lab Assignment Guide - Clean Standard Page with Parsed Rubric Table
         # ----------------------------------------------------
         lab_guide_id = make_id(f"page_u{u_num}_applied_lab_guide")
         lab_guide_file = f"unit-{u_num:02d}-applied-lab-guide.html"
         lab_guide_lead = f"<p>This page contains the hands-on laboratory scenario, database schema specifications, and step-by-step query tasks for <strong>{u_short}</strong>. Complete these queries in PostgreSQL 16, then submit your work using the Canvas Assignment link below.</p>"
 
-        # Load Student Lab Guide
+        # Load and parse Student Lab Guide
         lab_path = os.path.join(UNITS_DIR, u_folder, "guides", "student_lab_guide.md")
         lab_content_html = "<p>Refer to your course repository for the complete laboratory guide and scenario specifications.</p>"
         if os.path.exists(lab_path):
             with open(lab_path, "r", encoding="utf-8") as lf:
-                l_text = lf.read()
-                lab_content_html = f"<pre style='max-height: 450px; overflow-y: auto;'><code>{html.escape(l_text)}</code></pre>"
+                lab_content_html = parse_markdown_to_html(lf.read())
 
         # Load Challenges
         challenges_path = os.path.join(UNITS_DIR, u_folder, "sync", "inclass_challenges.sql")
         challenges_html = "<p>Refer to your course repository for self-paced applied coding challenges.</p>"
         if os.path.exists(challenges_path):
             with open(challenges_path, "r", encoding="utf-8") as cf:
-                c_text = cf.read()
-                challenges_html = f"<pre style='max-height: 350px; overflow-y: auto;'><code>{html.escape(c_text)}</code></pre>"
+                challenges_html = f"<div style='background: #0f172a; color: #f8fafc; padding: 1rem 1.25rem; border-radius: 6px; overflow-x: auto; font-family: Consolas, Monaco, monospace; font-size: 0.9em; line-height: 1.5;'><pre style='margin: 0; background: transparent; color: inherit;'><code>{html.escape(cf.read().strip())}</code></pre></div>"
 
-        # Load Rubric
+        # Load and parse Rubric (Converts markdown table into beautiful styled HTML table)
         rubric_path = os.path.join(UNITS_DIR, u_folder, "assessments", "lab_rubric.md")
         rubric_html = "<p>Refer to your course repository for the complete grading rubric.</p>"
         if os.path.exists(rubric_path):
             with open(rubric_path, "r", encoding="utf-8") as rf:
-                r_text = rf.read()
-                rubric_html = f"<pre style='max-height: 300px; overflow-y: auto;'><code>{html.escape(r_text)}</code></pre>"
+                rubric_html = parse_markdown_to_html(rf.read())
 
         lab_panels = [
             ("Laboratory Scenario & Task Specifications", lab_content_html),
             ("Self-Paced Applied Coding Challenges", challenges_html),
-            ("Grading Rubric & Submission Instructions", rubric_html)
+            ("Grading Rubric & Scoring Criteria", rubric_html)
         ]
         with open(os.path.join(wiki_dir, lab_guide_file), "w", encoding="utf-8") as f:
-            f.write(render_designplus_html(f"{u_short}: Applied SQL Lab Guide", lab_guide_lead, lab_panels, lab_guide_id))
+            f.write(render_standard_page_html(f"{u_short}: Applied SQL Lab Guide", lab_guide_lead, lab_panels, lab_guide_id))
         pages_manifest.append((lab_guide_file, f"{u_short}: Applied SQL Lab Guide", lab_guide_id))
 
         # ----------------------------------------------------
@@ -1149,22 +1365,27 @@ def main():
         with open(os.path.join(assign_folder, "assignment_settings.xml"), "w", encoding="utf-8") as af:
             af.write(assign_settings_xml)
 
-        # Write assignment description HTML
+        # Write assignment description HTML with clean layout and rubric
         assign_desc_html = f"""<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <title>Assignment: {html.escape(assign_title)}</title>
 </head>
-<body>
-<h2>{html.escape(assign_title)} Instructions</h2>
-<p>Complete the SQL query challenges outlined in the <strong>{u_short}: Applied SQL Lab Guide</strong> against your live PostgreSQL 16 database in GitHub Codespaces.</p>
-<h3>Submission Requirements:</h3>
-<ol>
-  <li>Ensure all SQL queries are formatted with uppercase keywords and clauses on new lines.</li>
-  <li>Test your script in PostgreSQL (<code>psql -U postgres</code>) to verify that all queries execute without errors.</li>
-  <li>Upload your completed <code>.sql</code> script file (e.g. <code>lab{u_num}_yourname.sql</code>) or paste your verified SQL statements directly into the text entry box below.</li>
-</ol>
-<p><em>Grading: This assignment is evaluated out of 50 points based on query correctness, relational logic, and SQL formatting standards.</em></p>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1e293b; padding: 1rem; max-width: 900px;">
+  <h2 style="color: #1e3a8a; border-bottom: 2px solid #1e3a8a; padding-bottom: 0.3rem;">{html.escape(assign_title)} (50 Points)</h2>
+  <div style="background: #f8fafc; border-left: 4px solid #1e3a8a; padding: 0.75rem 1rem; margin: 1rem 0; border-radius: 0 4px 4px 0;">
+    <p style="margin: 0;">Complete the SQL query challenges outlined in the <strong>{u_short}: Applied SQL Lab Guide</strong> against your live PostgreSQL 16 database in GitHub Codespaces.</p>
+  </div>
+  <h3 style="color: #0f172a; margin-top: 1.5rem;">Submission Requirements</h3>
+  <ol style="padding-left: 1.5rem; line-height: 1.7;">
+    <li>Ensure all SQL queries are formatted with uppercase keywords and clauses on new lines.</li>
+    <li>Test your script in PostgreSQL (<code>psql -U postgres</code>) to verify that all queries execute without errors.</li>
+    <li>Upload your completed <code>.sql</code> script file (e.g. <code>lab{u_num}_yourname.sql</code>) or paste your verified SQL statements directly into the text entry box below.</li>
+  </ol>
+  <h3 style="color: #0f172a; margin-top: 1.5rem;">Grading Criteria (50 Points Total)</h3>
+  <div style="margin-top: 0.5rem;">
+    {rubric_html}
+  </div>
 </body>
 </html>"""
         with open(os.path.join(assign_folder, assign_html_filename), "w", encoding="utf-8") as ahf:
@@ -1173,32 +1394,38 @@ def main():
         assignment_manifest.append((assign_id, assign_html_filename, assign_title))
 
         # ----------------------------------------------------
-        # Page 6: Learn with AI — Supplemental Practice Drill
+        # Page 6: Learn with AI — Supplemental Practice Drill - Clean Standard Page
         # ----------------------------------------------------
         ai_data = LEARN_WITH_AI_DATA[u_num]
         ai_page_id = make_id(f"page_u{u_num}_learn_with_ai")
         ai_page_file = f"unit-{u_num:02d}-learn-with-ai.html"
         ai_lead = f"<p>This supplemental practice activity lets you test your knowledge of <strong>{u_topic}</strong> by interacting with a specialized AI persona. This is an optional/supplemental formative practice activity that contributes toward weekly participation credit.</p>"
         
+        prompt_box_html = f"""<div style="background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 6px; padding: 1rem; margin: 0.75rem 0;">
+  <p style="font-size: 0.9em; font-weight: 600; color: #475569; margin-top: 0; margin-bottom: 0.5rem;">COPY AND PASTE THIS PROMPT INTO YOUR AI CHAT ASSISTANT:</p>
+  <div style="background: #0f172a; color: #f8fafc; padding: 1rem 1.25rem; border-radius: 4px; font-family: Consolas, Monaco, monospace; font-size: 0.9em; line-height: 1.5;">
+    <pre style="margin: 0; white-space: pre-wrap; background: transparent; color: inherit; font-family: inherit;"><code>{html.escape(ai_data['prompt'])}</code></pre>
+  </div>
+</div>"""
+
         ai_panels = [
             ("The Role-Play Practice Scenario",
-             f"<p><strong>AI Persona:</strong> {ai_data['persona']}</p>"
-             f"<p><strong>Core Topic / Focus:</strong> {ai_data['drill_topic']}</p>"
+             f"<p><strong>AI Persona:</strong> {html.escape(ai_data['persona'])}</p>"
+             f"<p><strong>Core Topic / Focus:</strong> {html.escape(ai_data['drill_topic'])}</p>"
              "<p>In this exercise, you assign the AI a specific technical persona that tests your reasoning and challenges you to debug or construct SQL queries.</p>"),
             ("100% Free AI Tool Setup",
              "<p>Use any free web chat assistant (no subscription or API key required):</p>"
-             "<ul><li><strong>ChatGPT Free:</strong> <a href='https://chatgpt.com' target='_blank'>chatgpt.com</a></li>"
-             "<li><strong>Claude Free:</strong> <a href='https://claude.ai' target='_blank'>claude.ai</a></li>"
-             "<li><strong>Google Gemini Free:</strong> <a href='https://gemini.google.com' target='_blank'>gemini.google.com</a></li>"
-             "<li><strong>Microsoft Copilot Free:</strong> <a href='https://copilot.microsoft.com' target='_blank'>copilot.microsoft.com</a></li></ul>"),
-            ("Copy-and-Paste Master Prompt",
-             f"<p>Copy and paste this prompt into your free AI tool:</p><pre><code>{html.escape(ai_data['prompt'])}</code></pre>"),
+             "<ul><li><strong>ChatGPT Free:</strong> <a href='https://chatgpt.com' target='_blank' rel='noopener'>chatgpt.com</a></li>"
+             "<li><strong>Claude Free:</strong> <a href='https://claude.ai' target='_blank' rel='noopener'>claude.ai</a></li>"
+             "<li><strong>Google Gemini Free:</strong> <a href='https://gemini.google.com' target='_blank' rel='noopener'>gemini.google.com</a></li>"
+             "<li><strong>Microsoft Copilot Free:</strong> <a href='https://copilot.microsoft.com' target='_blank' rel='noopener'>copilot.microsoft.com</a></li></ul>"),
+            ("Copy-and-Paste Master Prompt", prompt_box_html),
             ("Graded Asynchronous Participation Task",
              f"<p>{html.escape(ai_data['discussion_prompt'])}</p>"
              "<p>Post your response to the weekly Canvas discussion board to earn full participation credit.</p>")
         ]
         with open(os.path.join(wiki_dir, ai_page_file), "w", encoding="utf-8") as f:
-            f.write(render_designplus_html(f"{u_short}: Learn with AI — Supplemental Practice Drill", ai_lead, ai_panels, ai_page_id))
+            f.write(render_standard_page_html(f"{u_short}: Learn with AI — Supplemental Practice Drill", ai_lead, ai_panels, ai_page_id))
         pages_manifest.append((ai_page_file, f"{u_short}: Learn with AI — Supplemental Practice Drill", ai_page_id))
 
         # ----------------------------------------------------
@@ -1227,7 +1454,7 @@ def main():
         quiz_manifest.append((quiz_id, quiz_meta_id, quiz_title))
 
         # ----------------------------------------------------
-        # Page 8: [Instructor Guide] Teaching Notes & Solutions (Unpublished)
+        # Page 8: [Instructor Guide] Teaching Notes & Solutions (Unpublished) - Clean Standard Page
         # ----------------------------------------------------
         teacher_id = make_id(f"page_u{u_num}_teacher_guide")
         teacher_file = f"unit-{u_num:02d}-instructor-guide.html"
@@ -1239,7 +1466,7 @@ def main():
         for v_title, v_dur, v_notes in tg_info["videos"]:
             video_blueprint_lis.append(f"""<li style="margin-bottom: 0.75rem;">
   <strong>{html.escape(v_title)}</strong> <em>({html.escape(v_dur)})</em>
-  <p style="margin: 0.25rem 0 0 0;">{html.escape(v_notes)}</p>
+  <p style="margin: 0.25rem 0 0 0; color: #475569;">{html.escape(v_notes)}</p>
 </li>""")
         video_blueprint_html = f"""<p>Record the following 3 micro-videos to customize this unit for your institution:</p>
 <ul style="padding-left: 1.5rem;">{''.join(video_blueprint_lis)}</ul>
@@ -1256,7 +1483,7 @@ def main():
         if os.path.exists(sol_path):
             with open(sol_path, "r", encoding="utf-8") as sf:
                 s_text = sf.read()
-                sol_html = f"<pre style='max-height: 400px; overflow-y: auto;'><code>{html.escape(s_text)}</code></pre>"
+                sol_html = f"<div style='background: #0f172a; color: #f8fafc; padding: 1rem 1.25rem; border-radius: 6px; overflow-x: auto; font-family: Consolas, Monaco, monospace; font-size: 0.9em; line-height: 1.5;'><pre style='margin: 0; background: transparent; color: inherit;'><code>{html.escape(s_text.strip())}</code></pre></div>"
 
         teacher_panels = [
             ("Video Production Blueprint (What Videos to Record & Where to Host)", video_blueprint_html),
@@ -1264,7 +1491,7 @@ def main():
             ("Instructor Master Solution SQL & Answer Key", sol_html)
         ]
         with open(os.path.join(wiki_dir, teacher_file), "w", encoding="utf-8") as f:
-            f.write(render_designplus_html(f"[Instructor Guide] {u_short} Teaching Notes & Solutions", teacher_lead, teacher_panels, teacher_id, workflow_state="unpublished"))
+            f.write(render_standard_page_html(f"[Instructor Guide] {u_short} Teaching Notes & Solutions", teacher_lead, teacher_panels, teacher_id, workflow_state="unpublished"))
         pages_manifest.append((teacher_file, f"[Instructor Guide] {u_short} Teaching Notes & Solutions", teacher_id))
 
         # ----------------------------------------------------
