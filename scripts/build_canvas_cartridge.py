@@ -16,6 +16,7 @@ def make_id(seed: str) -> str:
     """Generate a deterministic 32-char hex identifier matching Canvas format."""
     return "g" + hashlib.md5(seed.encode("utf-8")).hexdigest()[1:]
 
+# Master Unit Metadata: Readings, Descriptions & Embedded YouTube Video Timestamps
 UNIT_METADATA = [
     {
         "num": 1,
@@ -24,15 +25,21 @@ UNIT_METADATA = [
         "short_title": "Unit 1",
         "topic": "Selection & Relational Fundamentals",
         "readings": [
-            ("PostgreSQL SELECT", "https://www.postgresqltutorial.com/postgresql-getting-started/postgresql-select/"),
-            ("Column Alias (AS)", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-alias/"),
-            ("ORDER BY Sorting", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-order-by/"),
-            ("DISTINCT Deduplication", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-select-distinct/")
+            ("PostgreSQL SELECT", "https://www.postgresqltutorial.com/postgresql-getting-started/postgresql-select/",
+             "Learn how the SELECT statement retrieves data from relational tables and why specifying columns is superior to SELECT *."),
+            ("Column Alias (AS)", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-alias/",
+             "Understand how to assign descriptive temporary names to projected columns and calculated arithmetic expressions."),
+            ("ORDER BY Sorting", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-order-by/",
+             "Master sorting result sets in ASC and DESC order, handling multiple sort columns, and controlling NULL placement."),
+            ("DISTINCT Deduplication", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-select-distinct/",
+             "Evaluate multi-column uniqueness and eliminate duplicate rows from query projections.")
         ],
         "videos": [
-            ("What is a Relational Database", "https://www.youtube.com/watch?v=qw--VYLpxG4&t=317s", "0:05:17"),
-            ("What is PostgreSQL", "https://www.youtube.com/watch?v=qw--VYLpxG4&t=550s", "0:09:10"),
-            ("The SELECT Statement", "https://www.youtube.com/watch?v=qw--VYLpxG4&t=6190s", "1:43:10")
+            ("What is a Relational Database", "qw--VYLpxG4", 317, "0:05:17"),
+            ("What is PostgreSQL", "qw--VYLpxG4", 550, "0:09:10"),
+            ("The SELECT Statement & Projection", "qw--VYLpxG4", 4348, "1:12:28"),
+            ("Sorting with ORDER BY", "qw--VYLpxG4", 4518, "1:15:18"),
+            ("Deduplication with DISTINCT", "qw--VYLpxG4", 4793, "1:19:53")
         ]
     },
     {
@@ -42,16 +49,24 @@ UNIT_METADATA = [
         "short_title": "Unit 2",
         "topic": "Targeted Retrieval & Three-Valued Logic",
         "readings": [
-            ("WHERE Clause", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-where/"),
-            ("BETWEEN Operator", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-between/"),
-            ("IN Operator", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-in/"),
-            ("LIKE & ILIKE Pattern Matching", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-like/"),
-            ("IS NULL & Three-Valued Logic", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-is-null/")
+            ("WHERE Clause", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-where/",
+             "Filter row streams using comparison operators (=, !=, <, >, <=, >=) to extract precise records."),
+            ("BETWEEN Operator", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-between/",
+             "Filter values within continuous numerical and temporal ranges, noting timestamp boundary rules."),
+            ("IN Operator", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-in/",
+             "Match values against discrete lists or dynamic subqueries without writing repetitive OR chains."),
+            ("LIKE & ILIKE Pattern Matching", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-like/",
+             "Search string data using wildcard pattern matching (% for multi-character, _ for single-character) and case-insensitive ILIKE."),
+            ("IS NULL & Three-Valued Logic", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-is-null/",
+             "Master ANSI Three-Valued Logic (TRUE, FALSE, UNKNOWN) and avoid catastrophic NULL propagation bugs.")
         ],
         "videos": [
-            ("Comparison Operators & WHERE", "https://www.youtube.com/watch?v=qw--VYLpxG4&t=6618s", "1:50:18"),
-            ("Filtering with AND / OR", "https://www.youtube.com/watch?v=qw--VYLpxG4&t=7280s", "2:01:20"),
-            ("Handling NULL Values", "https://www.youtube.com/watch?v=qw--VYLpxG4&t=8142s", "2:15:42")
+            ("WHERE Clause and Logic Gates", "qw--VYLpxG4", 4919, "1:21:59"),
+            ("Comparison Operators Deep Dive", "qw--VYLpxG4", 5129, "1:25:29"),
+            ("Pagination: LIMIT & OFFSET", "qw--VYLpxG4", 5375, "1:29:35"),
+            ("IN and BETWEEN Range Operators", "qw--VYLpxG4", 5563, "1:32:43"),
+            ("Pattern Matching: LIKE and ILIKE", "qw--VYLpxG4", 5865, "1:37:45"),
+            ("Handling NULLs: COALESCE & NULLIF", "qw--VYLpxG4", 7952, "2:12:32")
         ]
     },
     {
@@ -61,16 +76,20 @@ UNIT_METADATA = [
         "short_title": "Unit 3",
         "topic": "Relational Joins & Foreign Key Relationships",
         "readings": [
-            ("Joins Overview", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-joins/"),
-            ("INNER JOIN", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-inner-join/"),
-            ("LEFT JOIN & Anti-Joins", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-left-join/"),
-            ("Table Aliases", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-alias/")
+            ("Visual Joins Overview", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-joins/",
+             "Conceptualize relational interconnectivity across tables using Venn diagrams and set intersection."),
+            ("INNER JOIN", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-inner-join/",
+             "Join multiple tables based on primary key to foreign key matches across shared join keys."),
+            ("LEFT JOIN & Anti-Joins", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-left-join/",
+             "Retain unmatched records from the left table and implement the Anti-Join pattern to identify orphaned records."),
+            ("Table Aliases", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-alias/",
+             "Use compact table aliases to qualify ambiguous column names across multi-table queries.")
         ],
         "videos": [
-            ("Understanding Primary Keys", "https://www.youtube.com/watch?v=qw--VYLpxG4&t=9083s", "2:31:23"),
-            ("Foreign Keys & Relationships", "https://www.youtube.com/watch?v=qw--VYLpxG4&t=11801s", "3:16:41"),
-            ("INNER JOINs in Action", "https://www.youtube.com/watch?v=qw--VYLpxG4&t=12570s", "3:29:30"),
-            ("LEFT JOINs & Missing Data", "https://www.youtube.com/watch?v=qw--VYLpxG4&t=12917s", "3:35:17")
+            ("What Are Primary Keys", "qw--VYLpxG4", 8964, "2:29:24"),
+            ("Foreign Keys & Relational Integrity", "qw--VYLpxG4", 11801, "3:16:41"),
+            ("INNER JOINs in Action", "qw--VYLpxG4", 12570, "3:29:30"),
+            ("LEFT JOINs & Unmatched Records", "qw--VYLpxG4", 12917, "3:35:17")
         ]
     },
     {
@@ -80,15 +99,20 @@ UNIT_METADATA = [
         "short_title": "Unit 4",
         "topic": "Summarization, Aggregation & Pivoting",
         "readings": [
-            ("GROUP BY Tutorial", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-group-by/"),
-            ("HAVING Clause", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-having/"),
-            ("Aggregate Functions (COUNT, SUM, AVG)", "https://www.postgresqltutorial.com/postgresql-aggregate-functions/"),
-            ("UNION & UNION ALL", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-union/"),
-            ("CASE Conditional Expressions", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-case/")
+            ("GROUP BY Tutorial", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-group-by/",
+             "Group vertical rows into summary buckets and understand the Golden Rule of GROUP BY."),
+            ("HAVING Clause", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-having/",
+             "Filter aggregated groups after summarization, contrasting HAVING with pre-aggregation WHERE filters."),
+            ("Aggregate Functions (COUNT, SUM, AVG, MIN, MAX)", "https://www.postgresqltutorial.com/postgresql-aggregate-functions/",
+             "Compute statistical summarizations and understand how NULL values interact with aggregate computations."),
+            ("CASE Conditional Expressions", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-case/",
+             "Implement conditional logic and matrix cross-tab pivoting (CASE WHEN inside SUM) for executive reporting.")
         ],
         "videos": [
-            ("Aggregate Functions", "https://www.youtube.com/watch?v=qw--VYLpxG4&t=9374s", "2:36:14"),
-            ("GROUP BY & Group Filtering", "https://www.youtube.com/watch?v=qw--VYLpxG4&t=9930s", "2:45:30")
+            ("Aggregate Functions: MIN, MAX & AVG", "qw--VYLpxG4", 6940, "1:55:40"),
+            ("SUM Function & Numeric Rollups", "qw--VYLpxG4", 7188, "1:59:48"),
+            ("GROUP BY Foundations", "qw--VYLpxG4", 6190, "1:43:10"),
+            ("Filtering Aggregated Groups with HAVING", "qw--VYLpxG4", 6401, "1:46:41")
         ]
     },
     {
@@ -98,17 +122,22 @@ UNIT_METADATA = [
         "short_title": "Unit 5",
         "topic": "Safe DML, Transaction Integrity & Staging Tables",
         "readings": [
-            ("INSERT Statement", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-insert/"),
-            ("UPDATE Statement & RETURNING", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-update/"),
-            ("DELETE Statement", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-delete/"),
-            ("Transactions (BEGIN, COMMIT, ROLLBACK)", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-transaction/"),
-            ("Temporary Staging Tables", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-temporary-table/")
+            ("INSERT Statement", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-insert/",
+             "Insert single and batch records with explicit column lists and atomic upserts (ON CONFLICT DO UPDATE)."),
+            ("UPDATE Statement & RETURNING", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-update/",
+             "Safely modify records and use the RETURNING clause to audit changes in real time."),
+            ("DELETE Statement", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-delete/",
+             "Safely remove records using the 3-step pre-execution protocol to prevent accidental table wipes."),
+            ("Transactions (BEGIN, COMMIT, ROLLBACK)", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-transaction/",
+             "Enforce ACID transaction boundaries to guarantee atomic database updates and prevent data corruption."),
+            ("Temporary Staging Tables", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-temporary-table/",
+             "Stage ETL transformations inside session-scoped temporary tables before committing to production.")
         ],
         "videos": [
-            ("Insert Into & Examples", "https://www.youtube.com/watch?v=qw--VYLpxG4&t=3355s", "0:55:55"),
-            ("How to Delete Records", "https://www.youtube.com/watch?v=qw--VYLpxG4&t=10485s", "2:54:45"),
-            ("How to Update Records", "https://www.youtube.com/watch?v=qw--VYLpxG4&t=10896s", "3:01:36"),
-            ("On Conflict & Upserts", "https://www.youtube.com/watch?v=qw--VYLpxG4&t=11155s", "3:05:55")
+            ("INSERT INTO Operations & Syntax", "qw--VYLpxG4", 3355, "0:55:55"),
+            ("How to Safely Delete Records", "qw--VYLpxG4", 10485, "2:54:45"),
+            ("How to Safely Update Records", "qw--VYLpxG4", 10896, "3:01:36"),
+            ("ON CONFLICT & Upserts", "qw--VYLpxG4", 11155, "3:05:55")
         ]
     },
     {
@@ -118,14 +147,19 @@ UNIT_METADATA = [
         "short_title": "Unit 6",
         "topic": "Query Modularity, CTEs & Analytical Window Functions",
         "readings": [
-            ("Common Table Expressions (WITH)", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-cte/"),
-            ("Window Functions Overview", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-window-function/"),
-            ("ROW_NUMBER Function", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-row_number/"),
-            ("RANK & DENSE_RANK", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-rank/")
+            ("Common Table Expressions (WITH)", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-cte/",
+             "Decompose complex nested subqueries into readable, sequential CTE pipelines."),
+            ("Window Functions Overview", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-window-function/",
+             "Compute non-collapsing aggregations, running totals, and moving averages across row partitions."),
+            ("ROW_NUMBER Function", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-row_number/",
+             "Assign sequential integers to rows and implement the ROW_NUMBER() = 1 deduplication pattern."),
+            ("RANK & DENSE_RANK", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-rank/",
+             "Evaluate ranking semantics, tied values, and gapless competitive rankings across partitions.")
         ],
         "videos": [
-            ("Subqueries & CTE Walkthrough", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-cte/", "Interactive Guide"),
-            ("Analytical Window Functions", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-window-function/", "Visual Tutorial")
+            ("Subqueries & Nested SELECT Statements", "qw--VYLpxG4", 4348, "1:12:28"),
+            ("Query Modularization & Pipelines", "qw--VYLpxG4", 6190, "1:43:10"),
+            ("Running Aggregates & Analytical Partitions", "qw--VYLpxG4", 6940, "1:55:40")
         ]
     },
     {
@@ -135,17 +169,22 @@ UNIT_METADATA = [
         "short_title": "Unit 7",
         "topic": "Schema Design, Normalization (1NF–3NF), DDL & Constraints",
         "readings": [
-            ("CREATE TABLE & Data Types", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-create-table/"),
-            ("Primary Key Constraints", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-primary-key/"),
-            ("Foreign Key & Referential Actions", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-foreign-key/"),
-            ("CHECK & UNIQUE Constraints", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-check-constraint/"),
-            ("CREATE VIEW for Abstraction", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-views/")
+            ("CREATE TABLE & Data Types", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-create-table/",
+             "Define relational table architectures using optimal PostgreSQL data types (INT, NUMERIC, VARCHAR, TIMESTAMPTZ)."),
+            ("Primary Key Constraints", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-primary-key/",
+             "Declare surrogate and natural primary keys to enforce entity uniqueness."),
+            ("Foreign Key & Referential Actions", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-foreign-key/",
+             "Establish relational links and configure cascading referential actions (ON DELETE RESTRICT, CASCADE, SET NULL)."),
+            ("CHECK & UNIQUE Constraints", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-check-constraint/",
+             "Enforce declarative business rules and domain integrity directly at the database engine level."),
+            ("CREATE VIEW for Abstraction", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-views/",
+             "Encapsulate multi-table JOINs and security boundaries inside reusable virtual views.")
         ],
         "videos": [
-            ("How To Create Tables", "https://www.youtube.com/watch?v=qw--VYLpxG4&t=2497s", "0:41:37"),
-            ("Creating Tables with Constraints", "https://www.youtube.com/watch?v=qw--VYLpxG4&t=2952s", "0:49:12"),
-            ("Adding Primary Keys", "https://www.youtube.com/watch?v=qw--VYLpxG4&t=9386s", "2:36:26"),
-            ("Unique & Check Constraints", "https://www.youtube.com/watch?v=qw--VYLpxG4&t=9655s", "2:40:55")
+            ("How To Create Tables with DDL", "qw--VYLpxG4", 2497, "0:41:37"),
+            ("Declaring Table Constraints", "qw--VYLpxG4", 2952, "0:49:12"),
+            ("Adding Primary Keys", "qw--VYLpxG4", 9386, "2:36:26"),
+            ("Unique & Check Constraints", "qw--VYLpxG4", 9655, "2:40:55")
         ]
     },
     {
@@ -155,41 +194,28 @@ UNIT_METADATA = [
         "short_title": "Unit 8",
         "topic": "Query Optimization, EXPLAIN ANALYZE, Indexes & Capstone Defense",
         "readings": [
-            ("EXPLAIN & Query Plans", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-explain/"),
-            ("PostgreSQL Indexes Overview", "https://www.postgresqltutorial.com/postgresql-indexes/"),
-            ("CREATE INDEX Best Practices", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-create-index/"),
-            ("Composite Indexes", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-composite-index/")
+            ("EXPLAIN & Query Plans", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-explain/",
+             "Interpret cost-based query execution trees, comparing Sequential Scans against Index Scans."),
+            ("PostgreSQL Indexes Overview", "https://www.postgresqltutorial.com/postgresql-indexes/",
+             "Understand B-Tree indexing mechanisms, index selectivity, and query planner cost models."),
+            ("CREATE INDEX Best Practices", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-create-index/",
+             "Balance read optimization against the Write Penalty imposed on INSERT, UPDATE, and DELETE operations."),
+            ("Composite Indexes", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-composite-index/",
+             "Design multi-column indexes adhering to the Leftmost Prefix Rule.")
         ],
         "videos": [
-            ("Exporting Query Results to CSV", "https://www.youtube.com/watch?v=qw--VYLpxG4&t=13647s", "3:47:27"),
-            ("Indexing & Query Optimization", "https://www.postgresqltutorial.com/postgresql-indexes/", "Master Guide")
+            ("Index Structures & Selectivity", "qw--VYLpxG4", 9386, "2:36:26"),
+            ("Exporting Query Results to CSV", "qw--VYLpxG4", 13647, "3:47:27")
         ]
     }
 ]
 
-# Comprehensive "Learn with AI" Curriculum Data
+# Supplemental Graded AI Practice Data
 LEARN_WITH_AI_DATA = {
     1: {
-        "page_title": "Unit 1: Learn with AI — The Socratic Database Sensei",
         "persona": "Professor Codd (The Socratic SQL Master)",
-        "technique": "Socratic Questioning & Execution Order Inversion",
-        "lead": "In this guided exercise, you will pair-program with an AI acting as a strict, Socratic database theorist. Rather than giving you SQL code, the AI will interrogate your mental model of how PostgreSQL parses queries versus how humans write them.",
-        "why_it_matters": (
-            "<p>The biggest roadblock beginners encounter in SQL is the syntax illusion: we write <code>SELECT</code> first, but the database engine executes <code>FROM</code> first. "
-            "Because human English reads left-to-right and top-to-bottom, students assume the database starts by projecting columns. In reality, PostgreSQL must locate the physical table on disk, load data pages into memory buffers, and construct an intermediate record stream before it can even evaluate which columns you requested.</p>"
-            "<p>Furthermore, junior developers frequently rely on <code>SELECT *</code> out of convenience. In production software, this anti-pattern saturates network bandwidth, thrashes cache pools, breaks backward compatibility when schemas evolve, and destroys index-only scan opportunities. This AI drill forces you to articulate these foundational realities before writing production code.</p>"
-        ),
-        "free_tools_guide": (
-            "<p>You do <strong>not</strong> need a paid subscription or API key for this exercise. Use any of the following 100% free web chat interfaces:</p>"
-            "<ul>"
-            "<li><strong>ChatGPT Free:</strong> Visit <a href='https://chatgpt.com' target='_blank'>chatgpt.com</a> (select GPT-4o-mini / Free tier).</li>"
-            "<li><strong>Claude Free:</strong> Visit <a href='https://claude.ai' target='_blank'>claude.ai</a> (free web tier).</li>"
-            "<li><strong>Google Gemini Free:</strong> Visit <a href='https://gemini.google.com' target='_blank'>gemini.google.com</a> (free with any Google account).</li>"
-            "<li><strong>Microsoft Copilot Free:</strong> Visit <a href='https://copilot.microsoft.com' target='_blank'>copilot.microsoft.com</a> (free web search & chat).</li>"
-            "</ul>"
-            "<p><em>Pro-Tip:</em> Start a brand new, empty chat session for this exercise so the AI doesn't carry over context from previous conversations.</p>"
-        ),
-        "prompt_template": (
+        "drill_topic": "Execution Order & Projection Hazards",
+        "prompt": (
             "Act as a strict, Socratic SQL professor named Professor Codd. I am a student learning SQL SELECT statements "
             "and relational database fundamentals in PostgreSQL 16. Do NOT give me direct answers or write the SQL for me. "
             "Instead, ask me one challenging question at a time to test my understanding of:\n"
@@ -198,41 +224,12 @@ LEARN_WITH_AI_DATA = {
             "3. Why 'SELECT *' is considered a dangerous anti-pattern in production microservices and reporting pipelines.\n"
             "Start by asking me your first question about query execution order. Wait for my response before evaluating my reasoning and asking the next question."
         ),
-        "playbook": (
-            "<p>Follow this turn-by-turn playbook during your drill:</p>"
-            "<ol>"
-            "<li><strong>Turn 1 (Execution Order):</strong> The AI will ask why <code>FROM</code> executes first. Explain that PostgreSQL must identify the table location and scan blocks before it knows which columns exist.</li>"
-            "<li><strong>Turn 2 (Projection vs Storage):</strong> The AI will probe what happens in memory when you calculate <code>salary * 1.10 AS projected_salary</code>. Does it change disk data? (Explain that projection creates a virtual result stream in RAM; underlying disk blocks are unmodified).</li>"
-            "<li><strong>Turn 3 (The SELECT * Trap):</strong> The AI will ask what happens to a production microservice when a DBA adds a 50MB <code>BYTEA</code> column to a table if code uses <code>SELECT *</code>.</li>"
-            "<li><strong>Getting Unstuck:</strong> If Professor Codd asks a question you cannot answer, reply: <em>'Give me a real-world warehouse analogy to help me reason through this, but do not give me the answer!'</em></li>"
-            "</ol>"
-        ),
-        "participation_task": (
-            "<p>To receive asynchronous participation credit for Unit 1, open the <strong>Unit 1 Discussion Board</strong> in Canvas and submit a post addressing:</p>"
-            "<ol>"
-            "<li><strong>The Toughest Question:</strong> Quote the most challenging question Professor Codd asked you during your session.</li>"
-            "<li><strong>Your Mental Model Shift:</strong> Explain what you learned about how PostgreSQL executes queries behind the scenes.</li>"
-            "<li><strong>Lingering Question:</strong> State one question or puzzle you want to explore during our live active lab session.</li>"
-            "</ol>"
-        )
+        "discussion_prompt": "In the Unit 1 Discussion, post: (1) The toughest question Professor Codd asked you, (2) What you realized about how PostgreSQL executes queries behind the scenes, and (3) Why SELECT * causes production microservice failures."
     },
     2: {
-        "page_title": "Unit 2: Learn with AI — The Pedantic QA Lead & Three-Valued Logic",
-        "persona": "The Pedantic Database QA Lead / ANSI Compiler",
-        "technique": "Three-Valued Logic Red-Teaming & Edge-Case Traps",
-        "lead": "This exercise pairs you with an AI acting as a ruthless Senior Database QA Lead. Your mission is to analyze realistic SQL filtering snippets and hunt down subtle bugs rooted in ANSI Three-Valued Logic (3VL) and NULL propagation.",
-        "why_it_matters": (
-            "<p>In standard programming languages, Boolean logic is binary: a statement is either <code>TRUE</code> or <code>FALSE</code>. "
-            "In relational database theory, however, missing or unknown data introduces a third state: <strong><code>UNKNOWN</code></strong>. "
-            "This Three-Valued Logic (3VL) is responsible for more silent production data corruption than almost any other SQL feature.</p>"
-            "<p>For example, if you query <code>WHERE status != 'Inactive'</code>, you might expect to receive all active and pending users. But if a user's <code>status</code> is <code>NULL</code>, the expression <code>NULL != 'Inactive'</code> evaluates to <code>UNKNOWN</code>. "
-            "Because the SQL <code>WHERE</code> clause requires expressions to evaluate to strictly <code>TRUE</code>, that row is silently omitted! This drill trains you to catch these silent bugs before your code touches production.</p>"
-        ),
-        "free_tools_guide": (
-            "<p>Use any free AI assistant (ChatGPT Free, Claude Free, Gemini Free, or Copilot Free). No subscription required.</p>"
-            "<p>Paste the prompt template below into a fresh chat. Treat the AI as your senior code reviewer who will challenge your answers.</p>"
-        ),
-        "prompt_template": (
+        "persona": "The Pedantic Database QA Lead",
+        "drill_topic": "ANSI Three-Valued Logic & NULL Traps",
+        "prompt": (
             "Act as a pedantic Senior Database QA Engineer. I am writing PostgreSQL queries using WHERE, AND, OR, NOT, BETWEEN, LIKE, and IS NULL.\n"
             "Present me with 3 realistic SQL query snippets that contain subtle logic bugs related to:\n"
             "1. ANSI Three-Valued Logic (TRUE, FALSE, UNKNOWN) and NULL propagation (e.g., '= NULL' or 'NOT IN (subquery with NULL)').\n"
@@ -240,38 +237,12 @@ LEARN_WITH_AI_DATA = {
             "3. Inclusive vs. exclusive boundaries in BETWEEN with timestamps.\n"
             "Present the first buggy query snippet and ask me to identify the exact data trap and how to fix it. Do NOT reveal the fix until I attempt an answer."
         ),
-        "playbook": (
-            "<p>Follow this turn-by-turn debugging playbook:</p>"
-            "<ol>"
-            "<li><strong>Puzzle 1 (The NULL Trap):</strong> Look for <code>WHERE col = NULL</code> or <code>WHERE col != 'X'</code>. Point out that equality with NULL yields <code>UNKNOWN</code>, and prescribe <code>IS NULL</code> or <code>IS NOT DISTINCT FROM</code>.</li>"
-            "<li><strong>Puzzle 2 (Boolean Operator Precedence):</strong> Analyze how <code>AND</code> binds tighter than <code>OR</code>. Explain how missing parentheses alter which rows satisfy the condition.</li>"
-            "<li><strong>Puzzle 3 (BETWEEN with Timestamps):</strong> Explain why <code>BETWEEN '2026-01-01' AND '2026-01-31'</code> silently misses records created at <code>2026-01-31 14:30:00</code> because the string literal defaults to midnight (<code>00:00:00</code>).</li>"
-            "</ol>"
-        ),
-        "participation_task": (
-            "<p>Post your findings to the <strong>Unit 2 Discussion Board</strong>:</p>"
-            "<ol>"
-            "<li><strong>The Buggy Snippet:</strong> Share the trickiest SQL puzzle the QA Engineer presented to you.</li>"
-            "<li><strong>The Data Trap:</strong> Explain why human intuition failed on that snippet and why 3VL or operator precedence caused unexpected results.</li>"
-            "<li><strong>The Verified Fix:</strong> Post your corrected SQL snippet and PostgreSQL explanation.</li>"
-            "</ol>"
-        )
+        "discussion_prompt": "In the Unit 2 Discussion, share: (1) One of the three-valued logic traps the AI gave you, (2) Why standard Boolean intuition breaks down when NULL is involved, and (3) The corrected WHERE clause."
     },
     3: {
-        "page_title": "Unit 3: Learn with AI — The Frantic Business VP & Multi-Table Joins",
-        "persona": "Stressed VP of Operations at OmniRetail (Non-Technical Client)",
-        "technique": "Non-Technical Stakeholder Role-Play & Entity-Relationship Mapping",
-        "lead": "In this real-world role-play, the AI acts as a stressed-out, non-technical Vice President of Operations. You must interview the VP, translate messy business complaints into relational relationships, and construct multi-table JOINs without causing a Cartesian explosion.",
-        "why_it_matters": (
-            "<p>In industry, non-technical stakeholders never ask for an <code>INNER JOIN</code> or a <code>LEFT JOIN</code>. "
-            "They burst into your office saying: <em>'Why did our marketing promotion in Texas show zero sales for repeat buyers? And make sure we do not duplicate line items when orders have multiple tracking numbers!'</em></p>"
-            "<p>If an engineer does not understand entity cardinality (one-to-one, one-to-many, many-to-many), joining orders to order items and shipments creates a <strong>Cartesian product explosion</strong>, artificially duplicating revenue figures by orders of magnitude. This simulation teaches you the consultative interview skills necessary to clarify data relationships before writing JOIN syntax.</p>"
-        ),
-        "free_tools_guide": (
-            "<p>Open ChatGPT Free, Claude Free, Gemini Free, or Copilot Free in your browser. Copy and paste the prompt below.</p>"
-            "<p>Remember: The AI is instructed to stay in character as a business manager who does not know SQL. You must guide the conversation technically.</p>"
-        ),
-        "prompt_template": (
+        "persona": "Stressed VP of Operations at OmniRetail",
+        "drill_topic": "Translating Vague Business Requests into Multi-Table JOINs",
+        "prompt": (
             "Act as a stressed-out VP of Operations at an e-commerce company called 'OmniRetail'. You do NOT know SQL; you only understand business problems.\n"
             "Here is our database schema:\n"
             "- customers (customer_id, full_name, email, state)\n"
@@ -282,38 +253,12 @@ LEARN_WITH_AI_DATA = {
             "I will ask you clarifying business questions, determine the necessary JOIN types (INNER, LEFT, Anti-Join), and write the query. "
             "Critique my questions and verify if my final SQL fulfills your business need without generating duplicate rows. Start by stating your urgent request!"
         ),
-        "playbook": (
-            "<p>How to navigate the client role-play:</p>"
-            "<ol>"
-            "<li><strong>Step 1 (Clarify Cardinality):</strong> Ask the VP: <em>'Can a customer place multiple orders? If a customer bought electronics twice, should their name appear once or twice?'</em></li>"
-            "<li><strong>Step 2 (Identify Missing Data & Nulls):</strong> Inquire whether customers with zero orders should be included (identifying the need for a <code>LEFT JOIN ... WHERE orders.order_id IS NULL</code> anti-join).</li>"
-            "<li><strong>Step 3 (Draft & Test):</strong> Propose the SQL statement and ask the AI to verify whether your JOIN predicates preserve correct aggregate totals without row multiplication.</li>"
-            "</ol>"
-        ),
-        "participation_task": (
-            "<p>Submit to the <strong>Unit 3 Discussion Board</strong>:</p>"
-            "<ol>"
-            "<li><strong>The VP's Urgent Business Request:</strong> Summarize the scenario and business problem presented by the AI.</li>"
-            "<li><strong>Your Relational Strategy:</strong> Detail which JOIN types (INNER, LEFT, Anti-Join) you selected and why.</li>"
-            "<li><strong>The Verified Query:</strong> Provide the final SQL statement and explain how your join conditions prevented duplicate rows.</li>"
-            "</ol>"
-        )
+        "discussion_prompt": "Post to the Unit 3 Discussion: (1) The VP's initial business problem, (2) The join strategy you selected (INNER vs. LEFT vs. Anti-Join) and why, and (3) The final verified query."
     },
     4: {
-        "page_title": "Unit 4: Learn with AI — The CFO Financial Matrix & Safe Calculations",
-        "persona": "Chief Financial Officer (CFO) & Executive Analytics Director",
-        "technique": "Cross-Tab Pivoting & Division-by-Zero Defensive Engineering",
-        "lead": "Drill with an AI CFO to transform raw, vertical transactional rows into executive cross-tab matrix dashboards using conditional aggregation (CASE inside SUM), group-level filtering (HAVING), and defensive division protection (NULLIF).",
-        "why_it_matters": (
-            "<p>Executive reporting demands horizontal cross-tab matrix formats: columns for Q1, Q2, Q3, and Q4 side-by-side per region or product category. "
-            "While raw data is stored vertically (one row per transaction), writing four separate queries and merging them in Excel is slow, manual, and unscalable.</p>"
-            "<p>Mastering conditional aggregation (<code>SUM(CASE WHEN quarter = 'Q1' THEN revenue ELSE 0 END)</code>) allows PostgreSQL to pivot datasets in a single high-speed scan. "
-            "Furthermore, computing financial KPIs like profit margin or refund rate without <code>NULLIF(val, 0)</code> risks catastrophic runtime exceptions (<code>ERROR: division by zero</code>) when new branches or products have zero transactions. This drill prepares you for executive financial analytics.</p>"
-        ),
-        "free_tools_guide": (
-            "<p>Use any free conversational AI tool (ChatGPT, Claude, Gemini, or Copilot). No credit card or paid tier needed.</p>"
-        ),
-        "prompt_template": (
+        "persona": "Chief Financial Officer (CFO)",
+        "drill_topic": "Cross-Tab Pivoting & Safe Division Math",
+        "prompt": (
             "Act as a CFO and Lead Analytics Architect. I need to generate an executive quarterly financial report from our sales database using PostgreSQL 16.\n"
             "Table: sales_transactions (transaction_id, region, department, quarter, revenue, discount_amount, refund_count)\n\n"
             "Challenge me to write an advanced aggregation query that produces a single cross-tab pivot matrix showing:\n"
@@ -322,37 +267,12 @@ LEARN_WITH_AI_DATA = {
             "3. A HAVING filter that excludes regions with fewer than 50 total sales.\n"
             "Provide the requirements step-by-step. Review my SQL syntax, check for GROUP BY violations, and verify whether my matrix matches CFO dashboard standards."
         ),
-        "playbook": (
-            "<p>Execute your financial dashboard build in three stages:</p>"
-            "<ol>"
-            "<li><strong>Stage 1 (Grouping Rules):</strong> Identify which columns belong in the <code>GROUP BY</code> clause (e.g. <code>region</code>) and which must be wrapped in aggregates.</li>"
-            "<li><strong>Stage 2 (Matrix Pivoting):</strong> Build the four quarterly columns using <code>SUM(CASE WHEN quarter = 'Q1' THEN revenue ELSE 0 END) AS q1_revenue</code>.</li>"
-            "<li><strong>Stage 3 (Safe Division & HAVING):</strong> Calculate refund ratios using <code>refund_count::FLOAT / NULLIF(total_transactions, 0)</code> and filter groups using <code>HAVING COUNT(*) >= 50</code>.</li>"
-            "</ol>"
-        ),
-        "participation_task": (
-            "<p>Post to the <strong>Unit 4 Discussion Board</strong>:</p>"
-            "<ol>"
-            "<li><strong>Your Cross-Tab Query:</strong> Share the completed SQL query that produces the CFO's executive matrix.</li>"
-            "<li><strong>The Architecture Breakdown:</strong> Explain why conditional aggregation inside <code>SUM</code> eliminates the need for four separate queries.</li>"
-            "<li><strong>Defense Verification:</strong> Explain how <code>NULLIF</code> prevented a runtime crash on edge cases.</li>"
-            "</ol>"
-        )
+        "discussion_prompt": "Submit to the Unit 4 Discussion: (1) Your completed cross-tab SQL query, (2) An explanation of why CASE inside SUM eliminates the need for separate queries, and (3) How NULLIF saved your calculations from throwing a runtime exception."
     },
     5: {
-        "page_title": "Unit 5: Learn with AI — The Chaos SRE & Transaction Rollback Drills",
-        "persona": "Database Reliability Engineer (Chaos SRE / Disaster Recovery Lead)",
-        "technique": "Chaos Engineering & Atomic Transaction Rollback Drills",
-        "lead": "Work through a high-stakes operational drill with an AI Site Reliability Engineer. You will perform bulk data updates and deletions on a simulated production database, responding to injected crashes, foreign key failures, and lock timeouts using safe transaction blocks and staging tables.",
-        "why_it_matters": (
-            "<p>In a production database, an unhedged <code>UPDATE</code> or <code>DELETE</code> without a verified <code>WHERE</code> clause is catastrophic. "
-            "Once committed in autocommit mode, millions of customer records can be overwritten in milliseconds, requiring hours or days of painful point-in-time recovery from backups.</p>"
-            "<p>Professional database engineers never run raw, unverified DML against production tables. They utilize the <strong>3-Step Protocol</strong>: test the filter with <code>SELECT</code>, wrap executions in explicit transaction blocks (<code>BEGIN; ... ROLLBACK;</code>) with <code>RETURNING</code> inspection, and stage complex ETL transformations inside temporary staging tables. This chaos drill builds the muscle memory to protect live production data.</p>"
-        ),
-        "free_tools_guide": (
-            "<p>Access any free conversational AI tool (ChatGPT Free, Claude Free, Gemini Free, Copilot Free). Zero subscription cost.</p>"
-        ),
-        "prompt_template": (
+        "persona": "Chaos Database SRE",
+        "drill_topic": "Safe DML Staging & Transaction Rollback Drills",
+        "prompt": (
             "Act as a Database Reliability Engineer (SRE). We are running critical data maintenance and ETL pipeline updates on a live production PostgreSQL 16 database.\n"
             "I will write DML scripts (INSERT, UPDATE, DELETE) using temporary staging tables, explicit transactions (BEGIN, COMMIT, ROLLBACK), and RETURNING clauses.\n"
             "Your role:\n"
@@ -361,37 +281,12 @@ LEARN_WITH_AI_DATA = {
             "3. Force me to demonstrate how my transaction script rolls back cleanly leaving zero orphaned records.\n"
             "Start by presenting me with our first maintenance mission: Purging inactive users while archiving their billing records into an audit staging table."
         ),
-        "playbook": (
-            "<p>Navigating the Chaos SRE drill:</p>"
-            "<ol>"
-            "<li><strong>Defense 1 (The Transaction Block):</strong> Never send a standalone modification. Wrap your script in <code>BEGIN; ... ROLLBACK;</code> until verified.</li>"
-            "<li><strong>Defense 2 (Inspection with RETURNING):</strong> Always add <code>RETURNING user_id, email, status</code> to inspect the exact modified row stream before committing.</li>"
-            "<li><strong>Defense 3 (Staging Table Isolation):</strong> Create a temporary staging table (<code>CREATE TEMP TABLE staged_archival AS ...</code>) to validate business rules in isolation.</li>"
-            "</ol>"
-        ),
-        "participation_task": (
-            "<p>Submit to the <strong>Unit 5 Discussion Board</strong>:</p>"
-            "<ol>"
-            "<li><strong>The Simulated Anomaly:</strong> Describe the failure or edge case injected by the Chaos SRE.</li>"
-            "<li><strong>Your Safe DML Script:</strong> Post your defensive transaction block demonstrating safe staging, inspection, and rollback.</li>"
-            "<li><strong>Production Reflection:</strong> Why is modifying live tables directly considered an unacceptable operational risk in modern DevOps?</li>"
-            "</ol>"
-        )
+        "discussion_prompt": "Post to the Unit 5 Discussion: (1) The disaster scenario simulated by the AI, (2) The safe transaction script you engineered, and (3) The safety difference between modifying live tables directly vs. using an intermediate staging table."
     },
     6: {
-        "page_title": "Unit 6: Learn with AI — The Staff SQL Architect & CTE Refactoring",
-        "persona": "Staff Database Architect (Principal Code Reviewer)",
-        "technique": "Query Refactoring & Window Partitioning Deconstruction",
-        "lead": "Submit an ugly, deeply nested subquery to an AI Staff Database Architect for an architectural code review. You will refactor the 'pyramid of doom' into clean, modular Common Table Expressions (CTEs) and non-collapsing analytical window functions.",
-        "why_it_matters": (
-            "<p>In legacy SQL codebases, calculating rankings or comparing individual rows against group averages often produces deeply nested subqueries 4 or 5 levels deep. "
-            "These queries are unreadable, difficult to debug, and force the database query planner to perform redundant table scans.</p>"
-            "<p>Modern PostgreSQL provides two transformative tools: <strong>Common Table Expressions (CTEs)</strong>, which turn nested logic into readable step-by-step pipelines, and <strong>Window Functions</strong> (<code>ROW_NUMBER()</code>, <code>RANK()</code>, <code>DENSE_RANK()</code>, <code>OVER (PARTITION BY ... ORDER BY ...)</code>), which compute group metrics without collapsing rows like <code>GROUP BY</code>. This drill elevates your code to enterprise architectural standards.</p>"
-        ),
-        "free_tools_guide": (
-            "<p>Use ChatGPT Free, Claude Free, Gemini Free, or Copilot Free. No paid accounts needed.</p>"
-        ),
-        "prompt_template": (
+        "persona": "Staff Database Architect",
+        "drill_topic": "Refactoring Nested Subqueries into CTEs & Window Functions",
+        "prompt": (
             "Act as a Principal Database Architect at a high-scale tech company. I am learning modular SQL, Common Table Expressions (WITH clauses), and analytical Window Functions (ROW_NUMBER, RANK, DENSE_RANK, SUM() OVER).\n"
             "Please provide me with an ugly, 4-level deeply nested subquery that calculates:\n"
             "- Top 3 highest-earning employees in each department.\n"
@@ -402,40 +297,12 @@ LEARN_WITH_AI_DATA = {
             "2. Replace redundant group-by subqueries with appropriate OVER (PARTITION BY ... ORDER BY ...) window frames.\n"
             "Review my refactored query, evaluate its readability and efficiency, and explain how the database processes the window frame."
         ),
-        "playbook": (
-            "<p>Follow the architectural refactoring workflow:</p>"
-            "<ol>"
-            "<li><strong>Step 1 (Deconstruct the Subqueries):</strong> Identify the distinct business questions being solved and separate them into named CTE blocks using <code>WITH</code>.</li>"
-            "<li><strong>Step 2 (Apply Window Framing):</strong> Replace subquery aggregations with <code>AVG(salary) OVER (PARTITION BY department_id)</code>.</li>"
-            "<li><strong>Step 3 (Rank & Deduplicate):</strong> Use <code>DENSE_RANK() OVER (PARTITION BY department_id ORDER BY salary DESC)</code> to isolate top earners cleanly.</li>"
-            "</ol>"
-        ),
-        "participation_task": (
-            "<p>Post to the <strong>Unit 6 Discussion Board</strong>:</p>"
-            "<ol>"
-            "<li><strong>Before vs. After:</strong> Present the original nested subquery alongside your clean CTE and Window function query.</li>"
-            "<li><strong>Row Preservation Concept:</strong> Explain in your own words why <code>PARTITION BY</code> does not collapse rows like <code>GROUP BY</code>.</li>"
-            "<li><strong>Function Selection:</strong> Why would you choose <code>DENSE_RANK()</code> over <code>ROW_NUMBER()</code> when determining top compensation?</li>"
-            "</ol>"
-        )
+        "discussion_prompt": "In the Unit 6 Discussion, share: (1) The original nested subquery vs. your clean CTE/Window function query, (2) Why PARTITION BY does not collapse rows like GROUP BY, and (3) When you would choose DENSE_RANK() over ROW_NUMBER()."
     },
     7: {
-        "page_title": "Unit 7: Learn with AI — The Enterprise Data Modeler & Normalization",
-        "persona": "Senior Enterprise Data Modeler & Database Architect",
-        "technique": "Normalization (1NF–3NF) Decomposition & DDL Constraint Hardening",
-        "lead": "Collaborate with an AI Enterprise Data Modeler to decompose an unnormalized, chaotic spreadsheet into a bulletproof Third Normal Form (3NF) relational schema, complete with declarative constraints and reporting Views.",
-        "why_it_matters": (
-            "<p>Organizations run into severe operational crises when databases are designed like spreadsheets. "
-            "Flat tables with repeating columns, multi-valued fields, and transitive dependencies cause three destructive anomalies: "
-            "<strong>Insertion Anomalies</strong> (unable to record a course without enrolling a student), "
-            "<strong>Update Anomalies</strong> (updating an address in one row leaves duplicate rows outdated), and "
-            "<strong>Deletion Anomalies</strong> (deleting the last enrolled student deletes all record of the course existing).</p>"
-            "<p>Normalizing a schema to 3NF guarantees data integrity at the mathematical level. Complementing that schema with declarative DDL constraints (<code>PRIMARY KEY</code>, <code>FOREIGN KEY</code>, <code>CHECK</code>, <code>UNIQUE</code>, <code>NOT NULL</code>) ensures the database engine itself enforces business rules. This drill builds your enterprise schema engineering capability.</p>"
-        ),
-        "free_tools_guide": (
-            "<p>Open any free AI tool (ChatGPT Free, Claude Free, Gemini Free, Copilot Free). No subscription required.</p>"
-        ),
-        "prompt_template": (
+        "persona": "Senior Enterprise Data Modeler",
+        "drill_topic": "3NF Normalization & DDL Constraints",
+        "prompt": (
             "Act as a Senior Enterprise Data Modeler. I am learning Relational Database Design, Normalization (1NF, 2NF, 3NF), and DDL constraint declaration in PostgreSQL 16.\n"
             "Give me a messy, denormalized 10-column spreadsheet table from a hospital clinic or university containing repeating groups, multi-valued fields, partial key dependencies, and transitive dependencies.\n"
             "Walk me through an interactive schema design challenge:\n"
@@ -444,38 +311,12 @@ LEARN_WITH_AI_DATA = {
             "Step 3: Have me write the complete PostgreSQL DDL (CREATE TABLE) statements with strict constraints (CHECK, NOT NULL, UNIQUE, ON DELETE CASCADE/SET NULL) and a reporting VIEW.\n"
             "Critique my schema at each step. Do NOT write the DDL for me; guide me with design questions."
         ),
-        "playbook": (
-            "<p>Master the 3-step normalization progression:</p>"
-            "<ol>"
-            "<li><strong>Step 1 (1NF - Atomicity):</strong> Eliminate repeating groups and concatenated comma-separated values; establish primary keys.</li>"
-            "<li><strong>Step 2 (2NF - Full Functional Dependency):</strong> Remove partial key dependencies (every non-key attribute must depend on the whole primary key).</li>"
-            "<li><strong>Step 3 (3NF - Transitive Dependency):</strong> Remove transitive dependencies (non-key attributes cannot depend on other non-key attributes).</li>"
-            "<li><strong>Step 4 (Constraint Hardening):</strong> Declare foreign keys with deliberate referential actions (e.g. <code>ON DELETE RESTRICT</code> vs <code>CASCADE</code>).</li>"
-            "</ol>"
-        ),
-        "participation_task": (
-            "<p>Submit to the <strong>Unit 7 Discussion Board</strong>:</p>"
-            "<ol>"
-            "<li><strong>The Spreadsheets Violations:</strong> List the specific 1NF, 2NF, and 3NF violations you identified in the AI's sample data.</li>"
-            "<li><strong>Your 3NF Schema:</strong> List the normalized tables, primary keys, and foreign key relationships.</li>"
-            "<li><strong>DDL & Referential Action:</strong> Share your PostgreSQL <code>CREATE TABLE</code> script and justify why your chosen <code>ON DELETE</code> rule prevents orphan records.</li>"
-            "</ol>"
-        )
+        "discussion_prompt": "Post to the Unit 7 Discussion: (1) The denormalized spreadsheet sample, (2) Your 3NF entity-relationship breakdown, (3) Your production DDL script with constraints, and (4) Why your chosen ON DELETE referential action was the safest choice."
     },
     8: {
-        "page_title": "Unit 8: Learn with AI — The Senior Performance DBA Capstone Defense",
-        "persona": "Senior Performance DBA & Capstone Defense Panel",
-        "technique": "Execution Plan Profiling & Technical Architecture Defense",
-        "lead": "Subject your comprehensive course capstone architecture to an intense 10-minute technical defense simulation with an AI Senior Performance DBA. You will defend your indexing strategies, explain EXPLAIN ANALYZE execution trees, and justify architectural trade-offs.",
-        "why_it_matters": (
-            "<p>In senior engineering roles and technical capstones, writing queries that simply 'work' is only half the battle. "
-            "A query that returns in 5 milliseconds on a 500-row test dataset can freeze a production cluster for 45 seconds when scaled to 10 million rows if the query planner relies on a Sequential Scan.</p>"
-            "<p>Furthermore, indexes are not free: every B-Tree index created imposes a <strong>Write Penalty</strong> on every <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code>, and composite indexes only accelerate queries that filter on the leftmost indexed columns. Defending your schema, execution plans, and index selectivity before a simulated DBA panel prepares you for real technical job interviews and enterprise defenses.</p>"
-        ),
-        "free_tools_guide": (
-            "<p>Use ChatGPT Free, Claude Free, Gemini Free, or Copilot Free in your browser. Zero payment or subscription required.</p>"
-        ),
-        "prompt_template": (
+        "persona": "Senior Performance DBA Panel",
+        "drill_topic": "Capstone Technical Defense & EXPLAIN ANALYZE",
+        "prompt": (
             "Act as a demanding Database Administrator (DBA) and Technical Review Board conducting my final Capstone Defense for CMAP 1815.\n"
             "I have built a complete PostgreSQL database system with a normalized schema, DDL constraints, ETL transaction pipeline, analytical window queries, and B-Tree indexes.\n"
             "Conduct a 10-minute technical defense simulation:\n"
@@ -484,24 +325,59 @@ LEARN_WITH_AI_DATA = {
             "3. Grill me with edge cases: What happens if table statistics are outdated (ANALYZE)? When would the query planner intentionally ignore an index?\n"
             "Ask one probing question at a time. Evaluate my answers rigorously like a real technical interview!"
         ),
-        "playbook": (
-            "<p>How to defend your capstone architecture:</p>"
-            "<ol>"
-            "<li><strong>Defense 1 (Execution Plans):</strong> Present an actual query and interpret the <code>Seq Scan vs Index Scan</code>, startup cost vs total cost, and actual runtime in milliseconds.</li>"
-            "<li><strong>Defense 2 (The Leftmost Prefix Rule):</strong> Explain why an index on <code>(department_id, hire_date)</code> accelerates searches on department, but is useless for queries filtering only by hire date.</li>"
-            "<li><strong>Defense 3 (The Write Penalty):</strong> Articulate why adding 15 indexes to a table degrades bulk data ingestion throughput.</li>"
-            "</ol>"
-        ),
-        "participation_task": (
-            "<p>Post to the <strong>Unit 8 Capstone Discussion Board</strong>:</p>"
-            "<ol>"
-            "<li><strong>The Hardest Defense Question:</strong> Share the most challenging technical question the DBA panel asked you.</li>"
-            "<li><strong>Your Architectural Defense:</strong> How did you defend your indexing choices and query execution plan?</li>"
-            "<li><strong>Key Takeaway:</strong> What is the single most important lesson you learned about database performance and optimization in CMAP 1815?</li>"
-            "</ol>"
-        )
+        "discussion_prompt": "Post to the Unit 8 Capstone Discussion: (1) The toughest technical challenge or question the DBA panel asked you, (2) Your defense explaining index column ordering or execution plans, and (3) Your key takeaway on how B-Tree indexes affect read performance vs. write throughput."
     }
 }
+
+def render_designplus_html(title: str, lead_html: str, panels: list, page_id: str, workflow_state: str = "active") -> str:
+    """Renders HTML strictly adhering to the DesignPLUS classes from the user's institution."""
+    panels_html = []
+    for heading, content in panels:
+        panels_html.append(f"""    <div class="dp-panel-group">
+      <h2 class="dp-panel-heading ">{html.escape(heading)}</h2>
+      <div class="dp-panel-content ">
+        {content}
+      </div>
+    </div>""")
+
+    body_panels = "\n".join(panels_html)
+
+    return f"""<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>{html.escape(title)}</title>
+<meta name="identifier" content="{page_id}"/>
+<meta name="editing_roles" content="teachers"/>
+<meta name="workflow_state" content="{workflow_state}"/>
+<meta name="editor_type" content="rce"/>
+</head>
+<body>
+<div id="dp-wrapper" class="dp-wrapper dp-hdg-i-cp-brdr-h2-dp-primary dp-hdg-txt-h3-dp-primary dp-hdg-txt-h4-dp-primary dp-hdg-txt-h5-dp-primary dp-hdg-i-cp-brdr-h5-dp-primary dp-hdg-b-h2-brdr-b dp-hdg-txt-h6-dp-primary dp-hdg-i-cp-brdr-h6-dp-primary dp-hdg-i-styl-h2-pill dp-hdg-i-styl-h3-pill dp-hdg-cp-brdr-h3-dp-secondary dp-hdg-cp-brdr-h2-dp-secondary dp-hdg-brdr-h2-1 dp-hdg-brdr-h3-1 dp-hdg-brdr-h4-1 dp-hdg-brdr-h5-1 dp-hdg-brdr-h6-1 dp-hdg-i-sz-h2-fill dp-hdg-i-sz-h3-fill dp-hdg-i-sz-h5-fill dp-hdg-i-sz-h6-fill dp-hdg-i-brdr-h5-2 dp-hdg-i-brdr-h6-2 dp-hdg-b-h3-brdr-b dp-hdg-txt-h2-dp-primary dp-hdg-i-brdr-h2-1 dp-hdg-i-brdr-h3-1 dp-hdg-i-sz-h4-fill dp-hdg-i-cp-brdr-h3-dp-primary dp-hdg-i-brdr-h4-1 dp-hdg-i-bg-h2-dp-primary dp-hdg-i-bg-h3-dp-primary dp-hdg-b-h4-brdr-b dp-hdg-d-h4-table-l dp-hdg-i-styl-h4-pill dp-hdg-i-cp-brdr-h4-dp-primary">
+  <header class="dp-header dp-basic-bar dp-header-s-brdr-l dp-header-brdr-w-4 dp-header-out-dp-secondary dp-header-pre-s-brdr-r dp-header-pre-font-sm dp-header-pre-out-dp-secondary dp-header-sub-brdr-w-0 dp-header-desc-txt-dp-primary dp-header-desc-out-dp-primary dp-header-sub-bg-dp-white dp-header-sub-txt-dp-primary dp-header-sub-out-dp-primary">
+    <h2 class="dp-heading dp-locked"><span class="dp-header-title">{html.escape(title)}</span></h2>
+    <p>&nbsp;</p>
+  </header>
+  <div class="dp-content-block">
+    {lead_html}
+  </div>
+  <div class="dp-panels-wrapper dp-accordion-default dp-panel-color-dp-primary dp-panel-active-color-dp-secondary">
+{body_panels}
+  </div>
+</div>
+</body>
+</html>"""
+
+def render_video_embed(title: str, video_id: str, start_sec: int) -> str:
+    """Generates a clean responsive 16:9 embedded YouTube player matching DesignPLUS styles."""
+    mins = start_sec // 60
+    secs = start_sec % 60
+    return f"""<div style="margin-bottom: 2rem;">
+  <h4 style="margin-bottom: 0.5rem;">{html.escape(title)} <span style="font-size: 0.9em; font-weight: normal; color: #555;">(Starts at {mins}:{secs:02d})</span></h4>
+  <div class="dp-embed-wrapper" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 6px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 0.5rem;">
+    <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" title="{html.escape(title)}" src="https://www.youtube.com/embed/{video_id}?start={start_sec}" loading="lazy" allowfullscreen="allowfullscreen" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+  </div>
+  <p style="font-size: 0.85em; color: #666; margin-top: 0.25rem;"><a href="https://www.youtube.com/watch?v={video_id}&amp;t={start_sec}s" target="_blank" rel="noopener">Open video segment in new tab ({mins}:{secs:02d})</a></p>
+</div>"""
 
 def parse_quiz_md(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
@@ -555,44 +431,6 @@ def parse_quiz_md(filepath):
         })
 
     return questions
-
-def render_designplus_html(title: str, lead_html: str, panels: list, page_id: str) -> str:
-    """Renders HTML strictly adhering to the DesignPLUS classes from the user's institution."""
-    panels_html = []
-    for heading, content in panels:
-        panels_html.append(f"""    <div class="dp-panel-group">
-      <h2 class="dp-panel-heading ">{html.escape(heading)}</h2>
-      <div class="dp-panel-content ">
-        {content}
-      </div>
-    </div>""")
-
-    body_panels = "\n".join(panels_html)
-
-    return f"""<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<title>{html.escape(title)}</title>
-<meta name="identifier" content="{page_id}"/>
-<meta name="editing_roles" content="teachers"/>
-<meta name="workflow_state" content="active"/>
-<meta name="editor_type" content="rce"/>
-</head>
-<body>
-<div id="dp-wrapper" class="dp-wrapper dp-hdg-i-cp-brdr-h2-dp-primary dp-hdg-txt-h3-dp-primary dp-hdg-txt-h4-dp-primary dp-hdg-txt-h5-dp-primary dp-hdg-i-cp-brdr-h5-dp-primary dp-hdg-b-h2-brdr-b dp-hdg-txt-h6-dp-primary dp-hdg-i-cp-brdr-h6-dp-primary dp-hdg-i-styl-h2-pill dp-hdg-i-styl-h3-pill dp-hdg-cp-brdr-h3-dp-secondary dp-hdg-cp-brdr-h2-dp-secondary dp-hdg-brdr-h2-1 dp-hdg-brdr-h3-1 dp-hdg-brdr-h4-1 dp-hdg-brdr-h5-1 dp-hdg-brdr-h6-1 dp-hdg-i-sz-h2-fill dp-hdg-i-sz-h3-fill dp-hdg-i-sz-h5-fill dp-hdg-i-sz-h6-fill dp-hdg-i-brdr-h5-2 dp-hdg-i-brdr-h6-2 dp-hdg-b-h3-brdr-b dp-hdg-txt-h2-dp-primary dp-hdg-i-brdr-h2-1 dp-hdg-i-brdr-h3-1 dp-hdg-i-sz-h4-fill dp-hdg-i-cp-brdr-h3-dp-primary dp-hdg-i-brdr-h4-1 dp-hdg-i-bg-h2-dp-primary dp-hdg-i-bg-h3-dp-primary dp-hdg-b-h4-brdr-b dp-hdg-d-h4-table-l dp-hdg-i-styl-h4-pill dp-hdg-i-cp-brdr-h4-dp-primary">
-  <header class="dp-header dp-basic-bar dp-header-s-brdr-l dp-header-brdr-w-4 dp-header-out-dp-secondary dp-header-pre-s-brdr-r dp-header-pre-font-sm dp-header-pre-out-dp-secondary dp-header-sub-brdr-w-0 dp-header-desc-txt-dp-primary dp-header-desc-out-dp-primary dp-header-sub-bg-dp-white dp-header-sub-txt-dp-primary dp-header-sub-out-dp-primary">
-    <h2 class="dp-heading dp-locked"><span class="dp-header-title">{html.escape(title)}</span></h2>
-    <p>&nbsp;</p>
-  </header>
-  <div class="dp-content-block">
-    {lead_html}
-  </div>
-  <div class="dp-panels-wrapper dp-accordion-default dp-panel-color-dp-primary dp-panel-active-color-dp-secondary">
-{body_panels}
-  </div>
-</div>
-</body>
-</html>"""
 
 def build_qti_xml(quiz_id: str, quiz_title: str, questions: list) -> str:
     """Generates standard QTI 1.2 XML matching the exact Canvas profile."""
@@ -714,7 +552,7 @@ def build_assessment_meta_xml(quiz_id: str, quiz_title: str, quiz_group_id: str)
 
 def main():
     print("=================================================================")
-    print("CMAP 1815: Modern SQL - Canvas Course Export Package Builder")
+    print("CMAP 1815: Modern SQL - Canvas Native Course Package Builder")
     print("=================================================================")
 
     # 1. Prepare directories
@@ -760,11 +598,9 @@ def main():
         f.write(assign_groups_xml)
 
     # 3. Canvas Course Export Signature Files
-    # canvas_export.txt (Required signature for native Canvas Course Export Package)
     with open(os.path.join(settings_dir, "canvas_export.txt"), "w", encoding="utf-8") as f:
         f.write("Q: What did the panda say when he was forced out of his natural habitat?\nA: This is un-BEAR-able\n")
 
-    # context.xml (Institutional Context matching LCCC)
     context_xml = """<?xml version="1.0" encoding="UTF-8"?>
 <context_info xmlns="http://canvas.instructure.com/xsd/cccv1p0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://canvas.instructure.com/xsd/cccv1p0 https://canvas.instructure.com/xsd/cccv1p0.xsd">
   <course_id>1815</course_id>
@@ -778,19 +614,14 @@ def main():
     with open(os.path.join(settings_dir, "context.xml"), "w", encoding="utf-8") as f:
         f.write(context_xml)
 
-    # files_meta.xml
-    files_meta_xml = """<?xml version="1.0" encoding="UTF-8"?>
-<fileMeta xmlns="http://canvas.instructure.com/xsd/cccv1p0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://canvas.instructure.com/xsd/cccv1p0 https://canvas.instructure.com/xsd/cccv1p0.xsd">
-  <folders>
-  </folders>
-  <files>
-  </files>
-</fileMeta>
-"""
     with open(os.path.join(settings_dir, "files_meta.xml"), "w", encoding="utf-8") as f:
-        f.write(files_meta_xml)
+        f.write("""<?xml version="1.0" encoding="UTF-8"?>
+<fileMeta xmlns="http://canvas.instructure.com/xsd/cccv1p0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://canvas.instructure.com/xsd/cccv1p0 https://canvas.instructure.com/xsd/cccv1p0.xsd">
+  <folders></folders>
+  <files></files>
+</fileMeta>
+""")
 
-    # course_settings.xml
     course_id = make_id("cmap_1815_course")
     course_settings_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <course identifier="{course_id}" xmlns="http://canvas.instructure.com/xsd/cccv1p0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://canvas.instructure.com/xsd/cccv1p0 https://canvas.instructure.com/xsd/cccv1p0.xsd">
@@ -806,11 +637,11 @@ def main():
     with open(os.path.join(settings_dir, "course_settings.xml"), "w", encoding="utf-8") as f:
         f.write(course_settings_xml)
 
-    # 4. Generate Wiki Pages & Track Manifest
+    # 4. Generate Course Welcome & Orientation Pages in wiki_content
     pages_manifest = []  # List of (filename, title, ident)
-    modules_data = []    # List of modules for module_meta.xml and imsmanifest.xml
+    modules_data = []    # Modules for module_meta.xml and imsmanifest.xml
 
-    # --- Orientation Module Pages ---
+    # Page: Start Here Welcome
     p_welcome_id = make_id("page_welcome")
     p_welcome_file = "course-orientation-and-syllabus.html"
     welcome_lead = "<p>Welcome to <strong>CMAP 1815: Introduction to Modern SQL</strong>. This 8-week hybrid course trains you in professional relational database engineering using modern PostgreSQL 16.</p><p>Each week consists of 150 minutes of guided asynchronous preparation followed by 150 minutes of active classroom paired coding and hands-on laboratory exercises.</p>"
@@ -826,21 +657,21 @@ def main():
         f.write(render_designplus_html("Course Orientation & Master Syllabus", welcome_lead, welcome_panels, p_welcome_id))
     pages_manifest.append((p_welcome_file, "Course Orientation & Master Syllabus", p_welcome_id))
 
-    # Dedicated Orientation Page: Learn with AI
+    # Page: Orientation - Learn with AI
     p_orient_ai_id = make_id("page_orient_learn_with_ai")
     p_orient_ai_file = "orientation-learn-with-ai.html"
-    orient_ai_lead = "<p>In CMAP 1815, artificial intelligence is your interactive co-pilot, Socratic coach, and code reviewer—not a shortcut to avoid critical thinking. This master guide establishes our course framework for practicing SQL with 100% free conversational AI assistants.</p>"
+    orient_ai_lead = "<p>In CMAP 1815, artificial intelligence is an interactive co-pilot and code reviewer—not a shortcut to avoid critical thinking. This guide introduces how we practice with 100% free conversational AI tools.</p>"
     orient_ai_panels = [
         ("The AI Pair Programmer Philosophy",
-         "<p>Writing SQL with AI is NOT about asking an AI to 'do the homework for you.' Blindly pasting AI-generated SQL into production environments causes catastrophic data outages, Cartesian product server crashes, and silent NULL propagation bugs.</p><p>Instead, in this course you will practice <strong>Active Socratic Learning with AI</strong>: you will assign the AI specialized roles (The Socratic Database Sensei, The Pedantic QA Lead, The Frantic Business Stakeholder, The Chaos SRE) to challenge your reasoning, test edge cases, and simulate real-world team dynamics.</p>"),
+         "<p>Writing SQL with AI is NOT about asking an AI to 'do the homework for you.' Blindly pasting AI-generated SQL into production environments causes catastrophic data outages, Cartesian product server crashes, and silent NULL propagation bugs.</p><p>Instead, in this course you will practice <strong>Active Socratic Learning with AI</strong>: you will assign the AI specialized roles to challenge your reasoning, test edge cases, and simulate real-world stakeholder requests.</p>"),
         ("The Big Four 100% Free AI Platforms",
          "<p>Every AI exercise in this course is designed for <strong>100% free web chat tools</strong>. You do NOT need any paid account or API key:</p><ul><li><strong>ChatGPT Free:</strong> <a href='https://chatgpt.com' target='_blank'>chatgpt.com</a> (select GPT-4o-mini / Free tier).</li><li><strong>Claude Free:</strong> <a href='https://claude.ai' target='_blank'>claude.ai</a> (free web tier).</li><li><strong>Google Gemini Free:</strong> <a href='https://gemini.google.com' target='_blank'>gemini.google.com</a> (free with any Google account).</li><li><strong>Microsoft Copilot Free:</strong> <a href='https://copilot.microsoft.com' target='_blank'>copilot.microsoft.com</a> (free web chat).</li></ul>"),
         ("The Verification Protocol: Grounded in PostgreSQL 16",
-         "<p>Never assume an AI's SQL answer is correct! AI models frequently hallucinate non-existent PostgreSQL functions or write syntactically invalid clauses. The Golden Rule of CMAP 1815: <strong>Every single SQL snippet must be executed and verified against your live PostgreSQL 16 database in GitHub Codespaces before submission!</strong></p>")
+         "<p>Never assume an AI's SQL answer is correct! The Golden Rule of CMAP 1815: <strong>Every single SQL snippet must be executed and verified against your live PostgreSQL 16 database in GitHub Codespaces before submission!</strong></p>")
     ]
     with open(os.path.join(wiki_dir, p_orient_ai_file), "w", encoding="utf-8") as f:
-        f.write(render_designplus_html("Orientation: Learn with AI — How to Use Free AI as Your SQL Pair Programmer", orient_ai_lead, orient_ai_panels, p_orient_ai_id))
-    pages_manifest.append((p_orient_ai_file, "Orientation: Learn with AI — How to Use Free AI as Your SQL Pair Programmer", p_orient_ai_id))
+        f.write(render_designplus_html("Orientation: Learn with AI — Course Guidelines & Free Tools", orient_ai_lead, orient_ai_panels, p_orient_ai_id))
+    pages_manifest.append((p_orient_ai_file, "Orientation: Learn with AI — Course Guidelines & Free Tools", p_orient_ai_id))
 
     # Page: Database Setup Guide
     p_setup_id = make_id("page_db_setup")
@@ -870,21 +701,21 @@ def main():
         f.write(render_designplus_html("External Learning Resources & Media Guide", res_lead, res_panels, p_res_id))
     pages_manifest.append((p_res_file, "External Learning Resources & Media Guide", p_res_id))
 
-    # Orientation Module items
+    # Add Orientation Module
     modules_data.append({
         "id": make_id("module_orientation"),
         "title": "Course Orientation & Database Setup",
         "items": [
-            {"type": "WikiPage", "title": "Course Orientation & Master Syllabus", "ref": p_welcome_id},
-            {"type": "WikiPage", "title": "Orientation: Learn with AI — How to Use Free AI as Your SQL Pair Programmer", "ref": p_orient_ai_id},
-            {"type": "WikiPage", "title": "Database Setup & Environment Guide", "ref": p_setup_id},
-            {"type": "WikiPage", "title": "External Learning Resources & Media Guide", "ref": p_res_id}
+            {"type": "WikiPage", "title": "Course Orientation & Master Syllabus", "ref": p_welcome_id, "indent": 0, "state": "active"},
+            {"type": "WikiPage", "title": "Orientation: Learn with AI — Course Guidelines & Free Tools", "ref": p_orient_ai_id, "indent": 1, "state": "active"},
+            {"type": "WikiPage", "title": "Database Setup & Environment Guide", "ref": p_setup_id, "indent": 1, "state": "active"},
+            {"type": "WikiPage", "title": "External Learning Resources & Media Guide", "ref": p_res_id, "indent": 1, "state": "active"}
         ]
     })
 
-    quiz_manifest = [] # List of (quiz_id, quiz_meta_id, title)
+    quiz_manifest = []
 
-    # 5. Build Units 1 to 8
+    # 5. Generate Units 1 to 8 Pages & Modules
     for unit in UNIT_METADATA:
         u_num = unit["num"]
         u_folder = unit["folder"]
@@ -894,99 +725,199 @@ def main():
 
         print(f"Processing {u_short} ({u_folder})...")
 
-        # --- A. Unit Overview Page ---
+        # ----------------------------------------------------
+        # Page 1: Unit Overview (Walks through the entire unit)
+        # ----------------------------------------------------
         overview_id = make_id(f"page_u{u_num}_overview")
         overview_file = f"unit-{u_num:02d}-overview.html"
-        overview_lead = f"<p>Welcome to <strong>{u_title}</strong>. This unit focuses on mastering <em>{u_topic}</em> in modern PostgreSQL.</p><p>Please review the weekly learning objectives, engage in the dedicated <strong>Learn with AI</strong> practice drill, complete the asynchronous preparatory study guide, attend the active learning lab session, and complete the unit knowledge check.</p>"
+        overview_lead = f"<p>Welcome to <strong>{u_title}</strong>. This unit focuses on mastering <em>{u_topic}</em> in modern PostgreSQL 16.</p><p>This overview guides you through the complete weekly learning sequence: review the assigned readings and embedded video lectures, complete the asynchronous preparatory drills, attend the live active classroom lab, engage in the supplemental AI practice drill, and take the unit knowledge check.</p>"
+        
         overview_panels = [
-            ("Weekly Learning Objectives", 
-             f"<p>Upon completing this unit, you will be able to apply core competencies in {u_topic}, analyze relational schema relationships, and execute production-grade queries with verified precision.</p>"),
-            ("150-Minute Asynchronous Preparation",
-             f"<p>Prior to class, complete the <strong>Learn with AI</strong> drill, watch the designated video chapters, complete the readings on PostgreSQLTutorial.com, and verify your understanding using the formative self-check drills.</p>"),
-            ("150-Minute Synchronous Active Coding Lab",
-             f"<p>During our interactive class sessions, you will participate in live coding demonstrations, collaborate on paired coding challenges, and submit your verified SQL laboratory script.</p>")
+            ("Unit Learning Objectives", 
+             f"<p>Upon completing this unit, you will be able to apply core competencies in <strong>{u_topic}</strong>, analyze relational schema relationships, and execute production-grade queries with verified precision.</p>"),
+            ("Weekly Learning Sequence & Roadmap",
+             f"""<ol>
+  <li><strong>1. Required Readings &amp; Embedded Videos:</strong> Review the authoritative reading tutorials and watch the embedded video segments directly inside Canvas.</li>
+  <li><strong>2. Asynchronous Preparation &amp; Drills:</strong> Complete the conceptual focus questions and self-check drills before attending our live classroom session.</li>
+  <li><strong>3. Synchronous Classroom Activities &amp; Lab:</strong> Participate in live paired coding challenges and submit your verified SQL laboratory script.</li>
+  <li><strong>4. Learn with AI (Supplemental Practice):</strong> Complete the interactive role-play prompt drill with a free AI assistant and post your findings to the weekly discussion board.</li>
+  <li><strong>5. Unit Knowledge Check:</strong> Take the 15-question multiple-choice assessment to evaluate your mastery.</li>
+</ol>"""),
+            ("Time Budget & Contact Hours",
+             f"<p>In accordance with our hybrid curriculum model, each unit is budgeted for:</p><ul><li><strong>150 Minutes Asynchronous Self-Study:</strong> Tutorials, video chapters, focus questions, and self-checks.</li><li><strong>150 Minutes Synchronous Active Learning:</strong> Live coding demos, paired challenges, and lab completion.</li></ul>")
         ]
         with open(os.path.join(wiki_dir, overview_file), "w", encoding="utf-8") as f:
             f.write(render_designplus_html(f"{u_short} Overview: {u_topic}", overview_lead, overview_panels, overview_id))
         pages_manifest.append((overview_file, f"{u_short} Overview: {u_topic}", overview_id))
 
-        # --- B. Dedicated "Learn with AI" Page (Prominent, High-Level Section) ---
-        ai_data = LEARN_WITH_AI_DATA[u_num]
-        ai_page_id = make_id(f"page_u{u_num}_learn_with_ai")
-        ai_page_file = f"unit-{u_num:02d}-learn-with-ai.html"
-        ai_page_title = ai_data["page_title"]
-        ai_lead = f"<p>{ai_data['lead']}</p>"
-        ai_panels = [
-            ("The Pedagogical Why: Why Practice with AI?", ai_data["why_it_matters"]),
-            ("Zero-Cost Free AI Setup Guide", ai_data["free_tools_guide"]),
-            ("The AI Role-Play Persona & Scenario", f"<p><strong>Persona / Role:</strong> {ai_data['persona']}</p><p><strong>Core Technique:</strong> {ai_data['technique']}</p>"),
-            ("Copy-and-Paste Master Prompt", f"<p>Copy the exact prompt below into your free AI tool (ChatGPT Free, Claude Free, Gemini Free, or Copilot Free):</p><pre><code>{html.escape(ai_data['prompt_template'])}</code></pre>"),
-            ("Turn-by-Turn Guided Playbook", ai_data["playbook"]),
-            ("Asynchronous Participation & Discussion Task", ai_data["participation_task"])
+        # ----------------------------------------------------
+        # Page 2: Required Readings & Video Lectures (Embedded)
+        # ----------------------------------------------------
+        reading_id = make_id(f"page_u{u_num}_readings")
+        reading_file = f"unit-{u_num:02d}-readings-and-media.html"
+        reading_lead = f"<p>This page houses the required reading descriptions and embedded lecture video chapters for <strong>{u_short}</strong>. Review these materials thoroughly as part of your asynchronous preparation.</p>"
+        
+        # Format Readings Descriptions HTML
+        readings_lis = []
+        for name, url, desc in unit["readings"]:
+            readings_lis.append(f"""<li style="margin-bottom: 1rem;">
+  <strong><a href="{url}" target="_blank" rel="noopener">{html.escape(name)}</a></strong>
+  <p style="margin-top: 0.25rem; margin-bottom: 0;">{html.escape(desc)}</p>
+</li>""")
+        readings_body = f"<ul style='padding-left: 1.5rem;'>{''.join(readings_lis)}</ul>"
+
+        # Format Embedded Videos HTML
+        video_embeds = []
+        for v_title, v_id, v_start, v_ts in unit["videos"]:
+            video_embeds.append(render_video_embed(v_title, v_id, v_start))
+        videos_body = "\n".join(video_embeds)
+
+        reading_panels = [
+            ("Required Readings & Tutorial Guides", readings_body),
+            ("Required Video Lecture Chapters (Embedded)", videos_body)
         ]
-        with open(os.path.join(wiki_dir, ai_page_file), "w", encoding="utf-8") as f:
-            f.write(render_designplus_html(ai_page_title, ai_lead, ai_panels, ai_page_id))
-        pages_manifest.append((ai_page_file, ai_page_title, ai_page_id))
+        with open(os.path.join(wiki_dir, reading_file), "w", encoding="utf-8") as f:
+            f.write(render_designplus_html(f"{u_short}: Required Readings & Video Lectures", reading_lead, reading_panels, reading_id))
+        pages_manifest.append((reading_file, f"{u_short}: Required Readings & Video Lectures", reading_id))
 
-        # --- C. Unit Async Study Guide Page ---
-        study_id = make_id(f"page_u{u_num}_study")
+        # ----------------------------------------------------
+        # Page 3: Asynchronous Preparation & Drills
+        # ----------------------------------------------------
+        study_id = make_id(f"page_u{u_num}_async_study")
         study_file = f"unit-{u_num:02d}-async-study.html"
-        study_lead = f"<p>This study guide guides your 150 minutes of asynchronous preparation for <strong>{u_short}</strong>. Complete these readings, video modules, and drills before attending the live laboratory session.</p>"
-        
-        # Format readings html
-        readings_lis = "\n".join([f'<li><a href="{url}" target="_blank"><strong>{name}</strong></a></li>' for name, url in unit["readings"]])
-        readings_html = f"<ul>{readings_lis}</ul>"
-        
-        # Format videos html
-        videos_lis = "\n".join([f'<li><a href="{url}" target="_blank"><strong>{name}</strong></a> (Timestamp: {ts})</li>' for name, url, ts in unit["videos"]])
-        videos_html = f"<ul>{videos_lis}</ul>"
+        study_lead = f"<p>Complete these conceptual reflection questions and formative self-check drills online on your own before attending our live classroom session for <strong>{u_short}</strong>.</p>"
 
-        # Load self check drills
+        # Load Self Check Drills
         drills_path = os.path.join(UNITS_DIR, u_folder, "async", "self_check_drills.md")
-        drills_html = "<p>Complete the 5 formative self-check drills provided in your local repository under <code>async/self_check_drills.md</code>.</p>"
+        drills_html = "<p>Complete the 5 formative self-check drills provided in your course repository under <code>async/self_check_drills.md</code>.</p>"
         if os.path.exists(drills_path):
             with open(drills_path, "r", encoding="utf-8") as df:
                 d_text = df.read()
-                drills_html = f"<pre><code>{html.escape(d_text[:1500])}... (Refer to repository for full drills)</code></pre>"
+                drills_html = f"<pre style='max-height: 400px; overflow-y: auto;'><code>{html.escape(d_text)}</code></pre>"
+
+        # Focus Questions
+        study_guide_path = os.path.join(UNITS_DIR, u_folder, "async", "study_guide.md")
+        focus_questions_html = "<p>Reflect on the core concepts covered in the readings and video lectures.</p>"
+        if os.path.exists(study_guide_path):
+            with open(study_guide_path, "r", encoding="utf-8") as sgf:
+                sg_text = sgf.read()
+                fq_match = re.search(r"## Step 4: Focus Questions.*?(?=## Step 5|\Z)", sg_text, re.DOTALL)
+                if fq_match:
+                    focus_questions_html = f"<pre style='white-space: pre-wrap; font-family: inherit;'>{html.escape(fq_match.group(0).strip())}</pre>"
 
         study_panels = [
-            ("Required Readings & Tutorials", readings_html),
-            ("Required Micro-Lecture Video Chapters", videos_html),
+            ("Pre-Class Focus Questions", focus_questions_html),
             ("Formative Self-Check Drills", drills_html),
-            ("Interactive AI Practice Drill", f"<p>Be sure to complete the dedicated <a href='$WIKI_REFERENCE$/pages/{ai_page_id}'><strong>{ai_page_title}</strong></a> module page and post your response to the weekly discussion board!</p>")
+            ("Preparation Verification Checklist",
+             "<p>Before class, verify that you have:</p><ul><li>Read all tutorial guides on PostgreSQLTutorial.com.</li><li>Watched each embedded video chapter.</li><li>Answered the self-check drills without peeking at the solutions first.</li><li>Logged into your GitHub Codespaces PostgreSQL 16 environment.</li></ul>")
         ]
         with open(os.path.join(wiki_dir, study_file), "w", encoding="utf-8") as f:
-            f.write(render_designplus_html(f"{u_short} Async Study & Preparation", study_lead, study_panels, study_id))
-        pages_manifest.append((study_file, f"{u_short} Async Study & Preparation", study_id))
+            f.write(render_designplus_html(f"{u_short}: Asynchronous Preparation & Drills", study_lead, study_panels, study_id))
+        pages_manifest.append((study_file, f"{u_short}: Asynchronous Preparation & Drills", study_id))
 
-        # --- D. Unit Lab Guide Page ---
-        lab_id = make_id(f"page_u{u_num}_lab")
-        lab_file = f"unit-{u_num:02d}-hands-on-lab.html"
-        lab_lead = f"<p>In this laboratory session, you will implement production-grade SQL solutions applying <strong>{u_topic}</strong>. Review the tasks and rubric below, and submit your verified <code>.sql</code> script.</p>"
+        # ----------------------------------------------------
+        # Page 4: Synchronous Classroom Activities & Lab
+        # ----------------------------------------------------
+        lab_id = make_id(f"page_u{u_num}_sync_lab")
+        lab_file = f"unit-{u_num:02d}-synchronous-lab.html"
+        lab_lead = f"<p>This page contains the live classroom paired coding challenges, hands-on laboratory scenario, and grading rubric for <strong>{u_short}</strong>. You will work on these during our interactive class meeting.</p>"
 
+        # Load In-Class Challenges
+        challenges_path = os.path.join(UNITS_DIR, u_folder, "sync", "inclass_challenges.sql")
+        challenges_html = "<p>Refer to your course repository for in-class live coding challenges.</p>"
+        if os.path.exists(challenges_path):
+            with open(challenges_path, "r", encoding="utf-8") as cf:
+                c_text = cf.read()
+                challenges_html = f"<pre style='max-height: 350px; overflow-y: auto;'><code>{html.escape(c_text)}</code></pre>"
+
+        # Load Student Lab Guide
         lab_path = os.path.join(UNITS_DIR, u_folder, "guides", "student_lab_guide.md")
         lab_content_html = "<p>Refer to your course repository for the complete laboratory guide and scenario specifications.</p>"
         if os.path.exists(lab_path):
             with open(lab_path, "r", encoding="utf-8") as lf:
                 l_text = lf.read()
-                lab_content_html = f"<pre><code>{html.escape(l_text[:2000])}...</code></pre>"
+                lab_content_html = f"<pre style='max-height: 400px; overflow-y: auto;'><code>{html.escape(l_text)}</code></pre>"
 
+        # Load Rubric
         rubric_path = os.path.join(UNITS_DIR, u_folder, "assessments", "lab_rubric.md")
         rubric_html = "<p>Refer to your course repository for the complete grading rubric.</p>"
         if os.path.exists(rubric_path):
             with open(rubric_path, "r", encoding="utf-8") as rf:
                 r_text = rf.read()
-                rubric_html = f"<pre><code>{html.escape(r_text[:1500])}...</code></pre>"
+                rubric_html = f"<pre style='max-height: 300px; overflow-y: auto;'><code>{html.escape(r_text)}</code></pre>"
 
-        lab_panels = [
+        sync_panels = [
+            ("Live In-Class Paired Challenges", challenges_html),
             ("Laboratory Scenario & Task Specifications", lab_content_html),
             ("Grading Rubric & Submission Requirements", rubric_html)
         ]
         with open(os.path.join(wiki_dir, lab_file), "w", encoding="utf-8") as f:
-            f.write(render_designplus_html(f"{u_short} Hands-on SQL Lab", lab_lead, lab_panels, lab_id))
-        pages_manifest.append((lab_file, f"{u_short} Hands-on SQL Lab", lab_id))
+            f.write(render_designplus_html(f"{u_short}: Synchronous Classroom Activities & Lab", lab_lead, sync_panels, lab_id))
+        pages_manifest.append((lab_file, f"{u_short}: Synchronous Classroom Activities & Lab", lab_id))
 
-        # --- E. Unit Quiz (QTI 1.2 XML) ---
+        # ----------------------------------------------------
+        # Page 5: Learn with AI — Supplemental Practice Drill
+        # ----------------------------------------------------
+        ai_data = LEARN_WITH_AI_DATA[u_num]
+        ai_page_id = make_id(f"page_u{u_num}_learn_with_ai")
+        ai_page_file = f"unit-{u_num:02d}-learn-with-ai.html"
+        ai_lead = f"<p>This supplemental practice activity lets you test your knowledge of <strong>{u_topic}</strong> by interacting with a specialized AI persona. This is an optional/supplemental formative practice activity that contributes toward weekly participation credit.</p>"
+        
+        ai_panels = [
+            ("The Role-Play Practice Scenario",
+             f"<p><strong>AI Persona:</strong> {ai_data['persona']}</p>"
+             f"<p><strong>Core Topic / Focus:</strong> {ai_data['drill_topic']}</p>"
+             "<p>In this exercise, you assign the AI a specific technical persona that tests your reasoning and challenges you to debug or construct SQL queries.</p>"),
+            ("100% Free AI Tool Setup",
+             "<p>Use any free web chat assistant (no subscription or API key required):</p>"
+             "<ul><li><strong>ChatGPT Free:</strong> <a href='https://chatgpt.com' target='_blank'>chatgpt.com</a></li>"
+             "<li><strong>Claude Free:</strong> <a href='https://claude.ai' target='_blank'>claude.ai</a></li>"
+             "<li><strong>Google Gemini Free:</strong> <a href='https://gemini.google.com' target='_blank'>gemini.google.com</a></li>"
+             "<li><strong>Microsoft Copilot Free:</strong> <a href='https://copilot.microsoft.com' target='_blank'>copilot.microsoft.com</a></li></ul>"),
+            ("Copy-and-Paste Master Prompt",
+             f"<p>Copy and paste this prompt into your free AI tool:</p><pre><code>{html.escape(ai_data['prompt'])}</code></pre>"),
+            ("Graded Asynchronous Participation Task",
+             f"<p>{html.escape(ai_data['discussion_prompt'])}</p>"
+             "<p>Post your response to the weekly Canvas discussion board to earn full participation credit.</p>")
+        ]
+        with open(os.path.join(wiki_dir, ai_page_file), "w", encoding="utf-8") as f:
+            f.write(render_designplus_html(f"{u_short}: Learn with AI — Supplemental Practice Drill", ai_lead, ai_panels, ai_page_id))
+        pages_manifest.append((ai_page_file, f"{u_short}: Learn with AI — Supplemental Practice Drill", ai_page_id))
+
+        # ----------------------------------------------------
+        # Page 6: [Instructor Guide] Teaching Notes & Solutions (Unpublished)
+        # ----------------------------------------------------
+        teacher_id = make_id(f"page_u{u_num}_teacher_guide")
+        teacher_file = f"unit-{u_num:02d}-instructor-guide.html"
+        teacher_lead = "<p><strong>[FOR INSTRUCTORS ONLY — UNPUBLISHED]</strong> This guide provides lecture walkthrough notes, pacing suggestions, common student misconceptions, trap demonstrations, and master solution references.</p>"
+
+        # Load Instructor Lecture Notes
+        notes_path = os.path.join(UNITS_DIR, u_folder, "lectures", "instructor_lecture_notes.md")
+        notes_html = "<p>Refer to course repository for instructor lecture notes.</p>"
+        if os.path.exists(notes_path):
+            with open(notes_path, "r", encoding="utf-8") as nf:
+                n_text = nf.read()
+                notes_html = f"<pre style='max-height: 450px; overflow-y: auto;'><code>{html.escape(n_text)}</code></pre>"
+
+        # Load Solution notes
+        sol_path = os.path.join(UNITS_DIR, u_folder, "guides", "instructor_solution.sql")
+        sol_html = "<p>Refer to course repository for master solution SQL.</p>"
+        if os.path.exists(sol_path):
+            with open(sol_path, "r", encoding="utf-8") as sf:
+                s_text = sf.read()
+                sol_html = f"<pre style='max-height: 350px; overflow-y: auto;'><code>{html.escape(s_text)}</code></pre>"
+
+        teacher_panels = [
+            ("Lecture Walkthrough Notes & Pacing", notes_html),
+            ("Instructor Master Solution SQL", sol_html)
+        ]
+        with open(os.path.join(wiki_dir, teacher_file), "w", encoding="utf-8") as f:
+            f.write(render_designplus_html(f"[Instructor Guide] {u_short} Teaching Notes & Solutions", teacher_lead, teacher_panels, teacher_id, workflow_state="unpublished"))
+        pages_manifest.append((teacher_file, f"[Instructor Guide] {u_short} Teaching Notes & Solutions", teacher_id))
+
+        # ----------------------------------------------------
+        # Item 7: Unit Knowledge Check (Quiz)
+        # ----------------------------------------------------
         quiz_path = os.path.join(UNITS_DIR, u_folder, "assessments", "unit_quiz.md")
         questions = parse_quiz_md(quiz_path)
         quiz_id = make_id(f"quiz_u{u_num}")
@@ -1009,20 +940,24 @@ def main():
 
         quiz_manifest.append((quiz_id, quiz_meta_id, quiz_title))
 
-        # Add Module with Learn with AI as prominent top-level section
+        # ----------------------------------------------------
+        # Assemble Clean Unit Module Items
+        # ----------------------------------------------------
         modules_data.append({
             "id": make_id(f"module_u{u_num}"),
             "title": u_title,
             "items": [
-                {"type": "WikiPage", "title": f"{u_short} Overview: {u_topic}", "ref": overview_id},
-                {"type": "WikiPage", "title": ai_page_title, "ref": ai_page_id},
-                {"type": "WikiPage", "title": f"{u_short} Async Study & Preparation", "ref": study_id},
-                {"type": "WikiPage", "title": f"{u_short} Hands-on SQL Lab", "ref": lab_id},
-                {"type": "Quizzes::Quiz", "title": quiz_title, "ref": quiz_id}
+                {"type": "WikiPage", "title": f"{u_short} Overview: {u_topic}", "ref": overview_id, "indent": 0, "state": "active"},
+                {"type": "WikiPage", "title": f"{u_short}: Required Readings & Video Lectures", "ref": reading_id, "indent": 1, "state": "active"},
+                {"type": "WikiPage", "title": f"{u_short}: Asynchronous Preparation & Drills", "ref": study_id, "indent": 1, "state": "active"},
+                {"type": "WikiPage", "title": f"{u_short}: Synchronous Classroom Activities & Lab", "ref": lab_id, "indent": 1, "state": "active"},
+                {"type": "WikiPage", "title": f"{u_short}: Learn with AI — Supplemental Practice Drill", "ref": ai_page_id, "indent": 1, "state": "active"},
+                {"type": "Quizzes::Quiz", "title": quiz_title, "ref": quiz_id, "indent": 1, "state": "active"},
+                {"type": "WikiPage", "title": f"[Instructor Guide] {u_short} Teaching Notes & Solutions", "ref": teacher_id, "indent": 1, "state": "unpublished"}
             ]
         })
 
-    # 6. Generate course_settings/module_meta.xml & ensure item identifiers match imsmanifest.xml
+    # 6. Generate course_settings/module_meta.xml (Synchronized with imsmanifest.xml)
     modules_xml_items = []
     org_items = []
 
@@ -1033,17 +968,18 @@ def main():
         m_man_items = []
 
         for i_pos, item in enumerate(mod["items"], 1):
-            # Deterministic, SHARED item identifier for both module_meta.xml AND imsmanifest.xml
             shared_item_id = make_id(f"item_{mod_id}_{item['ref']}")
+            item_state = item.get("state", "active")
+            item_indent = item.get("indent", 0)
 
             m_items_xml.append(f"""      <item identifier="{shared_item_id}">
         <content_type>{item['type']}</content_type>
-        <workflow_state>active</workflow_state>
+        <workflow_state>{item_state}</workflow_state>
         <title>{html.escape(item['title'])}</title>
         <identifierref>{item['ref']}</identifierref>
         <position>{i_pos}</position>
         <new_tab>false</new_tab>
-        <indent>0</indent>
+        <indent>{item_indent}</indent>
         <link_settings_json>null</link_settings_json>
       </item>""")
 
@@ -1088,12 +1024,12 @@ def main():
     with open(os.path.join(settings_dir, "syllabus.html"), "w", encoding="utf-8") as f:
         f.write(syllabus_html)
 
-    # 8. Generate imsmanifest.xml (With Native Canvas Course Export Resource & Matching Identifiers)
+    # 8. Generate imsmanifest.xml (Canvas Native Package Standard)
     manifest_id = make_id("cmap_1815_manifest")
     org_items_joined = "\n".join(org_items)
 
     resources_xml = []
-    # Primary Canvas Native Course Settings Resource (pointing to canvas_export.txt)
+    # Native Canvas Export Descriptor Resource
     resources_xml.append(f"""    <resource identifier="{course_id}_syllabus" type="associatedcontent/imscc_xmlv1p1/learning-application-resource" href="course_settings/syllabus.html" intendeduse="syllabus">
       <file href="course_settings/syllabus.html"/>
     </resource>
