@@ -397,6 +397,61 @@ TEACHER_GUIDE_DATA = {
     }
 }
 
+ARCHIVE_UNIT_FOLDERS = {
+    1: "1_Intro_and_Select",
+    2: "2_Filtering",
+    3: "3_Joins",
+    4: "4_Grouping_Set_Operation_and_Pivoting",
+    5: "5_Insert_Update_Delete_Temp_Tables",
+    6: "6_Modularity_Window_Functions_and_CTE",
+    7: "7_Schema_Design_Data_Integrity_DataWarehouse_Intro",
+    8: "8_Performance_Indexing_and_Audit_Trails"
+}
+
+def load_and_clean_unit_overview(unit_num: int) -> str:
+    """Loads and cleans the curated instructor Unit_Overview markdown file."""
+    folder_name = ARCHIVE_UNIT_FOLDERS.get(unit_num)
+    if not folder_name:
+        return ""
+    file_path = os.path.join(BASE_DIR, "legacy", "activities", "archive_units", folder_name, "Unit_Overview.md")
+    if not os.path.exists(file_path):
+        return ""
+    
+    with open(file_path, "r", encoding="utf-8") as f:
+        text = f.read()
+
+    # Clean up base64 image placeholders
+    text = re.sub(r'\[image\d+\]:\s*<data:image/[^>]+>', '', text)
+    
+    # Replace markdown image placeholders with mathematical symbols or clean expressions
+    text = text.replace('![][image1]', '')
+    text = text.replace('![][image2]', '')
+    text = text.replace('![][image3]', '')
+    text = text.replace('![][image4]', '')
+    text = text.replace('![][image5]', '')
+    
+    # Specific mathematical symbols and formula cleanups
+    text = text.replace('Projection ()', 'Projection (&pi;)')
+    text = text.replace('Aggregate Functions (, , , , )', 'Aggregate Functions (COUNT, SUM, AVG, MIN, MAX)')
+    text = text.replace('often does not equal  precisely', 'often does not equal 0.3 precisely')
+    text = text.replace('Incremental integers ().', 'Incremental integers (1, 2, 3...).')
+    text = text.replace('(![][image1] complexity)', '(linear O(N) complexity)')
+    text = text.replace('(![][image2] complexity)', '(logarithmic O(log N) complexity)')
+    text = text.replace('( complexity)', '(computational complexity)')
+
+    # Unescape escaped markdown punctuation
+    text = text.replace(r'\_', '_').replace(r'\!', '!').replace(r'\#', '#').replace(r'\[', '[').replace(r'\]', ']')
+
+    # Remove duplicate title header lines if present
+    lines = text.splitlines()
+    cleaned_lines = []
+    for line in lines:
+        if line.strip().startswith('# **Unit') or line.strip().startswith('# Unit'):
+            continue
+        cleaned_lines.append(line)
+    
+    return "\n".join(cleaned_lines).strip()
+
 def format_inline(s: str) -> str:
     """Formats inline markdown syntax to HTML."""
     s = re.sub(r'`([^`]+)`', r'<code style="background: #f1f5f9; color: #0369a1; padding: 0.15rem 0.35rem; border-radius: 3px; font-size: 0.9em; font-family: Consolas, monospace; font-weight: 600;">\1</code>', s)
@@ -880,10 +935,12 @@ def main():
     non_cc_dir = os.path.join(OUTPUT_BUILD_DIR, "non_cc_assessments")
     web_res_dir = os.path.join(OUTPUT_BUILD_DIR, "web_resources")
     syllabi_dir = os.path.join(web_res_dir, "syllabi")
+    images_dir = os.path.join(web_res_dir, "images")
     os.makedirs(wiki_dir, exist_ok=True)
     os.makedirs(settings_dir, exist_ok=True)
     os.makedirs(non_cc_dir, exist_ok=True)
     os.makedirs(syllabi_dir, exist_ok=True)
+    os.makedirs(images_dir, exist_ok=True)
 
     # 2. Assignment Groups
     group_labs_id = make_id("group_labs")
@@ -964,6 +1021,13 @@ def main():
     dst_docx_path = os.path.join(syllabi_dir, dst_docx_name)
     if os.path.exists(src_docx):
         with open(src_docx, "rb") as sf, open(dst_docx_path, "wb") as df:
+            df.write(sf.read())
+
+    # Copy Course Banner Image to web_resources/images
+    src_banner = os.path.join(COURSE_SPECS_DIR, "sql_course_banner.jpg")
+    dst_banner = os.path.join(images_dir, "sql_course_banner.jpg")
+    if os.path.exists(src_banner):
+        with open(src_banner, "rb") as sf, open(dst_banner, "wb") as df:
             df.write(sf.read())
 
     # Build Native Syllabus HTML
@@ -1133,7 +1197,7 @@ def main():
       <h1 class="dp-heading"><span class="dp-header-pre"><span class="dp-header-pre-1">CMAP 1815</span></span><span class="dp-header-title">Introduction to Modern SQL</span></h1>
     </header>
   </div>
-  <div class="dp-banner-image"><img role="presentation" src="https://lccc-wy.instructure.com/courses/14403/files/2411415/download" alt="" width="1100" height="220" loading="lazy"></div>
+  <div class="dp-banner-image" style="text-align: center; margin: 1rem 0;"><img role="presentation" src="$IMS-CC-FILEBASE$/images/sql_course_banner.jpg" alt="CMAP 1815: Introduction to Modern SQL Course Banner" width="1100" height="220" style="max-width: 100%; height: auto; border-radius: 6px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);" loading="lazy"></div>
   <nav class="dp-link-grid container-fluid dp-link-grid-item-s-rounded dp-link-grid-item-bg-dp-primary dp-link-grid-hover-dp-accent dp-link-grid-icon-s-brdr-r dp-link-grid-icon-brdr-dp-secondary dp-link-grid-icon-brdr-w-2">
     <ul class="row">
       <li class="col-sm-12 col-md-4 col-lg-4"><a title="Course Overview" href="$WIKI_REFERENCE$/pages/{p_start_here_id}" data-course-type="wikiPages"><i class="fas fa-flag" aria-hidden="true"></i> Course Overview</a></li>
@@ -1272,13 +1336,19 @@ def main():
             video_embeds.append(render_video_embed(v_title, v_id, v_start))
         videos_body = "\n".join(video_embeds)
 
-        reading_panels = [
-            ("Required Readings & Tutorial Guides", readings_body),
-            ("Required Video Lecture Chapters (Embedded)", videos_body)
-        ]
+        # Load and parse Curated Unit Overview markdown (Instructor Lecture)
+        overview_md = load_and_clean_unit_overview(u_num)
+        overview_html = parse_markdown_to_html(overview_md) if overview_md else ""
+
+        reading_panels = []
+        if overview_html:
+            reading_panels.append(("Instructor Lecture & Conceptual Deep Dive", overview_html))
+        reading_panels.append(("Required Readings & Authoritative PostgreSQL Guides", readings_body))
+        reading_panels.append(("Required Video Lecture Chapters (Embedded)", videos_body))
+
         with open(os.path.join(wiki_dir, reading_file), "w", encoding="utf-8") as f:
-            f.write(render_standard_page_html(f"{u_short}: Required Readings & Video Lectures", reading_lead, reading_panels, reading_id))
-        pages_manifest.append((reading_file, f"{u_short}: Required Readings & Video Lectures", reading_id))
+            f.write(render_standard_page_html(f"{u_short}: Required Readings, Concepts & Video Lectures", reading_lead, reading_panels, reading_id))
+        pages_manifest.append((reading_file, f"{u_short}: Required Readings, Concepts & Video Lectures", reading_id))
 
         # ----------------------------------------------------
         # Page 3: Asynchronous Preparation & Drills - Clean Standard Page
@@ -1502,7 +1572,7 @@ def main():
             "title": u_title,
             "items": [
                 {"type": "WikiPage", "title": f"{u_short} Overview: {u_topic}", "ref": overview_id, "indent": 0, "state": "active"},
-                {"type": "WikiPage", "title": f"{u_short}: Required Readings & Video Lectures", "ref": reading_id, "indent": 1, "state": "active"},
+                {"type": "WikiPage", "title": f"{u_short}: Required Readings, Concepts & Video Lectures", "ref": reading_id, "indent": 1, "state": "active"},
                 {"type": "WikiPage", "title": f"{u_short}: Asynchronous Preparation & Drills", "ref": study_id, "indent": 1, "state": "active"},
                 {"type": "WikiPage", "title": f"{u_short}: Applied SQL Lab Guide", "ref": lab_guide_id, "indent": 1, "state": "active"},
                 {"type": "Assignment", "title": assign_title, "ref": assign_id, "indent": 1, "state": "active"},
@@ -1591,6 +1661,12 @@ def main():
     syllabus_docx_res_id = make_id("res_syllabus_docx")
     resources_xml.append(f"""    <resource identifier="{syllabus_docx_res_id}" type="webcontent" href="web_resources/syllabi/{dst_docx_name}">
       <file href="web_resources/syllabi/{dst_docx_name}"/>
+    </resource>""")
+
+    # Course Banner Image Resource
+    course_banner_res_id = make_id("res_course_banner")
+    resources_xml.append(f"""    <resource identifier="{course_banner_res_id}" type="webcontent" href="web_resources/images/sql_course_banner.jpg">
+      <file href="web_resources/images/sql_course_banner.jpg"/>
     </resource>""")
 
     # Wiki Pages Resources
