@@ -329,6 +329,74 @@ LEARN_WITH_AI_DATA = {
     }
 }
 
+# Teacher Guide Video & Synchronous Delivery Data per Unit
+TEACHER_GUIDE_DATA = {
+    1: {
+        "videos": [
+            ("Micro-Video 1.1: Relational Foundations & The Projection Metaphor", "4-6 mins", "Explain tables as mathematical relations, rows as tuples, and columns as attributes. Use the 'flashlight' metaphor for SELECT projection vs SELECT *."),
+            ("Micro-Video 1.2: Live Coding SELECT & ORDER BY in psql", "5-7 mins", "Open Codespaces terminal, run psql -U postgres, query employees, demonstrate column aliases (AS), string concatenation (||), and multi-column sorting."),
+            ("Micro-Video 1.3: Lab 1 Walkthrough & Submission Protocol", "3-4 mins", "Tour the 5 base tables in public schema, explain the Lab 1 deliverables, and demonstrate how to submit answers into the Canvas Lab Practical.")
+        ],
+        "sync_agenda": "0:00-0:20 Concept Debrief & Warm-up | 0:20-0:50 Live Demo & Semicolon/Alias traps | 0:50-1:40 Paired Challenges (inclass_challenges.sql) | 1:40-2:20 Lab 1 Hands-on | 2:20-2:30 Practical Turn-in Debrief"
+    },
+    2: {
+        "videos": [
+            ("Micro-Video 2.1: The Scalpel - WHERE Filtering & Logic Gates", "4-6 mins", "Contrast WHERE with SELECT projection. Teach AND/OR operator precedence and why parentheses are mandatory."),
+            ("Micro-Video 2.2: Live Demo - The Mystery of Three-Valued Logic & NULLs", "5-7 mins", "Demonstrate in psql why '= NULL' always yields UNKNOWN (zero rows) and how IS NULL / IS NOT NULL fixes it."),
+            ("Micro-Video 2.3: Lab 2 Walkthrough & Pattern Matching (LIKE/ILIKE)", "3-4 mins", "Walk through wildcards (% and _), case-insensitive ILIKE, and LIMIT/OFFSET pagination.")
+        ],
+        "sync_agenda": "0:00-0:20 3VL Truth Table Warm-up | 0:20-0:50 Live Trap Demo (Unparenthesized OR bug) | 0:50-1:40 Paired Filtering Challenges | 1:40-2:20 Lab 2 Execution | 2:20-2:30 Wrap-up"
+    },
+    3: {
+        "videos": [
+            ("Micro-Video 3.1: Visualizing Relational Interconnectivity (Joins)", "4-6 mins", "Explain Primary Key to Foreign Key relationships using Venn diagrams and set intersection."),
+            ("Micro-Video 3.2: Live Demo - INNER vs LEFT vs The Anti-Join Pattern", "6-8 mins", "Demonstrate 3-table joins (orders -> order_lines -> products) and how 'WHERE parent.id IS NULL' identifies orphaned records."),
+            ("Micro-Video 3.3: Lab 3 Walkthrough & Multi-Table Order Subtotals", "3-4 mins", "Review schema ERD and show how line_subtotal (quantity * unit_price) is calculated across tables.")
+        ],
+        "sync_agenda": "0:00-0:20 ERD Entity Mapping | 0:20-0:50 Live Cartesian Product Trap Demo | 0:50-1:40 Paired Multi-Table Joins | 1:40-2:20 Lab 3 Execution | 2:20-2:30 Anti-Join Debrief"
+    },
+    4: {
+        "videos": [
+            ("Micro-Video 4.1: Transforming Granular Rows into Executive Summaries", "4-6 mins", "The Golden Rule of GROUP BY (every non-aggregated SELECT column must appear in GROUP BY)."),
+            ("Micro-Video 4.2: Live Demo - WHERE vs HAVING & Conditional CASE Pivoting", "6-8 mins", "Demonstrate pre-aggregation WHERE filtering vs post-aggregation HAVING filtering, and SUM(CASE WHEN...) matrix pivoting."),
+            ("Micro-Video 4.3: Lab 4 Walkthrough & Safe Division Math (NULLIF)", "3-4 mins", "Explain division-by-zero crashes in financial queries and how NULLIF(denominator, 0) prevents runtime errors.")
+        ],
+        "sync_agenda": "0:00-0:20 Aggregation Warm-up | 0:20-0:50 Live GROUP BY Error Trap Demo | 0:50-1:40 Paired Pivoting Challenges | 1:40-2:20 Lab 4 Executive Reporting | 2:20-2:30 Summary Review"
+    },
+    5: {
+        "videos": [
+            ("Micro-Video 5.1: Safe Data Engineering & Transaction Protocols", "4-6 mins", "ACID principles, explicit transaction boundaries (BEGIN, COMMIT, ROLLBACK), and why running raw UPDATEs in production is forbidden."),
+            ("Micro-Video 5.2: Live Demo - The 3-Step DML Protocol & RETURNING Clauses", "6-8 mins", "Step 1: SELECT count(*); Step 2: BEGIN; UPDATE... RETURNING; Step 3: Verify count & COMMIT. Demonstrate rolling back an accidental whole-table delete."),
+            ("Micro-Video 5.3: Lab 5 Walkthrough & Temporary Staging Tables", "3-4 mins", "How session-scoped TEMP TABLEs allow multi-step ETL cleansing before touching production tables.")
+        ],
+        "sync_agenda": "0:00-0:20 Disaster Recovery Discussion | 0:20-0:50 Live Catastrophic DELETE & Rollback Demo | 0:50-1:40 Paired Staging Transformation Clinic | 1:40-2:20 Lab 5 Safe DML | 2:20-2:30 Wrap-up"
+    },
+    6: {
+        "videos": [
+            ("Micro-Video 6.1: Subqueries vs Common Table Expressions (CTEs)", "4-6 mins", "Explain scalar, multi-row, and correlated subqueries, then refactor them into sequential WITH clauses."),
+            ("Micro-Video 6.2: Live Demo - Analytical Window Functions & Partitions", "6-8 mins", "Demonstrate OVER (PARTITION BY ... ORDER BY ...), ROW_NUMBER() = 1 deduplication, and cumulative running totals."),
+            ("Micro-Video 6.3: Lab 6 Walkthrough & Advanced Analytics", "3-4 mins", "Guide students through ranking department compensation and calculating running order volume over time.")
+        ],
+        "sync_agenda": "0:00-0:20 CTE Pipeline Overview | 0:20-0:50 Live Window Framing Demo | 0:50-1:40 Paired Analytical Window Challenges | 1:40-2:20 Lab 6 Execution | 2:20-2:30 Analytics Review"
+    },
+    7: {
+        "videos": [
+            ("Micro-Video 7.1: From Spreadsheet Chaos to 3NF Normalization", "4-6 mins", "Explain 1NF (atomic columns), 2NF (no partial key dependencies), and 3NF (no transitive dependencies)."),
+            ("Micro-Video 7.2: Live Demo - DDL Constraints & Referential Actions", "6-8 mins", "Write CREATE TABLE with PRIMARY KEY, FOREIGN KEY ON DELETE CASCADE, CHECK, and UNIQUE in PostgreSQL 16."),
+            ("Micro-Video 7.3: Lab 7 Walkthrough & Creating Abstraction Views", "3-4 mins", "Explain how CREATE VIEW hides schema complexity and provides secure data access for business analysts.")
+        ],
+        "sync_agenda": "0:00-0:20 Denormalized Spreadsheet Clinic | 0:20-0:50 Live Constraint Violation Trap Demo | 0:50-1:40 Paired Schema DDL Design | 1:40-2:20 Lab 7 Execution | 2:20-2:30 Schema Architecture Review"
+    },
+    8: {
+        "videos": [
+            ("Micro-Video 8.1: Query Optimization, EXPLAIN Trees & B-Trees", "4-6 mins", "Explain how PostgreSQL cost models evaluate Sequential Scans vs Index Scans, and how B-Trees structure indexed data."),
+            ("Micro-Video 8.2: Live Demo - The Write Penalty & Composite Index Leftmost Prefix", "6-8 mins", "Run EXPLAIN ANALYZE on a 10,000-row table, create a B-Tree index, show cost reduction, and test column order."),
+            ("Micro-Video 8.3: Capstone Walkthrough & Architecture Defense Guide", "4-6 mins", "Walk through the 4 capstone deliverables: 3NF DDL, Staging ETL pipeline, Window analytics, and Index optimization defense.")
+        ],
+        "sync_agenda": "0:00-0:20 Query Planner Clinic | 0:20-0:50 Live EXPLAIN ANALYZE Tuning Demo | 0:50-1:40 Capstone Defense Working Session | 1:40-2:20 Capstone Execution | 2:20-2:30 Final Wrap-up"
+    }
+}
+
 def render_designplus_html(title: str, lead_html: str, panels: list, page_id: str, workflow_state: str = "active") -> str:
     """Renders HTML strictly adhering to the DesignPLUS classes from the user's institution."""
     panels_html = []
@@ -550,6 +618,36 @@ def build_assessment_meta_xml(quiz_id: str, quiz_title: str, quiz_group_id: str)
 </quiz>
 """
 
+def build_assignment_settings_xml(assign_id: str, title: str, group_id: str, points: float = 50.0) -> str:
+    """Generates standard Canvas assignment_settings.xml matching institutional format."""
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<assignment identifier="{assign_id}" xmlns="http://canvas.instructure.com/xsd/cccv1p0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://canvas.instructure.com/xsd/cccv1p0 https://canvas.instructure.com/xsd/cccv1p0.xsd">
+  <title>{html.escape(title)}</title>
+  <time_zone_edited>Mountain Time (US &amp; Canada)</time_zone_edited>
+  <module_locked>false</module_locked>
+  <assignment_group_identifierref>{group_id}</assignment_group_identifierref>
+  <workflow_state>published</workflow_state>
+  <assignment_overrides>
+  </assignment_overrides>
+  <allowed_extensions>sql,txt,pdf</allowed_extensions>
+  <has_group_category>false</has_group_category>
+  <points_possible>{points:.1f}</points_possible>
+  <grading_type>points</grading_type>
+  <submission_types>online_text_entry,online_upload</submission_types>
+  <turnitin_enabled>false</turnitin_enabled>
+  <vericite_enabled>false</vericite_enabled>
+  <peer_reviews>false</peer_reviews>
+  <automatic_peer_reviews>false</automatic_peer_reviews>
+  <anonymous_peer_reviews>false</anonymous_peer_reviews>
+  <freeze_on_copy>false</freeze_on_copy>
+  <omit_from_final_grade>false</omit_from_final_grade>
+  <hide_in_gradebook>false</hide_in_gradebook>
+  <post_policy>
+    <post_manually>false</post_manually>
+  </post_policy>
+</assignment>
+"""
+
 def main():
     print("=================================================================")
     print("CMAP 1815: Modern SQL - Canvas Native Course Package Builder")
@@ -560,9 +658,12 @@ def main():
     wiki_dir = os.path.join(OUTPUT_BUILD_DIR, "wiki_content")
     settings_dir = os.path.join(OUTPUT_BUILD_DIR, "course_settings")
     non_cc_dir = os.path.join(OUTPUT_BUILD_DIR, "non_cc_assessments")
+    web_res_dir = os.path.join(OUTPUT_BUILD_DIR, "web_resources")
+    syllabi_dir = os.path.join(web_res_dir, "syllabi")
     os.makedirs(wiki_dir, exist_ok=True)
     os.makedirs(settings_dir, exist_ok=True)
     os.makedirs(non_cc_dir, exist_ok=True)
+    os.makedirs(syllabi_dir, exist_ok=True)
 
     # 2. Assignment Groups
     group_labs_id = make_id("group_labs")
@@ -637,25 +738,205 @@ def main():
     with open(os.path.join(settings_dir, "course_settings.xml"), "w", encoding="utf-8") as f:
         f.write(course_settings_xml)
 
-    # 4. Generate Course Welcome & Orientation Pages in wiki_content
-    pages_manifest = []  # List of (filename, title, ident)
-    modules_data = []    # Modules for module_meta.xml and imsmanifest.xml
+    # Copy Word Document Syllabus to web_resources/syllabi
+    src_docx = os.path.join(COURSE_SPECS_DIR, "CMAP_1815_Master_Syllabus.docx")
+    dst_docx_name = "CMAP 1815 Syllabus Fall 2026 - Swarm.docx"
+    dst_docx_path = os.path.join(syllabi_dir, dst_docx_name)
+    if os.path.exists(src_docx):
+        with open(src_docx, "rb") as sf, open(dst_docx_path, "wb") as df:
+            df.write(sf.read())
 
-    # Page: Start Here Welcome
-    p_welcome_id = make_id("page_welcome")
-    p_welcome_file = "course-orientation-and-syllabus.html"
-    welcome_lead = "<p>Welcome to <strong>CMAP 1815: Introduction to Modern SQL</strong>. This 8-week hybrid course trains you in professional relational database engineering using modern PostgreSQL 16.</p><p>Each week consists of 150 minutes of guided asynchronous preparation followed by 150 minutes of active classroom paired coding and hands-on laboratory exercises.</p>"
-    welcome_panels = [
-        ("Course Learning Outcomes (CLOs)", 
-         "<ol><li><strong>CLO 1:</strong> Design, write, and debug SQL queries to retrieve, filter, and sort data from relational tables.</li><li><strong>CLO 2:</strong> Group and aggregate data, write modular subqueries, CTEs, and window functions to manipulate result sets.</li><li><strong>CLO 3:</strong> Translate real-world business requirements into correct, performant SQL statements.</li><li><strong>CLO 4:</strong> Safely execute data manipulation operations (INSERT, UPDATE, DELETE), manage transactions, and stage transformations using temporary tables.</li><li><strong>CLO 5:</strong> Design normalized relational schemas (1NF–3NF), write DDL scripts, declare integrity constraints, and create views.</li><li><strong>CLO 6:</strong> Profile query performance with EXPLAIN ANALYZE, engineer B-Tree indexes, and defend architectural choices in a comprehensive capstone.</li></ol>"),
-        ("Grading & Evaluation Breakdown",
-         "<ul><li><strong>Hands-on SQL Labs (40%):</strong> Weekly verified scripts executed in PostgreSQL 16.</li><li><strong>Unit Quizzes (20%):</strong> 15-question formative/evaluative knowledge checks.</li><li><strong>Asynchronous Preparation & Drills (10%):</strong> Pre-class study guides and self-checks.</li><li><strong>Comprehensive Course Capstone (30%):</strong> 3NF schema, DDL constraints, ETL staging, advanced window analytics, and index performance defense.</li></ul>"),
-        ("Institutional Hybrid Time Commitment",
-         "<p>In accordance with institutional accreditation standards, each week is budgeted for:</p><ul><li><strong>150 Minutes Asynchronous Guided Study:</strong> Micro-videos, PostgreSQLTutorial readings, and formative self-check drills.</li><li><strong>150 Minutes Synchronous Active Lab:</strong> Interactive live coding, pair programming challenges, and lab completion.</li></ul>")
+    # Build Native Syllabus HTML
+    syllabus_body = f"""<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Syllabus</title>
+</head>
+<body>
+<div id="dp-wrapper" class="dp-wrapper dp-hdg-i-cp-brdr-h2-dp-primary dp-hdg-txt-h3-dp-primary dp-hdg-txt-h4-dp-primary dp-hdg-txt-h5-dp-primary dp-hdg-i-cp-brdr-h5-dp-primary dp-hdg-b-h2-brdr-b dp-hdg-txt-h6-dp-primary dp-hdg-i-cp-brdr-h6-dp-primary dp-hdg-i-styl-h2-pill dp-hdg-i-styl-h3-pill dp-hdg-cp-brdr-h3-dp-secondary dp-hdg-cp-brdr-h2-dp-secondary dp-hdg-brdr-h2-1 dp-hdg-brdr-h3-1 dp-hdg-brdr-h4-1 dp-hdg-brdr-h5-1 dp-hdg-brdr-h6-1 dp-hdg-i-sz-h2-fill dp-hdg-i-sz-h3-fill dp-hdg-i-sz-h5-fill dp-hdg-i-sz-h6-fill dp-hdg-i-brdr-h5-2 dp-hdg-i-brdr-h6-2 dp-hdg-b-h3-brdr-b dp-hdg-txt-h2-dp-primary dp-hdg-i-brdr-h2-1 dp-hdg-i-brdr-h3-1 dp-hdg-i-sz-h4-fill dp-hdg-i-cp-brdr-h3-dp-primary dp-hdg-i-brdr-h4-1 dp-hdg-i-bg-h2-dp-primary dp-hdg-i-bg-h3-dp-primary dp-hdg-b-h4-brdr-b dp-hdg-d-h4-table-l dp-hdg-i-styl-h4-pill dp-hdg-i-cp-brdr-h4-dp-primary">
+<div class="dp-content-block">
+<div class="dp-action-item dp-action-item-block dp-action-item-note dp-locked" style="display: none;" aria-hidden="true">
+<p><em>Welcome to your Syllabus! This page was designed with the guidance of QM Standard: <strong>SRS1.4</strong>.</em></p>
+</div>
+<header class="dp-header dp-basic-bar dp-header-s-brdr-l dp-header-brdr-w-4 dp-header-out-dp-secondary dp-header-pre-s-brdr-r dp-header-pre-font-sm dp-header-pre-out-dp-secondary dp-header-sub-brdr-w-0 dp-header-desc-txt-dp-primary dp-header-desc-out-dp-primary dp-header-sub-bg-dp-white dp-header-sub-txt-dp-primary dp-header-sub-out-dp-primary">
+<h2 class="dp-heading dp-locked"><span class="dp-header-title">Course Syllabus</span></h2>
+</header>
+<p>&nbsp;</p>
+<h3 class="dp-has-icon dp-locked"><i class="far fa-file-alt"><span class="dp-icon-content" style="display: none;">&nbsp;</span></i> <span>Downloadable Syllabus</span></h3>
+<p><span>The syllabus is a comprehensive guide to this course. It outlines class expectations, grading policy, course learning outcomes, and institutional policies. Review your syllabus carefully, and ask questions of your instructor to make sure your understanding is clear.</span></p>
+<p><a class="instructure_file_link instructure_scribd_file inline_disabled" title="{dst_docx_name}" href="$IMS-CC-FILEBASE$/syllabi/{dst_docx_name.replace(' ', '%20')}?canvas_=1&amp;canvas_qs_wrap=1" target="_blank">Download Master Syllabus (Word .docx)</a></p>
+<hr>
+<h3 class="dp-has-icon dp-locked"><i class="far fa-check-circle"><span class="dp-icon-content" style="display: none;">&nbsp;</span></i><span style="color: var(--bs-heading-color); font-size: calc(1.3rem + 0.6vw);">Grade Scale &amp; Evaluation Breakdown</span></h3>
+<hr>
+<ul>
+  <li><strong>Hands-on SQL Labs (40%):</strong> Weekly verified SQL scripts submitted and executed against PostgreSQL 16.</li>
+  <li><strong>Unit Knowledge Checks &amp; Quizzes (20%):</strong> 15-question concept assessments testing syntax, relational logic, and traps.</li>
+  <li><strong>Asynchronous Preparation &amp; AI Participation (10%):</strong> Pre-lab self-check drills and weekly discussion tasks.</li>
+  <li><strong>Comprehensive Course Capstone (30%):</strong> Production 3NF schema design, DDL constraints, ETL staging, and index tuning defense.</li>
+</ul>
+<p><strong>LCCC Standard Grading Scale:</strong></p>
+<p>A: 90 – 100%</p>
+<p>B: 80 – 89%</p>
+<p>C: 70 – 79%</p>
+<p>D: 60 – 69%</p>
+<p>F: 0 – 59%</p>
+<p>&nbsp;</p>
+<h3 class="dp-has-icon dp-locked"><i class="far fa-clock"><span class="dp-icon-content" style="display: none;">&nbsp;</span></i><span>Late Grading Policy</span></h3>
+<p>Assignments, projects, and lab work should be turned in by the designated due date. Submissions will not be accepted late unless prior arrangements have been made with the instructor or accommodations have been issued by Disability Services.</p>
+<hr class="dp-hr-solid-light">
+<p><a class="btn btn-dp-primary btn-block cph-bg-dp-accent dp-locked" href="https://www.lccc.wy.edu/life/handbook/index.aspx#welcome" target="_blank">LCCC Student Handbook &amp; Policies</a></p>
+<p>&nbsp;</p>
+</div>
+<p>&nbsp;</p>
+</div>
+</body>
+</html>"""
+    with open(os.path.join(settings_dir, "syllabus.html"), "w", encoding="utf-8") as f:
+        f.write(syllabus_body)
+
+    # 4. Generate Course Welcome & Orientation Pages in wiki_content
+    pages_manifest = []       # List of (filename, title, ident)
+    modules_data = []         # Modules for module_meta.xml and imsmanifest.xml
+    assignment_manifest = []  # List of (assign_id, folder_name, html_file, title)
+    quiz_manifest = []        # List of (quiz_id, quiz_meta_id, title)
+
+    # Pre-generate Module IDs so Home Page accordion can reference them
+    mod_orient_id = make_id("module_orientation")
+    unit_mod_ids = {u["num"]: make_id(f"module_u{u['num']}") for u in UNIT_METADATA}
+
+    # Page: Start Here (start-here.html)
+    p_start_here_id = make_id("page_start_here")
+    p_start_here_file = "start-here.html"
+    start_here_html = f"""<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Start Here: Course Overview &amp; Orientation</title>
+<meta name="identifier" content="{p_start_here_id}"/>
+<meta name="editing_roles" content="teachers"/>
+<meta name="workflow_state" content="active"/>
+<meta name="editor_type" content="rce"/>
+</head>
+<body>
+<div id="dp-wrapper" class="dp-wrapper dp-hdg-i-cp-brdr-h2-dp-primary dp-hdg-txt-h3-dp-primary dp-hdg-txt-h4-dp-primary dp-hdg-txt-h5-dp-primary dp-hdg-i-cp-brdr-h5-dp-primary dp-hdg-b-h2-brdr-b dp-hdg-txt-h6-dp-primary dp-hdg-i-cp-brdr-h6-dp-primary dp-hdg-i-styl-h2-pill dp-hdg-i-styl-h3-pill dp-hdg-cp-brdr-h3-dp-secondary dp-hdg-cp-brdr-h2-dp-secondary dp-hdg-brdr-h2-1 dp-hdg-brdr-h3-1 dp-hdg-brdr-h4-1 dp-hdg-brdr-h5-1 dp-hdg-brdr-h6-1 dp-hdg-i-sz-h2-fill dp-hdg-i-sz-h3-fill dp-hdg-i-sz-h5-fill dp-hdg-i-sz-h6-fill dp-hdg-i-brdr-h5-2 dp-hdg-i-brdr-h6-2 dp-hdg-b-h3-brdr-b dp-hdg-txt-h2-dp-primary dp-hdg-i-brdr-h2-1 dp-hdg-i-brdr-h3-1 dp-hdg-i-sz-h4-fill dp-hdg-i-cp-brdr-h3-dp-primary dp-hdg-i-brdr-h4-1 dp-hdg-i-bg-h2-dp-primary dp-hdg-i-bg-h3-dp-primary dp-hdg-b-h4-brdr-b dp-hdg-d-h4-table-l dp-hdg-i-styl-h4-pill dp-hdg-i-cp-brdr-h4-dp-primary">
+  <div class="dp-action-item dp-action-item-block dp-action-item-note dp-locked" style="display: none;" aria-hidden="true">
+    <p><em>Welcome to your Course Overview Page! This page was designed with the guidance of QM Standards: <strong>SRS1.2, SRS1.3, SRS1.5, SRS1.6, SRS1.7, SRS1.8, SRS1.9</strong>.</em></p>
+  </div>
+  <header class="dp-header dp-basic-bar dp-header-s-brdr-l dp-header-brdr-w-4 dp-header-out-dp-secondary dp-header-pre-s-brdr-r dp-header-pre-font-sm dp-header-pre-out-dp-secondary dp-header-sub-brdr-w-0 dp-header-desc-txt-dp-primary dp-header-desc-out-dp-primary dp-header-sub-bg-dp-white dp-header-sub-txt-dp-primary dp-header-sub-out-dp-primary">
+    <h2 class="dp-heading dp-locked"><span class="dp-header-title">Course Overview &amp; Orientation</span></h2>
+    <p>&nbsp;</p>
+  </header>
+  <div class="dp-content-block">
+    <p><strong>Welcome to CMAP 1815: Introduction to Modern SQL!</strong> This 100% asynchronous course provides comprehensive training in professional relational database engineering using modern PostgreSQL 16.</p>
+    <p>You will gain mastery through guided tutorials, embedded micro-video lectures, hands-on SQL laboratory assignments with direct Canvas check-in, supplemental AI practice, and weekly knowledge checks.</p>
+  </div>
+  <div class="dp-panels-wrapper dp-accordion-plus dp-panel-color-dp-primary dp-panel-active-color-dp-accent dp-panel-hover-color-dp-accent">
+    <div class="dp-panel-group">
+      <h3 class="dp-panel-heading dp-has-icon dp-locked"><i class="far fa-compass"></i>&nbsp; How to Navigate this Course</h3>
+      <div class="dp-panel-content">
+        <ul>
+          <li><strong>Home:</strong> Returns to the course landing page with the interactive module accordion.</li>
+          <li><strong>Modules:</strong> The primary hub of the course where all weekly readings, labs, assignments, and quizzes are organized in sequence.</li>
+          <li><strong>Syllabus:</strong> Download your master Word (.docx) syllabus and review grading criteria.</li>
+          <li><strong>Grades:</strong> Track your weekly scores and instructor feedback across labs and quizzes.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="dp-panel-group">
+      <h3 class="dp-panel-heading dp-has-icon dp-locked"><i class="fas fa-paperclip"></i>&nbsp; Required Resources (Zero-Cost Model)</h3>
+      <div class="dp-panel-content">
+        <p>There are <strong>zero textbook costs</strong> for this course. All tools and reading materials are 100% free and open-access:</p>
+        <ul>
+          <li><strong>PostgreSQL 16 in GitHub Codespaces:</strong> Pre-configured cloud Linux database environment with psql.</li>
+          <li><strong>Authoritative Documentation:</strong> PostgreSQLTutorial.com and official PostgreSQL 16 manuals.</li>
+          <li><strong>Curated Video Lectures:</strong> High-definition video chapters embedded directly into each unit module.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="dp-panel-group">
+      <h3 class="dp-panel-heading dp-has-icon dp-locked"><i class="fas fa-tasks"></i>&nbsp; Hands-on SQL Labs &amp; Assignment Check-in</h3>
+      <div class="dp-panel-content">
+        <p>Each unit includes a dedicated <strong>Applied SQL Lab Assignment</strong> in Canvas where you will submit your verified queries. You can submit your work by uploading your <code>.sql</code> script or pasting your code directly into Canvas SpeedGrader for automated and instructor review.</p>
+      </div>
+    </div>
+    <div class="dp-panel-group">
+      <h3 class="dp-panel-heading dp-has-icon dp-locked"><i class="far fa-comment-dots"></i>&nbsp; Communication Expectations &amp; Support</h3>
+      <div class="dp-panel-content">
+        <p>Regular announcements will be broadcast via Canvas. For questions and assistance:</p>
+        <ul>
+          <li>Use the <strong>Canvas Inbox</strong> for private questions regarding grades.</li>
+          <li>Participate in the <strong>Unit Discussion Boards</strong> for peer collaboration and AI practice debriefs.</li>
+          <li>Virtual office hours links are available in our Course Orientation module.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>"""
+    with open(os.path.join(wiki_dir, p_start_here_file), "w", encoding="utf-8") as f:
+        f.write(start_here_html)
+    pages_manifest.append((p_start_here_file, "Start Here: Course Overview & Orientation", p_start_here_id))
+
+    # Page: Front Page (home-page.html)
+    p_home_id = make_id("page_home_front")
+    p_home_file = "home-page.html"
+    
+    # Generate Front Page Module Accordion Links
+    mod_links_lis = [
+        f'<li><a class="list-group-item list-group-item-action" href="$CANVAS_OBJECT_REFERENCE$/modules/{mod_orient_id}"><i class="fas fa-map-marker-alt"></i> Getting Started - Course Orientation</a></li>'
     ]
-    with open(os.path.join(wiki_dir, p_welcome_file), "w", encoding="utf-8") as f:
-        f.write(render_designplus_html("Course Orientation & Master Syllabus", welcome_lead, welcome_panels, p_welcome_id))
-    pages_manifest.append((p_welcome_file, "Course Orientation & Master Syllabus", p_welcome_id))
+    for unit in UNIT_METADATA:
+        u_num = unit["num"]
+        u_title = unit["title"]
+        m_id = unit_mod_ids[u_num]
+        mod_links_lis.append(f'<li><a class="list-group-item list-group-item-action" href="$CANVAS_OBJECT_REFERENCE$/modules/{m_id}"><i class="fas fa-map-marker-alt"></i> {html.escape(u_title)}</a></li>')
+    
+    mod_links_joined = "\n".join(mod_links_lis)
+
+    home_html = f"""<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Home Page</title>
+<meta name="identifier" content="{p_home_id}"/>
+<meta name="editing_roles" content="teachers"/>
+<meta name="workflow_state" content="active"/>
+<meta name="front_page" content="true"/>
+<meta name="editor_type" content="rce"/>
+</head>
+<body>
+<div id="dp-wrapper" class="dp-wrapper dp-hdg-i-cp-brdr-h2-dp-primary dp-hdg-txt-h3-dp-primary dp-hdg-txt-h4-dp-primary dp-hdg-txt-h5-dp-primary dp-hdg-i-cp-brdr-h5-dp-primary dp-hdg-b-h2-brdr-b dp-hdg-txt-h6-dp-primary dp-hdg-i-cp-brdr-h6-dp-primary dp-hdg-i-styl-h2-pill dp-hdg-i-styl-h3-pill dp-hdg-cp-brdr-h3-dp-secondary dp-hdg-cp-brdr-h2-dp-secondary dp-hdg-brdr-h2-1 dp-hdg-brdr-h3-1 dp-hdg-brdr-h4-1 dp-hdg-brdr-h5-1 dp-hdg-brdr-h6-1 dp-hdg-i-sz-h2-fill dp-hdg-i-sz-h3-fill dp-hdg-i-sz-h5-fill dp-hdg-i-sz-h6-fill dp-hdg-i-brdr-h5-2 dp-hdg-i-brdr-h6-2 dp-hdg-b-h3-brdr-b dp-hdg-txt-h2-dp-primary dp-hdg-i-brdr-h2-1 dp-hdg-i-brdr-h3-1 dp-hdg-i-sz-h4-fill dp-hdg-i-cp-brdr-h3-dp-primary dp-hdg-i-brdr-h4-1 dp-hdg-i-bg-h2-dp-primary dp-hdg-i-bg-h3-dp-primary dp-hdg-b-h4-brdr-b dp-hdg-d-h4-table-l dp-hdg-i-styl-h4-pill dp-hdg-i-cp-brdr-h4-dp-primary">
+  <div class="dp-action-item dp-action-item-block dp-action-item-note dp-locked" style="display: none;" aria-hidden="true">
+    <p><em>Welcome to your Home Page! This page was designed with the guidance of QM Standards: <strong>SRS1.1, SRS7.1, SRS7.2, SRS7.3, SRS7.4</strong>.</em></p>
+  </div>
+  <div id="dp-wrapper_1" class="dp-header dp-basic-bar dp-header-s-brdr-l dp-header-brdr-w-4 dp-header-out-dp-secondary dp-header-pre-s-brdr-r dp-header-pre-font-sm dp-header-pre-out-dp-secondary dp-header-sub-brdr-w-0 dp-header-desc-txt-dp-primary dp-header-desc-out-dp-primary dp-header-sub-bg-dp-white dp-header-sub-txt-dp-primary dp-header-sub-out-dp-primary">
+    <header class="dp-header dp-basic-bar dp-header-s-brdr-l dp-header-brdr-w-4 dp-header-out-dp-secondary dp-header-pre-s-brdr-r dp-header-pre-font-sm dp-header-pre-out-dp-secondary dp-header-sub-brdr-w-0 dp-header-desc-txt-dp-primary dp-header-desc-out-dp-primary dp-header-sub-bg-dp-white dp-header-sub-txt-dp-primary dp-header-sub-out-dp-primary">
+      <h1 class="dp-heading"><span class="dp-header-pre"><span class="dp-header-pre-1">CMAP 1815</span></span><span class="dp-header-title">Introduction to Modern SQL</span></h1>
+    </header>
+  </div>
+  <div class="dp-banner-image"><img role="presentation" src="https://lccc-wy.instructure.com/courses/14403/files/2411415/download" alt="" width="1100" height="220" loading="lazy"></div>
+  <nav class="dp-link-grid container-fluid dp-link-grid-item-s-rounded dp-link-grid-item-bg-dp-primary dp-link-grid-hover-dp-accent dp-link-grid-icon-s-brdr-r dp-link-grid-icon-brdr-dp-secondary dp-link-grid-icon-brdr-w-2">
+    <ul class="row">
+      <li class="col-sm-12 col-md-4 col-lg-4"><a title="Course Overview" href="$WIKI_REFERENCE$/pages/{p_start_here_id}" data-course-type="wikiPages"><i class="fas fa-flag" aria-hidden="true"></i> Course Overview</a></li>
+      <li class="col-sm-12 col-md-4 col-lg-4"><a title="Syllabus" href="$CANVAS_COURSE_REFERENCE$/assignments/syllabus" data-course-type="navigation"><i class="fas fa-file-alt" aria-hidden="true"></i> Syllabus</a></li>
+      <li class="col-sm-12 col-md-4 col-lg-4"><a class="dp-has-icon" href="https://lcccwy.sharepoint.com/sites/StudentSuccessResources" target="_blank"><i class="fas fa-external-link-alt" aria-hidden="true"></i> Student Resources</a></li>
+    </ul>
+  </nav>
+  <div class="dp-content-block">
+    <p style="text-align: left;"><strong>Welcome to CMAP 1815: Introduction to Modern SQL! Please review the Course Overview, Syllabus, and Student Resources above to get started.</strong></p>
+  </div>
+  <div class="dp-module-list dp-module-list-flag-completed dp-module-list-show-locked dp-quick-links-panels-accordion-plus dp-auto-update dp-panel-color-dp-primary dp-panel-active-color-dp-accent dp-panel-hover-color-dp-accent dp-quick-links-all dp-module-list-current-none">
+    <nav class="dp-module-list-item-group">
+      <ul class="fa-ul list-group">
+{mod_links_joined}
+      </ul>
+    </nav>
+  </div>
+</div>
+</body>
+</html>"""
+    with open(os.path.join(wiki_dir, p_home_file), "w", encoding="utf-8") as f:
+        f.write(home_html)
+    pages_manifest.append((p_home_file, "Home Page", p_home_id))
 
     # Page: Orientation - Learn with AI
     p_orient_ai_id = make_id("page_orient_learn_with_ai")
@@ -681,7 +962,7 @@ def main():
         ("GitHub Codespaces Cloud Environment (Recommended)",
          "<p>Your repository includes a pre-configured <code>.devcontainer</code> that provisions a PostgreSQL 16 server automatically upon startup.</p><ol><li>Open the course GitHub repository in your browser.</li><li>Click the green <strong>Code</strong> button, navigate to the <strong>Codespaces</strong> tab, and click <strong>Create codespace on main</strong>.</li><li>Once loaded, open the integrated terminal and type <code>psql -U postgres</code> to access the database immediately!</li></ol>"),
         ("Database Schema & Sample Datasets",
-         "<p>The course schema includes five core relational entities: <code>employees</code>, <code>locations</code>, <code>products</code>, <code>orders</code>, and <code>order_lines</code>, alongside the 10,000-row <code>superstore</code> dataset.</p><p>To initialize or reset your database, run:</p><pre><code>psql -U postgres -d postgres -f shared_assets/datasets/setup_chap1.sql</code></pre>")
+         "<p>The course schema includes five core relational entities: <code>employees</code>, <code>locations</code>, <code>products</code>, <code>orders</code>, and <code>order_lines</code>, alongside the 10,000-row <code>superstore</code> dataset.</p><p>To initialize or reset your database at any time, run:</p><pre><code>psql -U postgres -d postgres -f shared_assets/datasets/setup_chap1.sql</code></pre>")
     ]
     with open(os.path.join(wiki_dir, p_setup_file), "w", encoding="utf-8") as f:
         f.write(render_designplus_html("Database Setup & Environment Guide", setup_lead, setup_panels, p_setup_id))
@@ -703,19 +984,17 @@ def main():
 
     # Add Orientation Module
     modules_data.append({
-        "id": make_id("module_orientation"),
+        "id": mod_orient_id,
         "title": "Course Orientation & Database Setup",
         "items": [
-            {"type": "WikiPage", "title": "Course Orientation & Master Syllabus", "ref": p_welcome_id, "indent": 0, "state": "active"},
+            {"type": "WikiPage", "title": "Start Here: Course Overview & Orientation", "ref": p_start_here_id, "indent": 0, "state": "active"},
             {"type": "WikiPage", "title": "Orientation: Learn with AI — Course Guidelines & Free Tools", "ref": p_orient_ai_id, "indent": 1, "state": "active"},
             {"type": "WikiPage", "title": "Database Setup & Environment Guide", "ref": p_setup_id, "indent": 1, "state": "active"},
             {"type": "WikiPage", "title": "External Learning Resources & Media Guide", "ref": p_res_id, "indent": 1, "state": "active"}
         ]
     })
 
-    quiz_manifest = []
-
-    # 5. Generate Units 1 to 8 Pages & Modules
+    # 5. Generate Units 1 to 8 Pages, Canvas Assignments, Quizzes & Modules
     for unit in UNIT_METADATA:
         u_num = unit["num"]
         u_folder = unit["folder"]
@@ -730,7 +1009,7 @@ def main():
         # ----------------------------------------------------
         overview_id = make_id(f"page_u{u_num}_overview")
         overview_file = f"unit-{u_num:02d}-overview.html"
-        overview_lead = f"<p>Welcome to <strong>{u_title}</strong>. This unit focuses on mastering <em>{u_topic}</em> in modern PostgreSQL 16.</p><p>This overview guides you through the complete weekly learning sequence: review the assigned readings and embedded video lectures, complete the asynchronous preparatory drills, attend the live active classroom lab, engage in the supplemental AI practice drill, and take the unit knowledge check.</p>"
+        overview_lead = f"<p>Welcome to <strong>{u_title}</strong>. This unit focuses on mastering <em>{u_topic}</em> in modern PostgreSQL 16.</p><p>This overview guides you through the complete weekly learning sequence: review the assigned readings and embedded video lectures, complete the asynchronous preparatory drills, execute the applied hands-on SQL laboratory assignment, submit your work through Canvas, engage in supplemental AI practice, and complete the unit knowledge check.</p>"
         
         overview_panels = [
             ("Unit Learning Objectives", 
@@ -738,13 +1017,14 @@ def main():
             ("Weekly Learning Sequence & Roadmap",
              f"""<ol>
   <li><strong>1. Required Readings &amp; Embedded Videos:</strong> Review the authoritative reading tutorials and watch the embedded video segments directly inside Canvas.</li>
-  <li><strong>2. Asynchronous Preparation &amp; Drills:</strong> Complete the conceptual focus questions and self-check drills before attending our live classroom session.</li>
+  <li><strong>2. Asynchronous Preparation &amp; Drills:</strong> Complete the conceptual focus questions and self-check drills before starting your lab assignment.</li>
   <li><strong>3. Applied SQL Lab Assignment:</strong> Execute hands-on queries and scenario challenges against your live PostgreSQL 16 database.</li>
-  <li><strong>4. Learn with AI (Supplemental Practice):</strong> Complete the interactive role-play prompt drill with a free AI assistant and post your findings to the weekly discussion board.</li>
-  <li><strong>5. Unit Knowledge Check:</strong> Take the 15-question multiple-choice assessment to evaluate your mastery.</li>
+  <li><strong>4. Canvas Lab Turn-in:</strong> Submit your verified SQL script (<code>.sql</code>) or query answers through Canvas for grading.</li>
+  <li><strong>5. Learn with AI (Supplemental Practice):</strong> Complete the interactive role-play prompt drill with a free AI assistant and post your findings to the weekly discussion board.</li>
+  <li><strong>6. Unit Knowledge Check:</strong> Take the 15-question multiple-choice assessment to evaluate your mastery.</li>
 </ol>"""),
             ("Time Budget & Contact Hours",
-             f"<p>In accordance with our hybrid curriculum model, each unit is budgeted for:</p><ul><li><strong>150 Minutes Asynchronous Self-Study:</strong> Tutorials, video chapters, focus questions, and self-checks.</li><li><strong>150 Minutes Synchronous Active Learning:</strong> Live coding demos, paired challenges, and lab completion.</li></ul>")
+             f"<p>In accordance with our asynchronous curriculum model, each unit is budgeted for:</p><ul><li><strong>150 Minutes Guided Self-Study:</strong> Video micro-lectures, PostgreSQLTutorial readings, and formative self-check drills with expandable answers.</li><li><strong>150 Minutes Applied Laboratory Practice:</strong> Real-world database scenarios, hands-on query writing in PostgreSQL 16, and unit knowledge checks.</li></ul>")
         ]
         with open(os.path.join(wiki_dir, overview_file), "w", encoding="utf-8") as f:
             f.write(render_designplus_html(f"{u_short} Overview: {u_topic}", overview_lead, overview_panels, overview_id))
@@ -785,11 +1065,11 @@ def main():
         # ----------------------------------------------------
         study_id = make_id(f"page_u{u_num}_async_study")
         study_file = f"unit-{u_num:02d}-async-study.html"
-        study_lead = f"<p>Complete these conceptual reflection questions and formative self-check drills online on your own before attending our live classroom session for <strong>{u_short}</strong>.</p>"
+        study_lead = f"<p>Complete these conceptual reflection questions and formative self-check drills online before executing the lab assignment for <strong>{u_short}</strong>.</p>"
 
         # Load Self Check Drills
         drills_path = os.path.join(UNITS_DIR, u_folder, "async", "self_check_drills.md")
-        drills_html = "<p>Complete the 5 formative self-check drills provided in your course repository under <code>async/self_check_drills.md</code>.</p>"
+        drills_html = "<p>Complete the formative self-check drills provided in your course repository under <code>async/self_check_drills.md</code>.</p>"
         if os.path.exists(drills_path):
             with open(drills_path, "r", encoding="utf-8") as df:
                 d_text = df.read()
@@ -809,26 +1089,18 @@ def main():
             ("Pre-Class Focus Questions", focus_questions_html),
             ("Formative Self-Check Drills", drills_html),
             ("Preparation Verification Checklist",
-             "<p>Before class, verify that you have:</p><ul><li>Read all tutorial guides on PostgreSQLTutorial.com.</li><li>Watched each embedded video chapter.</li><li>Answered the self-check drills without peeking at the solutions first.</li><li>Logged into your GitHub Codespaces PostgreSQL 16 environment.</li></ul>")
+             "<p>Before proceeding to the lab assignment, verify that you have:</p><ul><li>Read all tutorial guides on PostgreSQLTutorial.com.</li><li>Watched each embedded video chapter.</li><li>Answered the self-check drills without peeking at the solutions first.</li><li>Logged into your GitHub Codespaces PostgreSQL 16 environment.</li></ul>")
         ]
         with open(os.path.join(wiki_dir, study_file), "w", encoding="utf-8") as f:
             f.write(render_designplus_html(f"{u_short}: Asynchronous Preparation & Drills", study_lead, study_panels, study_id))
         pages_manifest.append((study_file, f"{u_short}: Asynchronous Preparation & Drills", study_id))
 
         # ----------------------------------------------------
-        # Page 4: Applied SQL Lab Assignment
+        # Page 4: Applied SQL Lab Assignment Guide (Page)
         # ----------------------------------------------------
-        lab_id = make_id(f"page_u{u_num}_sync_lab")
-        lab_file = f"unit-{u_num:02d}-synchronous-lab.html"
-        lab_lead = f"<p>This page contains the hands-on laboratory scenario, database schema specifications, and grading rubric for <strong>{u_short}</strong>. Complete these queries against your live PostgreSQL 16 environment.</p>"
-
-        # Load In-Class Challenges
-        challenges_path = os.path.join(UNITS_DIR, u_folder, "sync", "inclass_challenges.sql")
-        challenges_html = "<p>Refer to your course repository for in-class live coding challenges.</p>"
-        if os.path.exists(challenges_path):
-            with open(challenges_path, "r", encoding="utf-8") as cf:
-                c_text = cf.read()
-                challenges_html = f"<pre style='max-height: 350px; overflow-y: auto;'><code>{html.escape(c_text)}</code></pre>"
+        lab_guide_id = make_id(f"page_u{u_num}_applied_lab_guide")
+        lab_guide_file = f"unit-{u_num:02d}-applied-lab-guide.html"
+        lab_guide_lead = f"<p>This page contains the hands-on laboratory scenario, database schema specifications, and step-by-step query tasks for <strong>{u_short}</strong>. Complete these queries in PostgreSQL 16, then submit your work using the Canvas Assignment link below.</p>"
 
         # Load Student Lab Guide
         lab_path = os.path.join(UNITS_DIR, u_folder, "guides", "student_lab_guide.md")
@@ -836,7 +1108,15 @@ def main():
         if os.path.exists(lab_path):
             with open(lab_path, "r", encoding="utf-8") as lf:
                 l_text = lf.read()
-                lab_content_html = f"<pre style='max-height: 400px; overflow-y: auto;'><code>{html.escape(l_text)}</code></pre>"
+                lab_content_html = f"<pre style='max-height: 450px; overflow-y: auto;'><code>{html.escape(l_text)}</code></pre>"
+
+        # Load Challenges
+        challenges_path = os.path.join(UNITS_DIR, u_folder, "sync", "inclass_challenges.sql")
+        challenges_html = "<p>Refer to your course repository for self-paced applied coding challenges.</p>"
+        if os.path.exists(challenges_path):
+            with open(challenges_path, "r", encoding="utf-8") as cf:
+                c_text = cf.read()
+                challenges_html = f"<pre style='max-height: 350px; overflow-y: auto;'><code>{html.escape(c_text)}</code></pre>"
 
         # Load Rubric
         rubric_path = os.path.join(UNITS_DIR, u_folder, "assessments", "lab_rubric.md")
@@ -846,17 +1126,54 @@ def main():
                 r_text = rf.read()
                 rubric_html = f"<pre style='max-height: 300px; overflow-y: auto;'><code>{html.escape(r_text)}</code></pre>"
 
-        sync_panels = [
-            ("Self-Paced Applied Coding Challenges", challenges_html),
+        lab_panels = [
             ("Laboratory Scenario & Task Specifications", lab_content_html),
-            ("Grading Rubric & Submission Requirements", rubric_html)
+            ("Self-Paced Applied Coding Challenges", challenges_html),
+            ("Grading Rubric & Submission Instructions", rubric_html)
         ]
-        with open(os.path.join(wiki_dir, lab_file), "w", encoding="utf-8") as f:
-            f.write(render_designplus_html(f"{u_short}: Applied SQL Lab Assignment", lab_lead, sync_panels, lab_id))
-        pages_manifest.append((lab_file, f"{u_short}: Applied SQL Lab Assignment", lab_id))
+        with open(os.path.join(wiki_dir, lab_guide_file), "w", encoding="utf-8") as f:
+            f.write(render_designplus_html(f"{u_short}: Applied SQL Lab Guide", lab_guide_lead, lab_panels, lab_guide_id))
+        pages_manifest.append((lab_guide_file, f"{u_short}: Applied SQL Lab Guide", lab_guide_id))
 
         # ----------------------------------------------------
-        # Page 5: Learn with AI — Supplemental Practice Drill
+        # Item 5: Native Canvas Assignment (Turn-in / Check-in)
+        # ----------------------------------------------------
+        assign_id = make_id(f"canvas_assignment_u{u_num}")
+        assign_folder = os.path.join(OUTPUT_BUILD_DIR, assign_id)
+        os.makedirs(assign_folder, exist_ok=True)
+        assign_title = f"{u_short} Applied SQL Lab Assignment"
+        assign_html_filename = f"unit-{u_num:02d}-lab-assignment.html"
+
+        # Write assignment_settings.xml
+        assign_settings_xml = build_assignment_settings_xml(assign_id, assign_title, group_labs_id, points=50.0)
+        with open(os.path.join(assign_folder, "assignment_settings.xml"), "w", encoding="utf-8") as af:
+            af.write(assign_settings_xml)
+
+        # Write assignment description HTML
+        assign_desc_html = f"""<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Assignment: {html.escape(assign_title)}</title>
+</head>
+<body>
+<h2>{html.escape(assign_title)} Instructions</h2>
+<p>Complete the SQL query challenges outlined in the <strong>{u_short}: Applied SQL Lab Guide</strong> against your live PostgreSQL 16 database in GitHub Codespaces.</p>
+<h3>Submission Requirements:</h3>
+<ol>
+  <li>Ensure all SQL queries are formatted with uppercase keywords and clauses on new lines.</li>
+  <li>Test your script in PostgreSQL (<code>psql -U postgres</code>) to verify that all queries execute without errors.</li>
+  <li>Upload your completed <code>.sql</code> script file (e.g. <code>lab{u_num}_yourname.sql</code>) or paste your verified SQL statements directly into the text entry box below.</li>
+</ol>
+<p><em>Grading: This assignment is evaluated out of 50 points based on query correctness, relational logic, and SQL formatting standards.</em></p>
+</body>
+</html>"""
+        with open(os.path.join(assign_folder, assign_html_filename), "w", encoding="utf-8") as ahf:
+            ahf.write(assign_desc_html)
+
+        assignment_manifest.append((assign_id, assign_html_filename, assign_title))
+
+        # ----------------------------------------------------
+        # Page 6: Learn with AI — Supplemental Practice Drill
         # ----------------------------------------------------
         ai_data = LEARN_WITH_AI_DATA[u_num]
         ai_page_id = make_id(f"page_u{u_num}_learn_with_ai")
@@ -885,37 +1202,6 @@ def main():
         pages_manifest.append((ai_page_file, f"{u_short}: Learn with AI — Supplemental Practice Drill", ai_page_id))
 
         # ----------------------------------------------------
-        # Page 6: [Instructor Guide] Teaching Notes & Solutions (Unpublished)
-        # ----------------------------------------------------
-        teacher_id = make_id(f"page_u{u_num}_teacher_guide")
-        teacher_file = f"unit-{u_num:02d}-instructor-guide.html"
-        teacher_lead = "<p><strong>[FOR INSTRUCTORS ONLY — UNPUBLISHED]</strong> This guide provides lecture walkthrough notes, pacing suggestions, common student misconceptions, trap demonstrations, and master solution references.</p>"
-
-        # Load Instructor Lecture Notes
-        notes_path = os.path.join(UNITS_DIR, u_folder, "lectures", "instructor_lecture_notes.md")
-        notes_html = "<p>Refer to course repository for instructor lecture notes.</p>"
-        if os.path.exists(notes_path):
-            with open(notes_path, "r", encoding="utf-8") as nf:
-                n_text = nf.read()
-                notes_html = f"<pre style='max-height: 450px; overflow-y: auto;'><code>{html.escape(n_text)}</code></pre>"
-
-        # Load Solution notes
-        sol_path = os.path.join(UNITS_DIR, u_folder, "guides", "instructor_solution.sql")
-        sol_html = "<p>Refer to course repository for master solution SQL.</p>"
-        if os.path.exists(sol_path):
-            with open(sol_path, "r", encoding="utf-8") as sf:
-                s_text = sf.read()
-                sol_html = f"<pre style='max-height: 350px; overflow-y: auto;'><code>{html.escape(s_text)}</code></pre>"
-
-        teacher_panels = [
-            ("Lecture Walkthrough Notes & Pacing", notes_html),
-            ("Instructor Master Solution SQL", sol_html)
-        ]
-        with open(os.path.join(wiki_dir, teacher_file), "w", encoding="utf-8") as f:
-            f.write(render_designplus_html(f"[Instructor Guide] {u_short} Teaching Notes & Solutions", teacher_lead, teacher_panels, teacher_id, workflow_state="unpublished"))
-        pages_manifest.append((teacher_file, f"[Instructor Guide] {u_short} Teaching Notes & Solutions", teacher_id))
-
-        # ----------------------------------------------------
         # Item 7: Unit Knowledge Check (Quiz)
         # ----------------------------------------------------
         quiz_path = os.path.join(UNITS_DIR, u_folder, "assessments", "unit_quiz.md")
@@ -941,16 +1227,58 @@ def main():
         quiz_manifest.append((quiz_id, quiz_meta_id, quiz_title))
 
         # ----------------------------------------------------
-        # Assemble Clean Unit Module Items
+        # Page 8: [Instructor Guide] Teaching Notes & Solutions (Unpublished)
+        # ----------------------------------------------------
+        teacher_id = make_id(f"page_u{u_num}_teacher_guide")
+        teacher_file = f"unit-{u_num:02d}-instructor-guide.html"
+        teacher_lead = "<p><strong>[FOR INSTRUCTORS ONLY — UNPUBLISHED]</strong> This guide provides custom video production blueprints, synchronous classroom delivery schedules, live coding trap demos, and master SQL solution keys.</p>"
+
+        # Format Video Production Blueprint
+        tg_info = TEACHER_GUIDE_DATA[u_num]
+        video_blueprint_lis = []
+        for v_title, v_dur, v_notes in tg_info["videos"]:
+            video_blueprint_lis.append(f"""<li style="margin-bottom: 0.75rem;">
+  <strong>{html.escape(v_title)}</strong> <em>({html.escape(v_dur)})</em>
+  <p style="margin: 0.25rem 0 0 0;">{html.escape(v_notes)}</p>
+</li>""")
+        video_blueprint_html = f"""<p>Record the following 3 micro-videos to customize this unit for your institution:</p>
+<ul style="padding-left: 1.5rem;">{''.join(video_blueprint_lis)}</ul>
+<p><strong>Where to Host &amp; Embed:</strong> Upload to <em>Canvas Studio</em>, <em>YouTube (Unlisted)</em>, or your campus media repository (Panopto/Kaltura). Replace or add the video embed iframe on the <code>{u_short}: Required Readings &amp; Video Lectures</code> page.</p>"""
+
+        # Synchronous Blueprint
+        sync_blueprint_html = f"""<p>If delivering this unit in a live classroom or synchronous Zoom session, follow this pacing schedule:</p>
+<pre style="white-space: pre-wrap; font-family: inherit; background: #f8fafc; padding: 1rem; border: 1px solid #cbd5e1; border-radius: 4px;"><code>{html.escape(tg_info['sync_agenda'])}</code></pre>
+<p>Use the provided <code>sync/inclass_challenges.sql</code> file for student pair-programming breakout sessions.</p>"""
+
+        # Load Solution notes
+        sol_path = os.path.join(UNITS_DIR, u_folder, "guides", "instructor_solution.sql")
+        sol_html = "<p>Refer to course repository for master solution SQL.</p>"
+        if os.path.exists(sol_path):
+            with open(sol_path, "r", encoding="utf-8") as sf:
+                s_text = sf.read()
+                sol_html = f"<pre style='max-height: 400px; overflow-y: auto;'><code>{html.escape(s_text)}</code></pre>"
+
+        teacher_panels = [
+            ("Video Production Blueprint (What Videos to Record & Where to Host)", video_blueprint_html),
+            ("Synchronous Delivery Blueprint (Alternative In-Person Schedule)", sync_blueprint_html),
+            ("Instructor Master Solution SQL & Answer Key", sol_html)
+        ]
+        with open(os.path.join(wiki_dir, teacher_file), "w", encoding="utf-8") as f:
+            f.write(render_designplus_html(f"[Instructor Guide] {u_short} Teaching Notes & Solutions", teacher_lead, teacher_panels, teacher_id, workflow_state="unpublished"))
+        pages_manifest.append((teacher_file, f"[Instructor Guide] {u_short} Teaching Notes & Solutions", teacher_id))
+
+        # ----------------------------------------------------
+        # Assemble Clean Unit Module Items (Standard 8-Item Sequence)
         # ----------------------------------------------------
         modules_data.append({
-            "id": make_id(f"module_u{u_num}"),
+            "id": unit_mod_ids[u_num],
             "title": u_title,
             "items": [
                 {"type": "WikiPage", "title": f"{u_short} Overview: {u_topic}", "ref": overview_id, "indent": 0, "state": "active"},
                 {"type": "WikiPage", "title": f"{u_short}: Required Readings & Video Lectures", "ref": reading_id, "indent": 1, "state": "active"},
                 {"type": "WikiPage", "title": f"{u_short}: Asynchronous Preparation & Drills", "ref": study_id, "indent": 1, "state": "active"},
-                {"type": "WikiPage", "title": f"{u_short}: Applied SQL Lab Assignment", "ref": lab_id, "indent": 1, "state": "active"},
+                {"type": "WikiPage", "title": f"{u_short}: Applied SQL Lab Guide", "ref": lab_guide_id, "indent": 1, "state": "active"},
+                {"type": "Assignment", "title": assign_title, "ref": assign_id, "indent": 1, "state": "active"},
                 {"type": "WikiPage", "title": f"{u_short}: Learn with AI — Supplemental Practice Drill", "ref": ai_page_id, "indent": 1, "state": "active"},
                 {"type": "Quizzes::Quiz", "title": quiz_title, "ref": quiz_id, "indent": 1, "state": "active"},
                 {"type": "WikiPage", "title": f"[Instructor Guide] {u_short} Teaching Notes & Solutions", "ref": teacher_id, "indent": 1, "state": "unpublished"}
@@ -1014,17 +1342,7 @@ def main():
     with open(os.path.join(settings_dir, "module_meta.xml"), "w", encoding="utf-8") as f:
         f.write(modules_meta_str)
 
-    # 7. Generate course_settings/syllabus.html
-    syllabus_html = render_designplus_html(
-        "CMAP 1815 Master Syllabus",
-        welcome_lead,
-        welcome_panels,
-        make_id("syllabus_page")
-    )
-    with open(os.path.join(settings_dir, "syllabus.html"), "w", encoding="utf-8") as f:
-        f.write(syllabus_html)
-
-    # 8. Generate imsmanifest.xml (Canvas Native Package Standard)
+    # 7. Generate imsmanifest.xml (Canvas Native Package Standard)
     manifest_id = make_id("cmap_1815_manifest")
     org_items_joined = "\n".join(org_items)
 
@@ -1042,10 +1360,23 @@ def main():
       <file href="course_settings/files_meta.xml"/>
     </resource>""")
 
+    # Word Syllabus File Resource
+    syllabus_docx_res_id = make_id("res_syllabus_docx")
+    resources_xml.append(f"""    <resource identifier="{syllabus_docx_res_id}" type="webcontent" href="web_resources/syllabi/{dst_docx_name}">
+      <file href="web_resources/syllabi/{dst_docx_name}"/>
+    </resource>""")
+
     # Wiki Pages Resources
     for p_file, p_title, p_id in pages_manifest:
         resources_xml.append(f"""    <resource identifier="{p_id}" type="webcontent" href="wiki_content/{p_file}">
       <file href="wiki_content/{p_file}"/>
+    </resource>""")
+
+    # Native Canvas Assignment Resources
+    for a_id, a_html_file, a_title in assignment_manifest:
+        resources_xml.append(f"""    <resource identifier="{a_id}" type="associatedcontent/imscc_xmlv1p1/learning-application-resource" href="{a_id}/{a_html_file}">
+      <file href="{a_id}/{a_html_file}"/>
+      <file href="{a_id}/assignment_settings.xml"/>
     </resource>""")
 
     # Quizzes Resources
@@ -1089,7 +1420,7 @@ def main():
     with open(os.path.join(OUTPUT_BUILD_DIR, "imsmanifest.xml"), "w", encoding="utf-8") as f:
         f.write(imsmanifest_str)
 
-    # 9. Schema & XML Well-Formedness Verification Suite
+    # 8. Schema & XML Well-Formedness Verification Suite
     print("\n--- Running XML Validation Suite ---")
     xml_files_tested = 0
     for root, dirs, files in os.walk(OUTPUT_BUILD_DIR):
@@ -1104,7 +1435,7 @@ def main():
                     sys.exit(1)
     print(f"SUCCESS: Verified {xml_files_tested} XML files. Zero syntax errors!")
 
-    # 10. Package into .imscc
+    # 9. Package into .imscc
     print(f"\n--- Packaging into {IMSCC_OUTPUT_FILE} ---")
     total_files = 0
     with zipfile.ZipFile(IMSCC_OUTPUT_FILE, 'w', zipfile.ZIP_DEFLATED) as zipf:
