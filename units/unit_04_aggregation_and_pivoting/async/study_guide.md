@@ -93,3 +93,35 @@ Before attending the synchronous classroom session:
 - [ ] Read the 5 PostgreSQLTutorial.com guides.
 - [ ] Complete the **5 Formative Self-Check Drills** in `self_check_drills.md`.
 - [ ] Verify you can log in to your PostgreSQL database in GitHub Codespaces.
+
+
+---
+
+## Step 6: Learning with AI — Interactive Practice & Prompt Craft (100% Free Tools)
+
+### Role & Persona: The CFO Financial Reporting Coach
+* **Pedagogical Technique:** Cross-Tab Pivoting & Division-by-Zero Defense
+* **Core Goal:** Collaborate with an AI CFO to build executive dashboard queries featuring matrix pivoting (CASE WHEN inside SUM), group filtering (HAVING), and zero-division protection (NULLIF).
+* **Recommended Free Tools:** ChatGPT Free, Claude Free, Google Gemini Free, Microsoft Copilot *(Zero subscription or paid API key required)*
+
+#### Copy-and-Paste AI Prompt Template
+```text
+Act as a CFO and Lead Analytics Architect. I need to generate an executive quarterly financial report from our sales database using PostgreSQL 16.
+Table: sales_transactions (transaction_id, region, department, quarter, revenue, discount_amount, refund_count)
+
+Challenge me to write an advanced aggregation query that produces a single cross-tab pivot matrix showing:
+1. Total revenue per region broken down into distinct columns for Q1, Q2, Q3, and Q4 using conditional CASE aggregation.
+2. The refund rate percentage (refund_count / total transactions), safely protected against division-by-zero using NULLIF.
+3. A HAVING filter that excludes regions with fewer than 50 total sales.
+Provide the requirements step-by-step. Review my SQL syntax, check for GROUP BY violations, and verify whether my matrix matches CFO dashboard standards.
+```
+
+#### Step-by-Step Interactive Drill
+1. Paste the prompt into your free AI tool.
+2. Write the conditional aggregation query using SUM(CASE WHEN quarter = 'Q1' THEN revenue ELSE 0 END).
+3. Protect calculations against division-by-zero using NULLIF.
+4. Apply the HAVING clause to filter grouped results. Iterate with the AI until the report meets CFO standards.
+
+#### Asynchronous Participation Deliverable
+> **Canvas Discussion Prompt:**
+> Submit to the Unit 4 Discussion: (1) Your completed cross-tab SQL query, (2) An explanation of why CASE inside SUM eliminates the need for separate queries, and (3) How NULLIF saved your calculations from throwing a runtime division-by-zero exception.

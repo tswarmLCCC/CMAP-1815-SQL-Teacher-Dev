@@ -85,3 +85,34 @@ Before attending the final synchronous classroom session:
 - [ ] Read the PostgreSQLTutorial guides on `EXPLAIN` and Indexes.
 - [ ] Complete the **5 Formative Self-Check Drills** in `self_check_drills.md`.
 - [ ] Review your previous assignments (Units 1–7) in preparation for Capstone defense.
+
+
+---
+
+## Step 6: Learning with AI — Interactive Practice & Prompt Craft (100% Free Tools)
+
+### Role & Persona: The Senior Performance DBA & Capstone Defense Panel
+* **Pedagogical Technique:** Execution Plan Profiling & Technical Architecture Defense
+* **Core Goal:** Subject your capstone project architecture, indexing decisions, and query execution plans (EXPLAIN ANALYZE) to a rigorous technical defense panel.
+* **Recommended Free Tools:** ChatGPT Free, Claude Free, Google Gemini Free, Microsoft Copilot *(Zero subscription or paid API key required)*
+
+#### Copy-and-Paste AI Prompt Template
+```text
+Act as a demanding Database Administrator (DBA) and Technical Review Board conducting my final Capstone Defense for CMAP 1815.
+I have built a complete PostgreSQL database system with a normalized schema, DDL constraints, ETL transaction pipeline, analytical window queries, and B-Tree indexes.
+Conduct a 10-minute technical defense simulation:
+1. Ask me to provide one of my heaviest analytical queries and explain what EXPLAIN ANALYZE reveals about it (Seq Scan vs. Index Scan, Cost, Execution Time).
+2. Challenge me to defend my B-Tree indexing strategy: Explain composite index column order (Leftmost Prefix rule) and the Write Penalty on INSERT/UPDATE.
+3. Grill me with edge cases: What happens if table statistics are outdated (ANALYZE)? When would the query planner intentionally ignore an index?
+Ask one probing question at a time. Evaluate my answers rigorously like a real technical interview!
+```
+
+#### Step-by-Step Interactive Drill
+1. Paste the prompt into your free AI tool.
+2. Provide one of your heavy Unit 8 lab queries or capstone queries.
+3. Defend your index choices, composite column ordering, and EXPLAIN ANALYZE interpretations against the DBA panel.
+4. Complete 4 to 5 turns of technical defense.
+
+#### Asynchronous Participation Deliverable
+> **Canvas Discussion Prompt:**
+> Post to the Unit 8 Capstone Discussion: (1) The toughest technical question the DBA panel asked you, (2) Your defense explaining index column ordering or execution plans, and (3) Your key takeaway on how B-Tree indexes affect read performance vs. write throughput.

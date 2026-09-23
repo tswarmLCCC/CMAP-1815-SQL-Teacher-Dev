@@ -76,3 +76,36 @@ Before attending the synchronous classroom session:
 - [ ] Read the PostgreSQLTutorial guides on CTEs, Window Functions, and `ROW_NUMBER`.
 - [ ] Complete the **5 Formative Self-Check Drills** in `self_check_drills.md`.
 - [ ] Understand why a window function cannot be placed directly inside a `WHERE` clause.
+
+
+---
+
+## Step 6: Learning with AI — Interactive Practice & Prompt Craft (100% Free Tools)
+
+### Role & Persona: The Staff SQL Architect
+* **Pedagogical Technique:** Query Refactoring & Window Partitioning Deconstruction
+* **Core Goal:** Refactor unreadable, slow nested subqueries into elegant Common Table Expressions (CTEs) and calculate running totals, moving averages, and ranks with analytical window functions.
+* **Recommended Free Tools:** ChatGPT Free, Claude Free, Google Gemini Free, Microsoft Copilot *(Zero subscription or paid API key required)*
+
+#### Copy-and-Paste AI Prompt Template
+```text
+Act as a Principal Database Architect at a high-scale tech company. I am learning modular SQL, Common Table Expressions (WITH clauses), and analytical Window Functions (ROW_NUMBER, RANK, DENSE_RANK, SUM() OVER).
+Please provide me with an ugly, 4-level deeply nested subquery that calculates:
+- Top 3 highest-earning employees in each department.
+- The department's average salary alongside each employee's salary.
+- The salary difference between each employee and the highest earner in their department.
+Challenge me to:
+1. Refactor this unreadable query into clean, modular CTEs (WITH dept_metrics AS (...)).
+2. Replace redundant group-by subqueries with appropriate OVER (PARTITION BY ... ORDER BY ...) window frames.
+Review my refactored query, evaluate its readability and efficiency, and explain how the database processes the window frame.
+```
+
+#### Step-by-Step Interactive Drill
+1. Paste the prompt and review the AI's complex nested subquery.
+2. Break the query down into modular, sequential CTE steps using WITH.
+3. Apply analytical window functions (DENSE_RANK() OVER (...), AVG() OVER (...)).
+4. Submit your refactored SQL for architectural code review.
+
+#### Asynchronous Participation Deliverable
+> **Canvas Discussion Prompt:**
+> In the Unit 6 Discussion, share: (1) The original nested subquery vs. your clean CTE/Window function query, (2) Why PARTITION BY does not collapse rows like GROUP BY, and (3) When you would choose DENSE_RANK() over ROW_NUMBER().

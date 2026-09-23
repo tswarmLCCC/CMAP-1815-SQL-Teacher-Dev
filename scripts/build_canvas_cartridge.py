@@ -12,6 +12,9 @@ COURSE_SPECS_DIR = os.path.join(BASE_DIR, "course_specs")
 OUTPUT_BUILD_DIR = os.path.join(BASE_DIR, "build", "canvas_cartridge")
 IMSCC_OUTPUT_FILE = os.path.join(BASE_DIR, "CMAP_1815_Complete.imscc")
 
+sys.path.append(os.path.dirname(__file__))
+from apply_ai_learning_updates import AI_LEARNING_DATA
+
 def make_id(seed: str) -> str:
     """Generate a deterministic 32-char hex identifier matching Canvas format."""
     return "g" + hashlib.md5(seed.encode("utf-8")).hexdigest()[1:]
@@ -511,6 +514,27 @@ def main():
 
         print(f"Processing {u_short} ({u_folder})...")
 
+        # AI Learning Module for this unit
+        ai_info = AI_LEARNING_DATA.get(u_num, {})
+        ai_persona = html.escape(ai_info.get("persona", ""))
+        ai_technique = html.escape(ai_info.get("technique", ""))
+        ai_desc = html.escape(ai_info.get("description", ""))
+        ai_tools = html.escape(ai_info.get("free_tools", ""))
+        ai_prompt = html.escape(ai_info.get("prompt_template", ""))
+        ai_task = html.escape(ai_info.get("interactive_task", "")).replace("\n", "<br/>")
+        ai_part = html.escape(ai_info.get("participation_activity", ""))
+
+        ai_overview_html = f"""<p><strong>Practice Persona:</strong> {ai_persona} <em>({ai_technique})</em></p>
+<p>{ai_desc}</p>
+<p><strong>Recommended Free AI Tools:</strong> {ai_tools} <em>(Zero paid subscription or API key required)</em>.</p>
+<h4>Interactive Prompt Template</h4>
+<p>Copy and paste this prompt into your free AI assistant:</p>
+<pre><code>{ai_prompt}</code></pre>
+<h4>Guided Practice Steps</h4>
+<p>{ai_task}</p>
+<h4>Asynchronous Participation Discussion</h4>
+<p>{ai_part}</p>"""
+
         # --- Unit Overview Page ---
         overview_id = make_id(f"page_u{u_num}_overview")
         overview_file = f"unit-{u_num:02d}-overview.html"
@@ -521,7 +545,8 @@ def main():
             ("150-Minute Asynchronous Preparation",
              f"<p>Prior to class, watch the designated video chapters, complete the readings on PostgreSQLTutorial.com, and verify your understanding using the 5 formative self-check drills.</p>"),
             ("150-Minute Synchronous Active Coding Lab",
-             f"<p>During our interactive class sessions, you will participate in live coding demonstrations, collaborate on paired coding challenges, and submit your verified SQL laboratory script.</p>")
+             f"<p>During our interactive class sessions, you will participate in live coding demonstrations, collaborate on paired coding challenges, and submit your verified SQL laboratory script.</p>"),
+            ("Learning with AI: Prompt Craft & Interactive Drills", ai_overview_html)
         ]
         with open(os.path.join(wiki_dir, overview_file), "w", encoding="utf-8") as f:
             f.write(render_designplus_html(f"{u_short} Overview: {u_topic}", overview_lead, overview_panels, overview_id))
@@ -548,10 +573,18 @@ def main():
                 d_text = df.read()
                 drills_html = f"<pre><code>{html.escape(d_text[:1500])}... (Refer to repository for full drills)</code></pre>"
 
+        ai_study_html = f"""<p>Complete this interactive exercise using any free conversational AI tool (such as ChatGPT Free, Claude Free, Google Gemini, or Microsoft Copilot). No paid subscription or special software is required.</p>
+<p><strong>Persona / Role:</strong> {ai_persona} <em>({ai_technique})</em></p>
+<h4>Prompt to Copy into Your AI Assistant</h4>
+<pre><code>{ai_prompt}</code></pre>
+<h4>Asynchronous Discussion Task</h4>
+<p>{ai_part}</p>"""
+
         study_panels = [
             ("Required Readings & Tutorials", readings_html),
             ("Required Micro-Lecture Video Chapters", videos_html),
-            ("Formative Self-Check Drills", drills_html)
+            ("Formative Self-Check Drills", drills_html),
+            ("Asynchronous AI Practice & Participation Activity", ai_study_html)
         ]
         with open(os.path.join(wiki_dir, study_file), "w", encoding="utf-8") as f:
             f.write(render_designplus_html(f"{u_short} Async Study & Preparation", study_lead, study_panels, study_id))

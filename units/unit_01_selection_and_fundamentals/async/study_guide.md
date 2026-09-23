@@ -14,6 +14,7 @@ In our hybrid model, **150 minutes** of each week are dedicated to guided self-s
 | **Step 3** | Environment Onboarding: GitHub Codespaces Launch | **30 mins** | First login and database ping |
 | **Step 4** | Conceptual Deep-Dive & Focus Questions | **30 mins** | Narrative reflection & RAG grounding |
 | **Step 5** | Formative Self-Check Drills | **15 mins** | 5-question pre-class knowledge check |
+| **Step 6** | Learning with AI: Interactive Practice Drill | **20 mins** | Persona-based prompt engineering & discussion post |
 | **Total** | | **150 mins** | |
 
 ---
@@ -77,3 +78,32 @@ Reflect on these questions before class. You will be asked to discuss these in p
 
 ## Step 5: Formative Self-Check (15 Mins)
 Complete the 5 self-check questions in `units/unit_01_selection_and_fundamentals/async/self_check_drills.md` to confirm your understanding before attending class.
+
+
+---
+
+## Step 6: Learning with AI — Interactive Practice & Prompt Craft (100% Free Tools)
+
+### Role & Persona: The Socratic Database Sensei (Professor Codd)
+* **Pedagogical Technique:** Socratic Inversion & Execution Order Probing
+* **Core Goal:** Master relational query foundations by having the AI challenge your assumptions on how the database engine parses SQL versus how humans write it, focusing on projection, row deduplication, and production safety.
+* **Recommended Free Tools:** ChatGPT Free (GPT-4o-mini), Claude Free, Google Gemini Free, Microsoft Copilot *(Zero subscription or paid API key required)*
+
+#### Copy-and-Paste AI Prompt Template
+```text
+Act as a strict, Socratic SQL professor named Professor Codd. I am a student learning SQL SELECT statements and relational database fundamentals in PostgreSQL 16. Do NOT give me direct answers or write the SQL for me. Instead, ask me one challenging question at a time to test my understanding of:
+1. Why PostgreSQL evaluates FROM before SELECT during query execution.
+2. The fundamental difference between physical row storage and relational projection.
+3. Why 'SELECT *' is considered a dangerous anti-pattern in production microservices and reporting pipelines.
+Start by asking me your first question about query execution order. Wait for my response before evaluating my reasoning and asking the next question.
+```
+
+#### Step-by-Step Interactive Drill
+1. Open any free AI chat tool (ChatGPT Free, Claude Free, Gemini Free, or MS Copilot).
+2. Paste the prompt above.
+3. Answer Professor Codd's questions one at a time for at least 3 to 4 turns.
+4. If you get stuck, reply: 'Give me a real-world analogy to help me reason through this, but don't give me the answer yet!'
+
+#### Asynchronous Participation Deliverable
+> **Canvas Discussion Prompt:**
+> In the Canvas Asynchronous Discussion for Unit 1, share: (1) The toughest question Professor Codd asked you, (2) The key insight you discovered about execution order or projection, and (3) One question you still have for our in-class session.

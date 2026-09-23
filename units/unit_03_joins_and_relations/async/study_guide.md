@@ -14,6 +14,7 @@ This week represents your most significant conceptual leap in SQL: transitioning
 | **Step 3** | ERD Navigation & Key Mapping Exercise | **30 mins** | Tracing PK $\leftrightarrow$ FK paths across our course schema |
 | **Step 4** | Focus Questions for In-Class Discussion | **30 mins** | Business use cases: CRM consolidation and missing audit detection |
 | **Step 5** | Formative Self-Check Drills | **15 mins** | 5-question pre-class knowledge check |
+| **Step 6** | Learning with AI: Interactive Practice Drill | **20 mins** | Persona-based prompt engineering & discussion post |
 | **Total** | | **150 mins** | |
 
 ---
@@ -66,3 +67,36 @@ Prepare answers for our in-class paired collaboration:
 
 ## Step 5: Formative Self-Check (15 Mins)
 Complete the 5 self-check questions in `units/unit_03_joins_and_relations/async/self_check_drills.md` before attending class.
+
+
+---
+
+## Step 6: Learning with AI — Interactive Practice & Prompt Craft (100% Free Tools)
+
+### Role & Persona: The Demanding Business Client (VP of Operations)
+* **Pedagogical Technique:** Non-Technical Stakeholder Role-Play & Entity-Relationship Mapping
+* **Core Goal:** Role-play with an AI acting as a frantic non-technical VP who speaks exclusively in vague business jargon. Translate their chaotic requirements into correct relational JOINs without creating a Cartesian product explosion.
+* **Recommended Free Tools:** ChatGPT Free, Claude Free, Google Gemini Free, Microsoft Copilot *(Zero subscription or paid API key required)*
+
+#### Copy-and-Paste AI Prompt Template
+```text
+Act as a stressed-out VP of Operations at an e-commerce company called 'OmniRetail'. You do NOT know SQL; you only understand business problems.
+Here is our database schema:
+- customers (customer_id, full_name, email, state)
+- orders (order_id, customer_id, order_date, total_amount)
+- order_items (item_id, order_id, product_id, quantity, unit_price)
+- products (product_id, product_name, category, unit_cost)
+
+Give me a messy, real-world business request (e.g., 'Find all customers who signed up but never bought anything, plus our top customers who bought electronics in California, and make sure we don't accidentally duplicate orders!').
+I will ask you clarifying business questions, determine the necessary JOIN types (INNER, LEFT, Anti-Join), and write the query. Critique my questions and verify if my final SQL fulfills your business need without generating duplicate rows. Start by stating your urgent request!
+```
+
+#### Step-by-Step Interactive Drill
+1. Paste the prompt and read the VP's frantic business request.
+2. Ask clarifying questions (e.g., 'If a customer placed multiple orders, should they appear once or multiple times?').
+3. Draft the SQL query using appropriate JOINs (INNER, LEFT JOIN ... WHERE right_table.id IS NULL).
+4. Have the AI evaluate whether your JOIN condition avoids a Cartesian product explosion.
+
+#### Asynchronous Participation Deliverable
+> **Canvas Discussion Prompt:**
+> Post to the Unit 3 Discussion: (1) The VP's initial business problem, (2) The join strategy you selected (INNER vs. LEFT vs. Anti-Join) and why, and (3) The final verified query.

@@ -87,3 +87,34 @@ Before attending the synchronous classroom session:
 - [ ] Read the 5 PostgreSQLTutorial.com guides.
 - [ ] Complete the **5 Formative Self-Check Drills** in `self_check_drills.md`.
 - [ ] Ensure you understand how `EXCLUDED` works in `ON CONFLICT`.
+
+
+---
+
+## Step 6: Learning with AI — Interactive Practice & Prompt Craft (100% Free Tools)
+
+### Role & Persona: The Database Disaster Recovery Lead (Reliability SRE)
+* **Pedagogical Technique:** Chaos Engineering & Transaction Rollback Drills
+* **Core Goal:** Practice safe data modification, transaction control (BEGIN, COMMIT, ROLLBACK), and ETL staging tables by having the AI inject simulated production crashes and data corruption threats.
+* **Recommended Free Tools:** ChatGPT Free, Claude Free, Google Gemini Free, Microsoft Copilot *(Zero subscription or paid API key required)*
+
+#### Copy-and-Paste AI Prompt Template
+```text
+Act as a Database Reliability Engineer (SRE). We are running critical data maintenance and ETL pipeline updates on a live production PostgreSQL 16 database.
+I will write DML scripts (INSERT, UPDATE, DELETE) using temporary staging tables, explicit transactions (BEGIN, COMMIT, ROLLBACK), and RETURNING clauses.
+Your role:
+1. Act as the safety reviewer: Red-team every query I write. If I write an UPDATE or DELETE without a verified WHERE clause, or without running inside a transaction, reject it with a catastrophic failure scenario.
+2. Introduce unexpected runtime anomalies (e.g., 'Constraint violation on row 452!', 'Network timeout during bulk insert!').
+3. Force me to demonstrate how my transaction script rolls back cleanly leaving zero orphaned records.
+Start by presenting me with our first maintenance mission: Purging inactive users while archiving their billing records into an audit staging table.
+```
+
+#### Step-by-Step Interactive Drill
+1. Paste the prompt and inspect the maintenance mission.
+2. Wrap your DML in a defensive transaction block (BEGIN; ... ROLLBACK;) with RETURNING verification.
+3. Respond to the AI's simulated runtime failure by demonstrating a clean rollback.
+4. Refactor the script to use a staging table before committing.
+
+#### Asynchronous Participation Deliverable
+> **Canvas Discussion Prompt:**
+> Post to the Unit 5 Discussion: (1) The disaster scenario simulated by the AI, (2) The safe transaction script you engineered, and (3) The safety difference between modifying live tables directly vs. staging transformations in a temporary table.

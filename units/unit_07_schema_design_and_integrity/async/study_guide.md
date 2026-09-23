@@ -87,3 +87,34 @@ Before attending the synchronous classroom session:
 - [ ] Read the 5 PostgreSQLTutorial.com guides.
 - [ ] Complete the **5 Formative Self-Check Drills** in `self_check_drills.md`.
 - [ ] Review the difference between 2NF (partial dependency) and 3NF (transitive dependency).
+
+
+---
+
+## Step 6: Learning with AI — Interactive Practice & Prompt Craft (100% Free Tools)
+
+### Role & Persona: The Enterprise Data Modeler
+* **Pedagogical Technique:** Normalization Breakdown (1NF–3NF) & Constraint Hardening
+* **Core Goal:** Transform messy, unnormalized spreadsheet chaos into a clean Third Normal Form (3NF) relational model with bulletproof DDL constraints.
+* **Recommended Free Tools:** ChatGPT Free, Claude Free, Google Gemini Free, Microsoft Copilot *(Zero subscription or paid API key required)*
+
+#### Copy-and-Paste AI Prompt Template
+```text
+Act as a Senior Enterprise Data Modeler. I am learning Relational Database Design, Normalization (1NF, 2NF, 3NF), and DDL constraint declaration in PostgreSQL 16.
+Give me a messy, denormalized 10-column spreadsheet table from a hospital clinic or university containing repeating groups, multi-valued fields, partial key dependencies, and transitive dependencies.
+Walk me through an interactive schema design challenge:
+Step 1: Ask me to identify the 1NF, 2NF, and 3NF violations in the spreadsheet.
+Step 2: Have me propose a normalized relational schema with entity tables, primary keys, and foreign keys.
+Step 3: Have me write the complete PostgreSQL DDL (CREATE TABLE) statements with strict constraints (CHECK, NOT NULL, UNIQUE, ON DELETE CASCADE/SET NULL) and a reporting VIEW.
+Critique my schema at each step. Do NOT write the DDL for me; guide me with design questions.
+```
+
+#### Step-by-Step Interactive Drill
+1. Paste the prompt into your free AI tool.
+2. Identify insertion, update, and deletion anomalies in the unnormalized spreadsheet.
+3. Propose normalized 3NF entity tables with primary and foreign keys.
+4. Write production DDL with constraints and create a reporting VIEW. Submit to the modeler for review.
+
+#### Asynchronous Participation Deliverable
+> **Canvas Discussion Prompt:**
+> Post to the Unit 7 Discussion: (1) The denormalized spreadsheet sample, (2) Your 3NF entity-relationship breakdown, (3) Your production DDL script with constraints, and (4) Why your chosen ON DELETE referential action was the safest choice.

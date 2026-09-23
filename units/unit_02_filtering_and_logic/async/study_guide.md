@@ -14,6 +14,7 @@ In Unit 1, you learned how to project columns using `SELECT`. This week, you mas
 | **Step 3** | Logic Gate Truth Table Drills | **30 mins** | Evaluating Boolean precedence and three-valued logic ($NULL$) |
 | **Step 4** | Focus Questions for In-Class Discussion | **30 mins** | Real-world applications: Security log analysis and data validation |
 | **Step 5** | Formative Self-Check Drills | **15 mins** | 5-question pre-class knowledge check |
+| **Step 6** | Learning with AI: Interactive Practice Drill | **20 mins** | Persona-based prompt engineering & discussion post |
 | **Total** | | **150 mins** | |
 
 ---
@@ -70,3 +71,33 @@ Reflect on these real-world scenarios for our in-class paired discussion:
 
 ## Step 5: Formative Self-Check (15 Mins)
 Complete the 5 self-check questions in `units/unit_02_filtering_and_logic/async/self_check_drills.md` to verify your readiness before class.
+
+
+---
+
+## Step 6: Learning with AI — Interactive Practice & Prompt Craft (100% Free Tools)
+
+### Role & Persona: The Pedantic QA Lead / Compiler
+* **Pedagogical Technique:** Three-Valued Logic Red-Teaming & Edge-Case Traps
+* **Core Goal:** Stress-test your Boolean filtering logic against ANSI Three-Valued Logic (TRUE, FALSE, UNKNOWN), NULL propagation traps, and operator precedence.
+* **Recommended Free Tools:** ChatGPT Free, Claude Free, Google Gemini Free, Microsoft Copilot *(Zero subscription or paid API key required)*
+
+#### Copy-and-Paste AI Prompt Template
+```text
+Act as a pedantic Senior Database QA Engineer. I am writing PostgreSQL queries using WHERE, AND, OR, NOT, BETWEEN, LIKE, and IS NULL.
+Present me with 3 realistic SQL query snippets that contain subtle logic bugs related to:
+1. ANSI Three-Valued Logic (TRUE, FALSE, UNKNOWN) and NULL propagation (e.g., '= NULL' or 'NOT IN (subquery with NULL)').
+2. Operator precedence between AND and OR without proper parentheses.
+3. Inclusive vs. exclusive boundaries in BETWEEN with timestamps.
+Present the first buggy query snippet and ask me to identify the exact data trap and how to fix it. Do NOT reveal the fix until I attempt an answer.
+```
+
+#### Step-by-Step Interactive Drill
+1. Paste the prompt into your free AI tool.
+2. Analyze the QA Engineer's first puzzle. Explain why the query fails on edge-case data.
+3. Write the corrected SQL clause and submit it to the AI for verification.
+4. Work through all 3 puzzles.
+
+#### Asynchronous Participation Deliverable
+> **Canvas Discussion Prompt:**
+> In the Unit 2 Discussion, share: (1) One of the three-valued logic traps the AI gave you, (2) Why standard Boolean intuition (True/False) breaks down when NULL is involved, and (3) The corrected WHERE clause.
