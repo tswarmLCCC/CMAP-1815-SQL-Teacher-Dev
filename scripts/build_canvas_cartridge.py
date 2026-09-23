@@ -628,7 +628,7 @@ def main():
   <title>CMAP 1815: Introduction to Modern SQL</title>
   <course_code>CMAP 1815</course_code>
   <is_public>false</is_public>
-  <default_view>modules</default_view>
+  <default_view>wiki</default_view>
   <license>private</license>
   <grading_standard_enabled>true</grading_standard_enabled>
   <root_account_uuid>dOSfRmBEqg50Ei3MOkNZrYHbdOlZxhVp0XEVGbQX</root_account_uuid>
@@ -739,7 +739,7 @@ def main():
              f"""<ol>
   <li><strong>1. Required Readings &amp; Embedded Videos:</strong> Review the authoritative reading tutorials and watch the embedded video segments directly inside Canvas.</li>
   <li><strong>2. Asynchronous Preparation &amp; Drills:</strong> Complete the conceptual focus questions and self-check drills before attending our live classroom session.</li>
-  <li><strong>3. Synchronous Classroom Activities &amp; Lab:</strong> Participate in live paired coding challenges and submit your verified SQL laboratory script.</li>
+  <li><strong>3. Applied SQL Lab Assignment:</strong> Execute hands-on queries and scenario challenges against your live PostgreSQL 16 database.</li>
   <li><strong>4. Learn with AI (Supplemental Practice):</strong> Complete the interactive role-play prompt drill with a free AI assistant and post your findings to the weekly discussion board.</li>
   <li><strong>5. Unit Knowledge Check:</strong> Take the 15-question multiple-choice assessment to evaluate your mastery.</li>
 </ol>"""),
@@ -816,11 +816,11 @@ def main():
         pages_manifest.append((study_file, f"{u_short}: Asynchronous Preparation & Drills", study_id))
 
         # ----------------------------------------------------
-        # Page 4: Synchronous Classroom Activities & Lab
+        # Page 4: Applied SQL Lab Assignment
         # ----------------------------------------------------
         lab_id = make_id(f"page_u{u_num}_sync_lab")
         lab_file = f"unit-{u_num:02d}-synchronous-lab.html"
-        lab_lead = f"<p>This page contains the live classroom paired coding challenges, hands-on laboratory scenario, and grading rubric for <strong>{u_short}</strong>. You will work on these during our interactive class meeting.</p>"
+        lab_lead = f"<p>This page contains the hands-on laboratory scenario, database schema specifications, and grading rubric for <strong>{u_short}</strong>. Complete these queries against your live PostgreSQL 16 environment.</p>"
 
         # Load In-Class Challenges
         challenges_path = os.path.join(UNITS_DIR, u_folder, "sync", "inclass_challenges.sql")
@@ -847,13 +847,13 @@ def main():
                 rubric_html = f"<pre style='max-height: 300px; overflow-y: auto;'><code>{html.escape(r_text)}</code></pre>"
 
         sync_panels = [
-            ("Live In-Class Paired Challenges", challenges_html),
+            ("Self-Paced Applied Coding Challenges", challenges_html),
             ("Laboratory Scenario & Task Specifications", lab_content_html),
             ("Grading Rubric & Submission Requirements", rubric_html)
         ]
         with open(os.path.join(wiki_dir, lab_file), "w", encoding="utf-8") as f:
-            f.write(render_designplus_html(f"{u_short}: Synchronous Classroom Activities & Lab", lab_lead, sync_panels, lab_id))
-        pages_manifest.append((lab_file, f"{u_short}: Synchronous Classroom Activities & Lab", lab_id))
+            f.write(render_designplus_html(f"{u_short}: Applied SQL Lab Assignment", lab_lead, sync_panels, lab_id))
+        pages_manifest.append((lab_file, f"{u_short}: Applied SQL Lab Assignment", lab_id))
 
         # ----------------------------------------------------
         # Page 5: Learn with AI — Supplemental Practice Drill
@@ -950,7 +950,7 @@ def main():
                 {"type": "WikiPage", "title": f"{u_short} Overview: {u_topic}", "ref": overview_id, "indent": 0, "state": "active"},
                 {"type": "WikiPage", "title": f"{u_short}: Required Readings & Video Lectures", "ref": reading_id, "indent": 1, "state": "active"},
                 {"type": "WikiPage", "title": f"{u_short}: Asynchronous Preparation & Drills", "ref": study_id, "indent": 1, "state": "active"},
-                {"type": "WikiPage", "title": f"{u_short}: Synchronous Classroom Activities & Lab", "ref": lab_id, "indent": 1, "state": "active"},
+                {"type": "WikiPage", "title": f"{u_short}: Applied SQL Lab Assignment", "ref": lab_id, "indent": 1, "state": "active"},
                 {"type": "WikiPage", "title": f"{u_short}: Learn with AI — Supplemental Practice Drill", "ref": ai_page_id, "indent": 1, "state": "active"},
                 {"type": "Quizzes::Quiz", "title": quiz_title, "ref": quiz_id, "indent": 1, "state": "active"},
                 {"type": "WikiPage", "title": f"[Instructor Guide] {u_short} Teaching Notes & Solutions", "ref": teacher_id, "indent": 1, "state": "unpublished"}
