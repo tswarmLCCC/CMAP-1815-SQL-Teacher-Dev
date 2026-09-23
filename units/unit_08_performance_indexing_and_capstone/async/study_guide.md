@@ -89,7 +89,9 @@ Before attending the final synchronous classroom session:
 
 ---
 
-## Step 6: Learning with AI — Interactive Practice & Prompt Craft (100% Free Tools)
+---
+
+## Step 6: Learn with AI — Interactive Practice & Prompt Craft (100% Free Tools)
 
 ### Role & Persona: The Senior Performance DBA & Capstone Defense Panel
 * **Pedagogical Technique:** Execution Plan Profiling & Technical Architecture Defense

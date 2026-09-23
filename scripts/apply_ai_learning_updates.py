@@ -228,23 +228,25 @@ def update_study_guides():
         ai = AI_LEARNING_DATA[u_num]
 
         # Check if already updated
-        if "## Step 6: Learning with AI" in content or "## Learning with AI" in content:
-            print(f"Unit {u_num} already contains Learning with AI section. Updating section...")
-            content = re.split(r"## (?:Step 6:\s*)?Learning with AI", content)[0].rstrip()
+        if "## Step 6: Learn with AI" in content or "## Step 6: Learning with AI" in content or "## Learning with AI" in content or "## Learn with AI" in content:
+            print(f"Unit {u_num} already contains Learn with AI section. Updating section...")
+            content = re.split(r"## (?:Step 6:\s*)?Learn(?:ing)? with AI", content)[0].rstrip()
 
         # Update Time Budget Breakdown table if not already including Step 6
         if "| **Step 6** |" not in content:
             content = re.sub(
                 r"(\|\s*\*\*Step 5\*\*\s*\|[^\n]+\n)(\|\s*\*\*Total\*\*\s*\|[^\n]+\n)",
-                r"\1| **Step 6** | Learning with AI: Interactive Practice Drill | **20 mins** | Persona-based prompt engineering & discussion post |\n\2",
+                r"\1| **Step 6** | Learn with AI: Interactive Practice Drill | **20 mins** | Persona-based prompt engineering & discussion post |\n\2",
                 content
             )
+        else:
+            content = content.replace("Learning with AI", "Learn with AI")
 
         ai_markdown = f"""
 
 ---
 
-## Step 6: Learning with AI — Interactive Practice & Prompt Craft (100% Free Tools)
+## Step 6: Learn with AI — Interactive Practice & Prompt Craft (100% Free Tools)
 
 ### Role & Persona: {ai['persona']}
 * **Pedagogical Technique:** {ai['technique']}

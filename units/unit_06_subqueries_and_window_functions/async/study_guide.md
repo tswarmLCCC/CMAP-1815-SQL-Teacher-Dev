@@ -80,7 +80,9 @@ Before attending the synchronous classroom session:
 
 ---
 
-## Step 6: Learning with AI — Interactive Practice & Prompt Craft (100% Free Tools)
+---
+
+## Step 6: Learn with AI — Interactive Practice & Prompt Craft (100% Free Tools)
 
 ### Role & Persona: The Staff SQL Architect
 * **Pedagogical Technique:** Query Refactoring & Window Partitioning Deconstruction

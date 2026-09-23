@@ -14,7 +14,7 @@ In our hybrid model, **150 minutes** of each week are dedicated to guided self-s
 | **Step 3** | Environment Onboarding: GitHub Codespaces Launch | **30 mins** | First login and database ping |
 | **Step 4** | Conceptual Deep-Dive & Focus Questions | **30 mins** | Narrative reflection & RAG grounding |
 | **Step 5** | Formative Self-Check Drills | **15 mins** | 5-question pre-class knowledge check |
-| **Step 6** | Learning with AI: Interactive Practice Drill | **20 mins** | Persona-based prompt engineering & discussion post |
+| **Step 6** | Learn with AI: Interactive Practice Drill | **20 mins** | Persona-based prompt engineering & discussion post |
 | **Total** | | **150 mins** | |
 
 ---
@@ -82,7 +82,9 @@ Complete the 5 self-check questions in `units/unit_01_selection_and_fundamentals
 
 ---
 
-## Step 6: Learning with AI — Interactive Practice & Prompt Craft (100% Free Tools)
+---
+
+## Step 6: Learn with AI — Interactive Practice & Prompt Craft (100% Free Tools)
 
 ### Role & Persona: The Socratic Database Sensei (Professor Codd)
 * **Pedagogical Technique:** Socratic Inversion & Execution Order Probing

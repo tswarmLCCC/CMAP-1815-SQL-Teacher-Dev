@@ -91,7 +91,9 @@ Before attending the synchronous classroom session:
 
 ---
 
-## Step 6: Learning with AI — Interactive Practice & Prompt Craft (100% Free Tools)
+---
+
+## Step 6: Learn with AI — Interactive Practice & Prompt Craft (100% Free Tools)
 
 ### Role & Persona: The Enterprise Data Modeler
 * **Pedagogical Technique:** Normalization Breakdown (1NF–3NF) & Constraint Hardening

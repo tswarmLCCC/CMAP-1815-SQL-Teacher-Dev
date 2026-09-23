@@ -14,7 +14,7 @@ This week represents your most significant conceptual leap in SQL: transitioning
 | **Step 3** | ERD Navigation & Key Mapping Exercise | **30 mins** | Tracing PK $\leftrightarrow$ FK paths across our course schema |
 | **Step 4** | Focus Questions for In-Class Discussion | **30 mins** | Business use cases: CRM consolidation and missing audit detection |
 | **Step 5** | Formative Self-Check Drills | **15 mins** | 5-question pre-class knowledge check |
-| **Step 6** | Learning with AI: Interactive Practice Drill | **20 mins** | Persona-based prompt engineering & discussion post |
+| **Step 6** | Learn with AI: Interactive Practice Drill | **20 mins** | Persona-based prompt engineering & discussion post |
 | **Total** | | **150 mins** | |
 
 ---
@@ -71,7 +71,9 @@ Complete the 5 self-check questions in `units/unit_03_joins_and_relations/async/
 
 ---
 
-## Step 6: Learning with AI — Interactive Practice & Prompt Craft (100% Free Tools)
+---
+
+## Step 6: Learn with AI — Interactive Practice & Prompt Craft (100% Free Tools)
 
 ### Role & Persona: The Demanding Business Client (VP of Operations)
 * **Pedagogical Technique:** Non-Technical Stakeholder Role-Play & Entity-Relationship Mapping

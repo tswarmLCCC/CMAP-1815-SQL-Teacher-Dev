@@ -14,7 +14,7 @@ In Unit 1, you learned how to project columns using `SELECT`. This week, you mas
 | **Step 3** | Logic Gate Truth Table Drills | **30 mins** | Evaluating Boolean precedence and three-valued logic ($NULL$) |
 | **Step 4** | Focus Questions for In-Class Discussion | **30 mins** | Real-world applications: Security log analysis and data validation |
 | **Step 5** | Formative Self-Check Drills | **15 mins** | 5-question pre-class knowledge check |
-| **Step 6** | Learning with AI: Interactive Practice Drill | **20 mins** | Persona-based prompt engineering & discussion post |
+| **Step 6** | Learn with AI: Interactive Practice Drill | **20 mins** | Persona-based prompt engineering & discussion post |
 | **Total** | | **150 mins** | |
 
 ---
@@ -75,7 +75,9 @@ Complete the 5 self-check questions in `units/unit_02_filtering_and_logic/async/
 
 ---
 
-## Step 6: Learning with AI — Interactive Practice & Prompt Craft (100% Free Tools)
+---
+
+## Step 6: Learn with AI — Interactive Practice & Prompt Craft (100% Free Tools)
 
 ### Role & Persona: The Pedantic QA Lead / Compiler
 * **Pedagogical Technique:** Three-Valued Logic Red-Teaming & Edge-Case Traps
