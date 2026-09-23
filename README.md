@@ -32,15 +32,20 @@ Everything runs directly in your browser—no local database installation requir
 │   ├── external_resources_guide.md       # Verified PostgreSQL tutorials & FreeCodeCamp timestamps
 │   └── canvas_api_browser_sync_guide.md  # Browser DevTools session sync guide
 │
-├── units/                     # 8 Modular Units
+├── units/                     # 8 Modular Units (14 Pedagogical Artifacts Each)
 │   ├── unit_01_selection_and_fundamentals/
 │   ├── unit_02_filtering_and_logic/
 │   ├── unit_03_joins_and_relations/
 │   ├── unit_04_aggregation_and_pivoting/
-│   ├── unit_05_safe_dml_and_temp_tables/
-│   ├── unit_06_ctes_and_window_functions/
-│   ├── unit_07_schema_design_and_ddl/
-│   └── unit_08_indexing_and_capstone/
+│   ├── unit_05_safe_dml_and_modifications/
+│   ├── unit_06_subqueries_and_window_functions/
+│   ├── unit_07_schema_design_and_integrity/
+│   └── unit_08_performance_indexing_and_capstone/
+│
+├── scripts/                   # Course Automation Tools
+│   └── build_canvas_cartridge.py # Automated Canvas .imscc Cartridge & QTI Quiz Compiler
+│
+├── CMAP_1815_Complete.imscc   # Complete Canvas Course Package (DesignPLUS + 8 QTI Quizzes)
 │
 ├── shared_assets/             # Core Datasets & Seed Scripts
 │   └── datasets/              # setup_chap1.sql, superstore.csv
