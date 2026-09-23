@@ -21,9 +21,12 @@ UNIT_METADATA = [
     {
         "num": 1,
         "folder": "unit_01_selection_and_fundamentals",
-        "title": "Unit 1: Selection & Relational Fundamentals",
-        "short_title": "Unit 1",
+        "date_range": "10/19 to 10/25",
+        "title": "10/19 to 10/25 Unit 1: Selection & Relational Fundamentals",
+        "short_title": "10/19 to 10/25 Unit 1",
         "topic": "Selection & Relational Fundamentals",
+        "due_date_str": "Friday, October 23, 2026 at 11:59 PM (Midnight MT)",
+        "due_iso": "2026-10-23T23:59:00",
         "readings": [
             ("PostgreSQL SELECT", "https://www.postgresqltutorial.com/postgresql-getting-started/postgresql-select/",
              "Learn how the SELECT statement retrieves data from relational tables and why specifying columns is superior to SELECT *."),
@@ -45,9 +48,12 @@ UNIT_METADATA = [
     {
         "num": 2,
         "folder": "unit_02_filtering_and_logic",
-        "title": "Unit 2: Targeted Retrieval & Logic Gates",
-        "short_title": "Unit 2",
+        "date_range": "10/26 to 11/1",
+        "title": "10/26 to 11/1 Unit 2: Targeted Retrieval & Logic Gates",
+        "short_title": "10/26 to 11/1 Unit 2",
         "topic": "Targeted Retrieval & Three-Valued Logic",
+        "due_date_str": "Friday, October 30, 2026 at 11:59 PM (Midnight MT)",
+        "due_iso": "2026-10-30T23:59:00",
         "readings": [
             ("WHERE Clause", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-where/",
              "Filter row streams using comparison operators (=, !=, <, >, <=, >=) to extract precise records."),
@@ -72,9 +78,12 @@ UNIT_METADATA = [
     {
         "num": 3,
         "folder": "unit_03_joins_and_relations",
-        "title": "Unit 3: Relational Joins & Set Relationships",
-        "short_title": "Unit 3",
+        "date_range": "11/2 to 11/8",
+        "title": "11/2 to 11/8 Unit 3: Relational Joins & Set Relationships",
+        "short_title": "11/2 to 11/8 Unit 3",
         "topic": "Relational Joins & Foreign Key Relationships",
+        "due_date_str": "Friday, November 6, 2026 at 11:59 PM (Midnight MT)",
+        "due_iso": "2026-11-06T23:59:00",
         "readings": [
             ("Visual Joins Overview", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-joins/",
              "Conceptualize relational interconnectivity across tables using Venn diagrams and set intersection."),
@@ -95,9 +104,12 @@ UNIT_METADATA = [
     {
         "num": 4,
         "folder": "unit_04_aggregation_and_pivoting",
-        "title": "Unit 4: Summarization, Aggregation & Pivoting",
-        "short_title": "Unit 4",
+        "date_range": "11/9 to 11/15",
+        "title": "11/9 to 11/15 Unit 4: Summarization, Aggregation & Pivoting",
+        "short_title": "11/9 to 11/15 Unit 4",
         "topic": "Summarization, Aggregation & Pivoting",
+        "due_date_str": "Friday, November 13, 2026 at 11:59 PM (Midnight MT)",
+        "due_iso": "2026-11-13T23:59:00",
         "readings": [
             ("GROUP BY Tutorial", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-group-by/",
              "Group vertical rows into summary buckets and understand the Golden Rule of GROUP BY."),
@@ -118,9 +130,12 @@ UNIT_METADATA = [
     {
         "num": 5,
         "folder": "unit_05_safe_dml_and_modifications",
-        "title": "Unit 5: Safe DML, Transaction Integrity & Staging",
-        "short_title": "Unit 5",
+        "date_range": "11/16 to 11/22",
+        "title": "11/16 to 11/22 Unit 5: Safe DML, Transaction Integrity & Staging",
+        "short_title": "11/16 to 11/22 Unit 5",
         "topic": "Safe DML, Transaction Integrity & Staging Tables",
+        "due_date_str": "Friday, November 20, 2026 at 11:59 PM (Midnight MT)",
+        "due_iso": "2026-11-20T23:59:00",
         "readings": [
             ("INSERT Statement", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-insert/",
              "Insert single and batch records with explicit column lists and atomic upserts (ON CONFLICT DO UPDATE)."),
@@ -143,9 +158,12 @@ UNIT_METADATA = [
     {
         "num": 6,
         "folder": "unit_06_subqueries_and_window_functions",
-        "title": "Unit 6: Query Modularity, CTEs & Window Functions",
-        "short_title": "Unit 6",
+        "date_range": "11/30 to 12/6",
+        "title": "11/30 to 12/6 Unit 6: Query Modularity, CTEs & Window Functions",
+        "short_title": "11/30 to 12/6 Unit 6",
         "topic": "Query Modularity, CTEs & Analytical Window Functions",
+        "due_date_str": "Friday, December 4, 2026 at 11:59 PM (Midnight MT)",
+        "due_iso": "2026-12-04T23:59:00",
         "readings": [
             ("Common Table Expressions (WITH)", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-cte/",
              "Decompose complex nested subqueries into readable, sequential CTE pipelines."),
@@ -165,9 +183,12 @@ UNIT_METADATA = [
     {
         "num": 7,
         "folder": "unit_07_schema_design_and_integrity",
-        "title": "Unit 7: Schema Design, DDL & Data Integrity",
-        "short_title": "Unit 7",
+        "date_range": "12/7 to 12/13",
+        "title": "12/7 to 12/13 Unit 7: Schema Design, DDL & Data Integrity",
+        "short_title": "12/7 to 12/13 Unit 7",
         "topic": "Schema Design, Normalization (1NF–3NF), DDL & Constraints",
+        "due_date_str": "Friday, December 11, 2026 at 11:59 PM (Midnight MT)",
+        "due_iso": "2026-12-11T23:59:00",
         "readings": [
             ("CREATE TABLE & Data Types", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-create-table/",
              "Define relational table architectures using optimal PostgreSQL data types (INT, NUMERIC, VARCHAR, TIMESTAMPTZ)."),
@@ -190,9 +211,12 @@ UNIT_METADATA = [
     {
         "num": 8,
         "folder": "unit_08_performance_indexing_and_capstone",
-        "title": "Unit 8: Performance Tuning, Indexing & Capstone Defense",
-        "short_title": "Unit 8",
+        "date_range": "12/14 to 12/18",
+        "title": "12/14 to 12/18 Unit 8: Performance Tuning, Indexing & Capstone Defense",
+        "short_title": "12/14 to 12/18 Unit 8",
         "topic": "Query Optimization, EXPLAIN ANALYZE, Indexes & Capstone Defense",
+        "due_date_str": "Friday, December 18, 2026 at 11:59 PM (Midnight MT)",
+        "due_iso": "2026-12-18T23:59:00",
         "readings": [
             ("EXPLAIN & Query Plans", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-explain/",
              "Interpret cost-based query execution trees, comparing Sequential Scans against Index Scans."),
@@ -703,7 +727,7 @@ def render_designplus_html(title: str, lead_html: str, panels: list, page_id: st
   <div class="dp-content-block">
     {lead_html}
   </div>
-  <div class="dp-panels-wrapper dp-accordion-default dp-panel-color-dp-primary dp-panel-active-color-dp-secondary">
+  <div class="dp-panels-wrapper dp-accordion-plus dp-panel-color-dp-primary dp-panel-active-color-dp-accent dp-panel-hover-color-dp-accent">
 {body_panels}
   </div>
 </div>
@@ -912,14 +936,16 @@ def build_qti_xml(quiz_id: str, quiz_title: str, questions: list) -> str:
 </questestinterop>
 """
 
-def build_assessment_meta_xml(quiz_id: str, quiz_title: str, quiz_group_id: str) -> str:
+def build_assessment_meta_xml(quiz_id: str, quiz_title: str, quiz_group_id: str, due_at: str = None, lock_at: str = None) -> str:
     """Builds Canvas assessment_meta.xml."""
     assign_id = make_id(f"assign_{quiz_id}")
+    due_block = f"  <due_at>{due_at}</due_at>\n  <lock_at>{lock_at}</lock_at>\n" if due_at else ""
+    assign_due_block = f"    <due_at>{due_at}</due_at>\n    <lock_at>{lock_at}</lock_at>\n" if due_at else ""
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <quiz xmlns="http://canvas.instructure.com/xsd/cccv1p0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://canvas.instructure.com/xsd/cccv1p0 https://canvas.instructure.com/xsd/cccv1p0.xsd" identifier="{quiz_id}">
   <title>{html.escape(quiz_title)}</title>
   <description>&lt;p&gt;This weekly assessment tests your mastery of the relational SQL concepts, syntax, and query patterns covered in this unit.&lt;/p&gt;&lt;p&gt;The quiz consists of 15 multiple-choice questions (30 points total, 2 points each). You have 3 attempts; your highest score will be kept.&lt;/p&gt;</description>
-  <shuffle_questions>false</shuffle_questions>
+{due_block}  <shuffle_questions>false</shuffle_questions>
   <shuffle_answers>false</shuffle_answers>
   <scoring_policy>keep_highest</scoring_policy>
   <quiz_type>assignment</quiz_type>
@@ -928,7 +954,7 @@ def build_assessment_meta_xml(quiz_id: str, quiz_title: str, quiz_group_id: str)
   <show_correct_answers>true</show_correct_answers>
   <assignment identifier="{assign_id}">
     <title>{html.escape(quiz_title)}</title>
-    <workflow_state>published</workflow_state>
+{assign_due_block}    <workflow_state>published</workflow_state>
     <quiz_identifierref>{quiz_id}</quiz_identifierref>
     <points_possible>30.0</points_possible>
     <grading_type>points</grading_type>
@@ -938,8 +964,9 @@ def build_assessment_meta_xml(quiz_id: str, quiz_title: str, quiz_group_id: str)
 </quiz>
 """
 
-def build_assignment_settings_xml(assign_id: str, title: str, group_id: str, points: float = 50.0) -> str:
+def build_assignment_settings_xml(assign_id: str, title: str, group_id: str, points: float = 50.0, due_at: str = None, lock_at: str = None) -> str:
     """Generates standard Canvas assignment_settings.xml matching institutional format."""
+    due_block = f"  <due_at>{due_at}</due_at>\n  <lock_at>{lock_at}</lock_at>\n" if due_at else ""
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <assignment identifier="{assign_id}" xmlns="http://canvas.instructure.com/xsd/cccv1p0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://canvas.instructure.com/xsd/cccv1p0 https://canvas.instructure.com/xsd/cccv1p0.xsd">
   <title>{html.escape(title)}</title>
@@ -947,7 +974,7 @@ def build_assignment_settings_xml(assign_id: str, title: str, group_id: str, poi
   <module_locked>false</module_locked>
   <assignment_group_identifierref>{group_id}</assignment_group_identifierref>
   <workflow_state>published</workflow_state>
-  <assignment_overrides>
+{due_block}  <assignment_overrides>
   </assignment_overrides>
   <allowed_extensions>sql,txt,pdf</allowed_extensions>
   <has_group_category>false</has_group_category>
@@ -1413,7 +1440,7 @@ def main():
         reading_panels.append(("4. Institutional Video Lecture Embeds", institutional_embed_html))
 
         with open(os.path.join(wiki_dir, reading_file), "w", encoding="utf-8") as f:
-            f.write(render_ribbon_sections_page_html(f"{u_short}: Required Readings, Concepts & Video Lectures", reading_lead, reading_panels, reading_id))
+            f.write(render_designplus_html(f"{u_short}: Required Readings, Concepts & Video Lectures", reading_lead, reading_panels, reading_id))
         pages_manifest.append((reading_file, f"{u_short}: Required Readings, Concepts & Video Lectures", reading_id))
 
         # ----------------------------------------------------
@@ -1496,12 +1523,15 @@ def main():
         assign_title = f"{u_short} Applied SQL Lab Assignment"
         assign_html_filename = f"unit-{u_num:02d}-lab-assignment.html"
 
-        # Write assignment_settings.xml
-        assign_settings_xml = build_assignment_settings_xml(assign_id, assign_title, group_labs_id, points=50.0)
+        # Write assignment_settings.xml with official B8 deadlines
+        assign_settings_xml = build_assignment_settings_xml(
+            assign_id, assign_title, group_labs_id, points=50.0,
+            due_at=unit.get("due_iso"), lock_at=unit.get("due_iso")
+        )
         with open(os.path.join(assign_folder, "assignment_settings.xml"), "w", encoding="utf-8") as af:
             af.write(assign_settings_xml)
 
-        # Write assignment description HTML with clean layout and rubric
+        # Write assignment description HTML with clean layout, due date alert, and rubric
         assign_desc_html = f"""<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -1509,6 +1539,9 @@ def main():
 </head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1e293b; padding: 1rem; max-width: 900px;">
   <h2 style="color: #1e3a8a; border-bottom: 2px solid #1e3a8a; padding-bottom: 0.3rem;">{html.escape(assign_title)} (50 Points)</h2>
+  <div style="background: #eff6ff; border-left: 4px solid #2563eb; padding: 0.75rem 1.25rem; margin: 1rem 0; border-radius: 0 4px 4px 0;">
+    <p style="margin: 0; font-weight: 600; color: #1e40af;"><i class="far fa-calendar-alt"></i> Due Date: {html.escape(unit["due_date_str"])}</p>
+  </div>
   <div style="background: #f8fafc; border-left: 4px solid #1e3a8a; padding: 0.75rem 1rem; margin: 1rem 0; border-radius: 0 4px 4px 0;">
     <p style="margin: 0;">Complete the SQL query challenges outlined in the <strong>{u_short}: Applied SQL Lab Guide</strong> against your live PostgreSQL 16 database in GitHub Codespaces.</p>
   </div>
@@ -1580,7 +1613,10 @@ def main():
         with open(os.path.join(q_dir, "assessment_qti.xml"), "w", encoding="utf-8") as qf:
             qf.write(qti_xml_str)
 
-        meta_xml_str = build_assessment_meta_xml(quiz_id, quiz_title, group_quizzes_id)
+        meta_xml_str = build_assessment_meta_xml(
+            quiz_id, quiz_title, group_quizzes_id,
+            due_at=unit.get("due_iso"), lock_at=unit.get("due_iso")
+        )
         with open(os.path.join(q_dir, "assessment_meta.xml"), "w", encoding="utf-8") as mf:
             mf.write(meta_xml_str)
 
