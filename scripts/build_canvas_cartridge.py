@@ -1316,19 +1316,72 @@ def main():
         f.write(render_standard_page_html("Orientation: Learn with AI — Course Guidelines & Free Tools", orient_ai_lead, orient_ai_panels, p_orient_ai_id))
     pages_manifest.append((p_orient_ai_file, "Orientation: Learn with AI — Course Guidelines & Free Tools", p_orient_ai_id))
 
-    # Page: Database Setup Guide
+    # Page: Student Guide: How to Complete & Submit Weekly SQL Labs
     p_setup_id = make_id("page_db_setup")
     p_setup_file = "database-setup-guide.html"
-    setup_lead = "<p>CMAP 1815 uses modern <strong>PostgreSQL 16</strong> hosted in a zero-configuration cloud environment via GitHub Codespaces, or running locally on your workstation.</p>"
+    setup_lead = "<p>Welcome to your hands-on SQL laboratory! In CMAP 1815, you will write and execute queries against a live, industry-standard <strong>PostgreSQL 16</strong> database running in your browser via <strong>GitHub Codespaces</strong>. This guide walks you through launching your environment, querying visually or via terminal, using starter files, and submitting your weekly lab work.</p>"
     setup_panels = [
-        ("GitHub Codespaces Cloud Environment (Recommended)",
-         "<p>Your repository includes a pre-configured <code>.devcontainer</code> that provisions a PostgreSQL 16 server automatically upon startup.</p><ol><li>Open the course GitHub repository in your browser.</li><li>Click the green <strong>Code</strong> button, navigate to the <strong>Codespaces</strong> tab, and click <strong>Create codespace on main</strong>.</li><li>Once loaded, open the integrated terminal and type <code>psql -U postgres</code> to access the database immediately!</li></ol>"),
-        ("Database Schema & Sample Datasets",
-         "<p>The course schema includes five core relational entities: <code>employees</code>, <code>locations</code>, <code>products</code>, <code>orders</code>, and <code>order_lines</code>, alongside the 10,000-row <code>superstore</code> dataset.</p><p>To initialize or reset your database at any time, run:</p><div style='background: #0f172a; color: #f8fafc; padding: 0.75rem 1rem; border-radius: 6px; font-family: Consolas, monospace;'><pre style='margin: 0; background: transparent; color: inherit;'><code>psql -U postgres -d postgres -f shared_assets/datasets/setup_chap1.sql</code></pre></div>")
+        ("🚀 1-Click Environment Setup (GitHub Codespaces)",
+         """<p>Your entire development environment—including PostgreSQL 16, pre-seeded datasets, and the SQLTools visual query interface—is pre-packaged into a cloud container. You do <strong>not</strong> need to install PostgreSQL or configure complex database ports on your personal computer!</p>
+<div style="margin: 1.25rem 0; text-align: center;">
+  <a href="https://codespaces.new/tswarmLCCC/CMAP-1815-Student-Sandbox?quickstart=1" target="_blank" rel="noopener" style="display: inline-block; background: #2563eb; color: #ffffff; padding: 0.75rem 1.5rem; font-weight: 600; font-size: 1.05em; text-decoration: none; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"><i class="fab fa-github"></i> Launch CMAP 1815 Student Sandbox in Codespaces</a>
+</div>
+<p style="text-align: center; color: #64748b; font-size: 0.9em;">Direct Repository: <a href="https://github.com/tswarmLCCC/CMAP-1815-Student-Sandbox" target="_blank" rel="noopener" style="color: #2563eb;">github.com/tswarmLCCC/CMAP-1815-Student-Sandbox</a></p>
+<h4 style="color: #1e3a8a; margin-top: 1.25rem;">What happens when you launch:</h4>
+<ol style="line-height: 1.7;">
+  <li>Click the launch button above (or open the repo, click <strong>Code &rarr; Codespaces &rarr; Create codespace on main</strong>).</li>
+  <li>Wait ~90 seconds while GitHub provisions your private Linux container.</li>
+  <li>Once the integrated terminal prints <code>CMAP 1815: Modern SQL Student Sandbox Ready!</code>, your database is live and pre-seeded with all tables!</li>
+</ol>
+<div style="background: #f0fdf4; border-left: 4px solid #16a34a; padding: 0.75rem 1rem; margin-top: 1rem; border-radius: 0 4px 4px 0;">
+  <strong>💡 Tip on Free GitHub Hours:</strong> Personal GitHub accounts receive 60 free core-hours per month. Claim your free <strong><a href="https://education.github.com/pack" target="_blank" rel="noopener" style="color: #15803d; text-decoration: underline;">GitHub Student Developer Pack</a></strong> using your college <code>.edu</code> email to upgrade to <strong>180 free core-hours per month</strong>! Always close your Codespace browser tab when you finish working so your container automatically pauses.
+</div>"""),
+        ("🛠️ Two Ways to Query PostgreSQL",
+         """<h4 style="color: #1e3a8a; margin-top: 0.5rem;">Option A: The Visual GUI (SQLTools Sidebar) — Recommended for Exploring</h4>
+<ol style="line-height: 1.7;">
+  <li>Click the <strong>Database (plug/server) icon</strong> on the far-left sidebar of VS Code.</li>
+  <li>Under the <strong>CONNECTIONS</strong> section, click <strong>CMAP 1815 Local PostgreSQL</strong> &rarr; <strong>Connect</strong>.</li>
+  <li>Expand <code>cmap1815</code> &rarr; <code>public</code> &rarr; <code>Tables</code> to inspect your five live entities: <code>employees</code>, <code>locations</code>, <code>products</code>, <code>orders</code>, and <code>order_lines</code>.</li>
+  <li>Click on any table name to inspect its column names and data types, or click <strong>Show Table Records</strong> to view data in an interactive spreadsheet grid!</li>
+</ol>
+
+<h4 style="color: #1e3a8a; margin-top: 1.25rem;">Option B: The Terminal CLI (psql) — Recommended for Fast Query Testing</h4>
+<ol style="line-height: 1.7;">
+  <li>Open the integrated terminal in VS Code (press <code>Ctrl + `</code> or <code>Cmd + `</code>).</li>
+  <li>Simply type <code>psql</code> and press Enter. You will immediately enter the interactive PostgreSQL shell connected to the <code>cmap1815</code> database.</li>
+  <li>Run any query:
+    <div style="background: #0f172a; color: #f8fafc; padding: 0.5rem 0.75rem; border-radius: 4px; font-family: Consolas, monospace; margin: 0.5rem 0;"><pre style="margin: 0; background: transparent; color: inherit;"><code>SELECT first_name, last_name, salary FROM employees LIMIT 5;</code></pre></div>
+  </li>
+  <li>Type <code>\\q</code> and press Enter to exit the SQL prompt back to bash.</li>
+</ol>"""),
+        ("📝 The 5-Step Weekly Lab Submission Workflow",
+         """<ol style="line-height: 1.8;">
+  <li><strong>Navigate to the Unit Folder:</strong> In the VS Code file explorer (left panel), open the folder for the current week (e.g. <code>units/unit_01_selection_and_fundamentals/</code>).</li>
+  <li><strong>Review the Challenges:</strong> Open <code>lab_guide.md</code> in the unit folder (or view the <em>Applied SQL Lab Guide</em> page right here in Canvas) to read the business scenario, query specifications, and point values.</li>
+  <li><strong>Open Your Starter Template:</strong> Open <code>lab{N}_starter.sql</code> (e.g. <code>lab1_starter.sql</code>). This file has pre-formatted comment blocks for each challenge query.</li>
+  <li><strong>Write &amp; Verify Every Query:</strong> Write your SQL statements beneath each challenge prompt. <strong>Golden Rule:</strong> Never submit code you haven't executed! Run each query in your live PostgreSQL database to confirm zero syntax errors.</li>
+  <li><strong>Save &amp; Submit to Canvas:</strong> Save your completed file as <code>lab{N}_yourlastname.sql</code> (for example, <code>lab1_smith.sql</code>). Navigate to the corresponding weekly Canvas Lab Assignment and upload your <code>.sql</code> script file.</li>
+</ol>
+
+<div style="background: #f8fafc; border-left: 4px solid #1e3a8a; padding: 0.75rem 1rem; margin-top: 1rem; border-radius: 0 4px 4px 0;">
+  <strong style="color: #1e3a8a;">LCCC Formatting &amp; Grading Standards:</strong>
+  <ul style="margin: 0.5rem 0 0 0; padding-left: 1.25rem;">
+    <li>All SQL keywords MUST be in <strong>UPPERCASE</strong> (<code>SELECT</code>, <code>FROM</code>, <code>WHERE</code>, <code>ORDER BY</code>, <code>AS</code>).</li>
+    <li>Each major SQL clause must begin on a <strong>new line</strong> for clean readability.</li>
+    <li>Always alias computed expressions using descriptive <code>snake_case</code> names (e.g. <code>AS total_inventory_value</code>).</li>
+  </ul>
+</div>"""),
+        ("🔄 Disaster Recovery: Screwed Up Your Data? (./reset_database.sh)",
+         """<p>In Unit 5 (Safe DML) and Unit 7 (Schema Design), you will be executing real <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>, and <code>DROP TABLE</code> statements. Mistakes happen—you might accidentally delete the entire employees table or alter a column type incorrectly.</p>
+<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 0.75rem 1rem; margin: 1rem 0; border-radius: 0 4px 4px 0;">
+  <p style="margin: 0 0 0.5rem 0; font-weight: 600; color: #991b1b;">Don't panic! You can reset your database in 5 seconds anytime:</p>
+  <div style="background: #0f172a; color: #f8fafc; padding: 0.5rem 0.75rem; border-radius: 4px; font-family: Consolas, monospace;"><pre style="margin: 0; background: transparent; color: inherit;"><code>./reset_database.sh</code></pre></div>
+  <p style="margin: 0.5rem 0 0 0; color: #7f1d1d; font-size: 0.9em;">This script drops and recreates all starter tables (locations, employees, products, orders, order_lines) back to day-one condition. <strong>It will NOT delete or alter your <code>.sql</code> homework files in the <code>units/</code> folder.</strong></p>
+</div>""")
     ]
     with open(os.path.join(wiki_dir, p_setup_file), "w", encoding="utf-8") as f:
-        f.write(render_standard_page_html("Database Setup & Environment Guide", setup_lead, setup_panels, p_setup_id))
-    pages_manifest.append((p_setup_file, "Database Setup & Environment Guide", p_setup_id))
+        f.write(render_standard_page_html("Student Guide: How to Complete & Submit Weekly SQL Labs", setup_lead, setup_panels, p_setup_id))
+    pages_manifest.append((p_setup_file, "Student Guide: How to Complete & Submit Weekly SQL Labs", p_setup_id))
 
     # Page: External Resources Guide
     p_res_id = make_id("page_resources")
@@ -1351,7 +1404,7 @@ def main():
         "items": [
             {"type": "WikiPage", "title": "Start Here: Course Overview & Orientation", "ref": p_start_here_id, "indent": 0, "state": "active"},
             {"type": "WikiPage", "title": "Orientation: Learn with AI — Course Guidelines & Free Tools", "ref": p_orient_ai_id, "indent": 1, "state": "active"},
-            {"type": "WikiPage", "title": "Database Setup & Environment Guide", "ref": p_setup_id, "indent": 1, "state": "active"},
+            {"type": "WikiPage", "title": "Student Guide: How to Complete & Submit Weekly SQL Labs", "ref": p_setup_id, "indent": 1, "state": "active"},
             {"type": "WikiPage", "title": "External Learning Resources & Media Guide", "ref": p_res_id, "indent": 1, "state": "active"}
         ]
     })
@@ -1542,15 +1595,21 @@ def main():
   <div style="background: #eff6ff; border-left: 4px solid #2563eb; padding: 0.75rem 1.25rem; margin: 1rem 0; border-radius: 0 4px 4px 0;">
     <p style="margin: 0; font-weight: 600; color: #1e40af;"><i class="far fa-calendar-alt"></i> Due Date: {html.escape(unit["due_date_str"])}</p>
   </div>
-  <div style="background: #f8fafc; border-left: 4px solid #1e3a8a; padding: 0.75rem 1rem; margin: 1rem 0; border-radius: 0 4px 4px 0;">
-    <p style="margin: 0;">Complete the SQL query challenges outlined in the <strong>{u_short}: Applied SQL Lab Guide</strong> against your live PostgreSQL 16 database in GitHub Codespaces.</p>
+  <div style="background: #f8fafc; border-left: 4px solid #1e3a8a; padding: 0.75rem 1.25rem; margin: 1rem 0; border-radius: 0 4px 4px 0;">
+    <p style="margin: 0 0 0.5rem 0;">Complete the SQL query challenges outlined in the <strong>{u_short}: Applied SQL Lab Guide</strong> against your live PostgreSQL 16 database in GitHub Codespaces.</p>
+    <p style="margin: 0;"><a href="https://codespaces.new/tswarmLCCC/CMAP-1815-Student-Sandbox?quickstart=1" target="_blank" rel="noopener" style="display: inline-block; background: #2563eb; color: #ffffff; padding: 0.4rem 0.9rem; font-size: 0.9em; font-weight: 600; text-decoration: none; border-radius: 4px;"><i class="fab fa-github"></i> Open Student Sandbox in Codespaces</a> &nbsp; <a href="https://github.com/tswarmLCCC/CMAP-1815-Student-Sandbox" target="_blank" rel="noopener" style="color: #2563eb; font-weight: 500; font-size: 0.9em; text-decoration: underline;">View GitHub Repository</a></p>
   </div>
-  <h3 style="color: #0f172a; margin-top: 1.5rem;">Submission Requirements</h3>
-  <ol style="padding-left: 1.5rem; line-height: 1.7;">
-    <li>Ensure all SQL queries are formatted with uppercase keywords and clauses on new lines.</li>
-    <li>Test your script in PostgreSQL (<code>psql -U postgres</code>) to verify that all queries execute without errors.</li>
-    <li>Upload your completed <code>.sql</code> script file (e.g. <code>lab{u_num}_yourname.sql</code>) or paste your verified SQL statements directly into the text entry box below.</li>
+  <h3 style="color: #0f172a; margin-top: 1.5rem;">5-Step Lab Submission Recipe</h3>
+  <ol style="padding-left: 1.5rem; line-height: 1.8;">
+    <li>In your Codespace, open the starter template: <code>units/{u_folder}/lab{u_num}_starter.sql</code>.</li>
+    <li>Write your query solutions directly beneath each challenge comment block.</li>
+    <li><strong>Test every query</strong> using the visual <strong>SQLTools GUI</strong> or the terminal (<code>psql</code>) to ensure error-free execution.</li>
+    <li>Format your code: SQL keywords in <strong>UPPERCASE</strong> (<code>SELECT</code>, <code>FROM</code>, <code>WHERE</code>) and clauses starting on new lines.</li>
+    <li>Save your completed script as <code>lab{u_num}_yourlastname.sql</code> (e.g. <code>lab{u_num}_smith.sql</code>) and upload the file below for SpeedGrader evaluation.</li>
   </ol>
+  <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 0.6rem 1rem; margin: 1rem 0; border-radius: 0 4px 4px 0; font-size: 0.9em; color: #991b1b;">
+    <strong>Accidental Data Deletion or Dropped Table?</strong> Run <code>./reset_database.sh</code> in your terminal to instantly restore pristine database tables without losing your saved query files.
+  </div>
   <h3 style="color: #0f172a; margin-top: 1.5rem;">Grading Criteria (50 Points Total)</h3>
   <div style="margin-top: 0.5rem;">
     {rubric_html}
