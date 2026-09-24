@@ -32,15 +32,33 @@ UNIT_DIRS = [
     "unit_08_performance_indexing_and_capstone",
 ]
 
+DOCKERFILE = """FROM mcr.microsoft.com/devcontainers/base:ubuntu-22.04
+
+# Install PostgreSQL 16 server, contrib, and client from official PostgreSQL apt repository
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \\
+    && apt-get install -y --no-install-recommends \\
+        lsb-release \\
+        curl \\
+        ca-certificates \\
+        gnupg \\
+    && echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list \\
+    && curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg \\
+    && apt-get update \\
+    && apt-get install -y --no-install-recommends \\
+        postgresql-16 \\
+        postgresql-contrib-16 \\
+        postgresql-client-16 \\
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+"""
+
 DEVCONTAINER_JSON = """{
   "name": "CMAP 1815: Modern SQL Student Sandbox",
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
 
   "features": {
-    "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/devcontainers-contrib/features/postgresql:2": {
-      "version": "16"
-    }
+    "ghcr.io/devcontainers/features/github-cli:1": {}
   },
 
   "customizations": {
@@ -77,7 +95,8 @@ DEVCONTAINER_JSON = """{
     "DATABASE_URL": "postgresql://vscode@localhost:5432/cmap1815"
   },
 
-  "postCreateCommand": "bash .devcontainer/setup_database.sh"
+  "postCreateCommand": "bash .devcontainer/setup_database.sh",
+  "postStartCommand": "sudo service postgresql start"
 }
 """
 
@@ -89,6 +108,14 @@ git config --global --add safe.directory '*'
 
 echo ">>> Starting PostgreSQL 16 service..."
 sudo service postgresql start
+
+echo ">>> Waiting for PostgreSQL service to accept connections..."
+for i in {1..30}; do
+    if sudo -u postgres pg_isready -q; then
+        break
+    fi
+    sleep 1
+done
 
 echo ">>> Initializing database role and sandbox..."
 sudo -u postgres psql -tc "SELECT 1 FROM pg_roles WHERE rolname = 'vscode'" | grep -q 1 || sudo -u postgres createuser -s vscode
@@ -138,6 +165,17 @@ set -e
 echo "======================================================================"
 echo "  CMAP 1815: Resetting Database to Clean Starter State..."
 echo "======================================================================"
+
+echo ">>> Ensuring PostgreSQL 16 service is running..."
+sudo service postgresql start
+
+echo ">>> Waiting for PostgreSQL service to accept connections..."
+for i in {1..15}; do
+    if sudo -u postgres pg_isready -q; then
+        break
+    fi
+    sleep 1
+done
 
 echo ">>> Dropping existing tables and rebuilding schema..."
 if [ -f "datasets/setup_chap1.sql" ]; then
@@ -327,6 +365,9 @@ def write_infrastruture_files():
     with open(os.path.join(OUTPUT_DIR, ".devcontainer", "devcontainer.json"), "w", encoding="utf-8") as f:
         f.write(DEVCONTAINER_JSON)
     
+    with open(os.path.join(OUTPUT_DIR, ".devcontainer", "Dockerfile"), "w", encoding="utf-8") as f:
+        f.write(DOCKERFILE)
+
     setup_sh_path = os.path.join(OUTPUT_DIR, ".devcontainer", "setup_database.sh")
     with open(setup_sh_path, "w", encoding="utf-8") as f:
         f.write(SETUP_DATABASE_SH)
