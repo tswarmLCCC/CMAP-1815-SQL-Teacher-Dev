@@ -132,6 +132,26 @@ VSCODE_EXTENSIONS_JSON = """{
 }
 """
 
+RESET_DATABASE_SH = """#!/bin/bash
+set -e
+
+echo "======================================================================"
+echo "  CMAP 1815: Resetting Database to Clean Starter State..."
+echo "======================================================================"
+
+echo ">>> Dropping existing tables and rebuilding schema..."
+if [ -f "datasets/setup_chap1.sql" ]; then
+    psql -d cmap1815 -f datasets/setup_chap1.sql
+    echo ""
+    echo "✅ SUCCESS! Database has been reset to clean starter state."
+    echo "   All clean tables (locations, employees, products, orders, order_lines) are ready."
+    echo "   Your .sql query files in the units/ folders were NOT touched."
+else
+    echo "❌ Error: datasets/setup_chap1.sql not found!"
+    exit 1
+fi
+"""
+
 GITIGNORE = """# Operating System Files
 .DS_Store
 Thumbs.db
@@ -184,6 +204,15 @@ Click the button below to launch your personal, cloud-hosted SQL development env
 
 ---
 
+## 🔄 Disaster Recovery: Screwed up your data?
+If you make a destructive mistake during DML (Unit 5) or Schema Design (Unit 7) experiments (like accidentally deleting records or dropping a table), you can restore your database to pristine condition anytime:
+```bash
+./reset_database.sh
+```
+*Note: This re-runs the initial seed script. It does NOT touch or delete your `.sql` lab query files in `units/`.*
+
+---
+
 ## 📁 Repository Structure
 
 ```
@@ -191,6 +220,7 @@ Click the button below to launch your personal, cloud-hosted SQL development env
 ├── .devcontainer/             # Automated PostgreSQL 16 server configuration
 ├── .vscode/                   # Pre-configured SQLTools database connection
 ├── datasets/                  # Core seed scripts (setup_chap1.sql)
+├── reset_database.sh          # 1-click database recovery script
 └── units/                     # Weekly Guided Learning & Lab Challenges
     ├── unit_01_selection_and_fundamentals/
     ├── unit_02_filtering_and_logic/
@@ -269,8 +299,24 @@ SELECT version(), current_database(), current_user;
 
 def clean_and_make_dirs():
     if os.path.exists(OUTPUT_DIR):
+        # Preserve .git directory if already initialized
+        git_dir = os.path.join(OUTPUT_DIR, ".git")
+        temp_git = None
+        if os.path.exists(git_dir):
+            temp_git = os.path.join(WORKSPACE_ROOT, "scratch", "temp_student_git")
+            if os.path.exists(temp_git):
+                shutil.rmtree(temp_git)
+            shutil.copytree(git_dir, temp_git)
+
         shutil.rmtree(OUTPUT_DIR)
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+        os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+        if temp_git and os.path.exists(temp_git):
+            shutil.copytree(temp_git, os.path.join(OUTPUT_DIR, ".git"))
+            shutil.rmtree(temp_git)
+    else:
+        os.makedirs(OUTPUT_DIR, exist_ok=True)
+
     os.makedirs(os.path.join(OUTPUT_DIR, ".devcontainer"), exist_ok=True)
     os.makedirs(os.path.join(OUTPUT_DIR, ".vscode"), exist_ok=True)
     os.makedirs(os.path.join(OUTPUT_DIR, "datasets"), exist_ok=True)
@@ -285,6 +331,12 @@ def write_infrastruture_files():
     with open(setup_sh_path, "w", encoding="utf-8") as f:
         f.write(SETUP_DATABASE_SH)
     os.chmod(setup_sh_path, 0o755)
+
+    # reset_database.sh
+    reset_sh_path = os.path.join(OUTPUT_DIR, "reset_database.sh")
+    with open(reset_sh_path, "w", encoding="utf-8") as f:
+        f.write(RESET_DATABASE_SH)
+    os.chmod(reset_sh_path, 0o755)
 
     # .vscode
     with open(os.path.join(OUTPUT_DIR, ".vscode", "settings.json"), "w", encoding="utf-8") as f:
