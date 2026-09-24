@@ -32,33 +32,39 @@ UNIT_DIRS = [
     "unit_08_performance_indexing_and_capstone",
 ]
 
-DOCKERFILE = """FROM mcr.microsoft.com/devcontainers/base:ubuntu-22.04
+DOCKER_COMPOSE_YML = """version: '3.8'
 
-# Install PostgreSQL 16 server, contrib, and client from official PostgreSQL apt repository
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \\
-    && apt-get install -y --no-install-recommends \\
-        lsb-release \\
-        curl \\
-        ca-certificates \\
-        gnupg \\
-    && echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list \\
-    && curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg \\
-    && apt-get update \\
-    && apt-get install -y --no-install-recommends \\
-        postgresql-16 \\
-        postgresql-contrib-16 \\
-        postgresql-client-16 \\
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+services:
+  workspace:
+    image: mcr.microsoft.com/devcontainers/base:ubuntu-22.04
+    volumes:
+      - ../..:/workspaces:cached
+    command: sleep infinity
+    network_mode: service:db
+
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: cmap1815
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
 """
 
 DEVCONTAINER_JSON = """{
   "name": "CMAP 1815: Modern SQL Student Sandbox",
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "workspace",
+  "workspaceFolder": "/workspaces/CMAP-1815-Student-Sandbox",
 
   "features": {
-    "ghcr.io/devcontainers/features/github-cli:1": {}
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/postgresql-client:1": {}
   },
 
   "customizations": {
@@ -74,14 +80,16 @@ DEVCONTAINER_JSON = """{
             "server": "localhost",
             "port": 5432,
             "database": "cmap1815",
-            "username": "vscode",
+            "username": "postgres",
+            "password": "password123",
             "askForPassword": false
           }
         ]
       },
       "extensions": [
         "mtxr.sqltools",
-        "mtxr.sqltools-driver-pg"
+        "mtxr.sqltools-driver-pg",
+        "cweijan.vscode-database-client2"
       ]
     }
   },
@@ -89,15 +97,17 @@ DEVCONTAINER_JSON = """{
   "remoteUser": "vscode",
 
   "containerEnv": {
-    "PGUSER": "vscode",
+    "PGUSER": "postgres",
+    "PGPASSWORD": "password123",
     "PGDATABASE": "cmap1815",
     "PGHOST": "localhost",
     "PGPORT": "5432",
-    "DATABASE_URL": "postgresql://vscode@localhost:5432/cmap1815"
+    "DATABASE_URL": "postgresql://postgres:password123@localhost:5432/cmap1815"
   },
 
-  "postCreateCommand": "bash .devcontainer/setup_database.sh",
-  "postStartCommand": "sudo service postgresql start"
+  "forwardPorts": [5432],
+
+  "postCreateCommand": "bash .devcontainer/setup_database.sh"
 }
 """
 
@@ -107,31 +117,21 @@ set -e
 echo ">>> Configuring Git directory trust..."
 git config --global --add safe.directory '*'
 
-echo ">>> Starting PostgreSQL 16 service..."
-sudo service postgresql start
-
-echo ">>> Waiting for PostgreSQL service to accept connections..."
-for i in {1..30}; do
-    if sudo -u postgres pg_isready -q; then
-        break
-    fi
+echo ">>> Waiting for PostgreSQL 16 database to accept connections..."
+until PGPASSWORD=password123 psql -h localhost -U postgres -d cmap1815 -c '\\q' 2>/dev/null; do
     sleep 1
 done
 
-echo ">>> Initializing database role and sandbox..."
-sudo -u postgres psql -tc "SELECT 1 FROM pg_roles WHERE rolname = 'vscode'" | grep -q 1 || sudo -u postgres createuser -s vscode
-sudo -u postgres psql -tc "SELECT 1 FROM pg_database WHERE datname = 'cmap1815'" | grep -q 1 || sudo -u postgres createdb -O vscode cmap1815
-
 echo ">>> Seeding starter dataset (setup_chap1.sql)..."
 if [ -f "datasets/setup_chap1.sql" ]; then
-    psql -d cmap1815 -f datasets/setup_chap1.sql
+    PGPASSWORD=password123 psql -h localhost -U postgres -d cmap1815 -f datasets/setup_chap1.sql
     echo ">>> Database seeded successfully: locations, employees, products, orders, order_lines."
 fi
 
 echo "======================================================================"
 echo "  CMAP 1815: Modern SQL Student Sandbox Ready!"
 echo "  • Terminal: type 'psql' to open the interactive SQL shell."
-echo "  • Visual GUI: click the Database icon on the left sidebar (SQLTools)."
+echo "  • Visual GUI: click Database Client or SQLTools on the left sidebar."
 echo "======================================================================"
 """
 
@@ -146,7 +146,8 @@ VSCODE_SETTINGS_JSON = """{
       "server": "localhost",
       "port": 5432,
       "database": "cmap1815",
-      "username": "vscode",
+      "username": "postgres",
+      "password": "password123",
       "askForPassword": false
     }
   ]
@@ -156,7 +157,8 @@ VSCODE_SETTINGS_JSON = """{
 VSCODE_EXTENSIONS_JSON = """{
   "recommendations": [
     "mtxr.sqltools",
-    "mtxr.sqltools-driver-pg"
+    "mtxr.sqltools-driver-pg",
+    "cweijan.vscode-database-client2"
   ]
 }
 """
@@ -168,20 +170,9 @@ echo "======================================================================"
 echo "  CMAP 1815: Resetting Database to Clean Starter State..."
 echo "======================================================================"
 
-echo ">>> Ensuring PostgreSQL 16 service is running..."
-sudo service postgresql start
-
-echo ">>> Waiting for PostgreSQL service to accept connections..."
-for i in {1..15}; do
-    if sudo -u postgres pg_isready -q; then
-        break
-    fi
-    sleep 1
-done
-
 echo ">>> Dropping existing tables and rebuilding schema..."
 if [ -f "datasets/setup_chap1.sql" ]; then
-    psql -d cmap1815 -f datasets/setup_chap1.sql
+    PGPASSWORD=password123 psql -h localhost -U postgres -d cmap1815 -f datasets/setup_chap1.sql
     echo ""
     echo "✅ SUCCESS! Database has been reset to clean starter state."
     echo "   All clean tables (locations, employees, products, orders, order_lines) are ready."
@@ -367,13 +358,17 @@ def write_infrastruture_files():
     with open(os.path.join(OUTPUT_DIR, ".devcontainer", "devcontainer.json"), "w", encoding="utf-8") as f:
         f.write(DEVCONTAINER_JSON)
     
-    with open(os.path.join(OUTPUT_DIR, ".devcontainer", "Dockerfile"), "w", encoding="utf-8") as f:
-        f.write(DOCKERFILE)
+    with open(os.path.join(OUTPUT_DIR, ".devcontainer", "docker-compose.yml"), "w", encoding="utf-8") as f:
+        f.write(DOCKER_COMPOSE_YML)
 
     setup_sh_path = os.path.join(OUTPUT_DIR, ".devcontainer", "setup_database.sh")
     with open(setup_sh_path, "w", encoding="utf-8") as f:
         f.write(SETUP_DATABASE_SH)
     os.chmod(setup_sh_path, 0o755)
+
+    df_path = os.path.join(OUTPUT_DIR, ".devcontainer", "Dockerfile")
+    if os.path.exists(df_path):
+        os.remove(df_path)
 
     # reset_database.sh
     reset_sh_path = os.path.join(OUTPUT_DIR, "reset_database.sh")
