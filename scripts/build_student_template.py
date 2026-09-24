@@ -62,10 +62,7 @@ DEVCONTAINER_JSON = """{
   "service": "workspace",
   "workspaceFolder": "/workspaces/CMAP-1815-Student-Sandbox",
 
-  "features": {
-    "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/devcontainers/features/postgresql-client:1": {}
-  },
+  "onCreateCommand": "sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client",
 
   "customizations": {
     "vscode": {
