@@ -65,7 +65,8 @@ DEVCONTAINER_JSON = """{
     "vscode": {
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash",
-        "sqltools.useNodeRuntime": true,
+        "sqltools.useNodeRuntime": false,
+        "sqltools.detectNodeRuntime": false,
         "sqltools.connections": [
           {
             "name": "CMAP 1815 Local PostgreSQL",
@@ -136,7 +137,8 @@ echo "======================================================================"
 
 VSCODE_SETTINGS_JSON = """{
   "terminal.integrated.defaultProfile.linux": "bash",
-  "sqltools.useNodeRuntime": true,
+  "sqltools.useNodeRuntime": false,
+  "sqltools.detectNodeRuntime": false,
   "sqltools.connections": [
     {
       "name": "CMAP 1815 Local PostgreSQL",
