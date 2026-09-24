@@ -1,21 +1,26 @@
 {
-  "name": "SQL Dev Container",
-  "dockerComposeFile": "docker-compose.yml",
-  "service": "app",
-  "workspaceFolder": "/workspace",
-  "forwardPorts": [5432],
-  "remoteEnv": {
-    "DATABASE_URL": "postgresql://postgres:postgres@db:5432/mydb"
-  },
-  "features": {
-    "ghcr.io/robbert229/devcontainer-features/postgresql-client:1": {}
-  },
+  "name": "Secure Student Dev Sandbox",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+
   "customizations": {
     "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
       "extensions": [
-        "mtxr.sqltools",
-        "mtxr.sqltools-driver-pg"
+        "ms-python.python"
       ]
     }
-  }
+  },
+
+  // Security: Run as an unprivileged user, NOT root
+  "remoteUser": "vscode",
+
+  // Security: Prevent container processes from acquiring new privileges
+  "runArgs": [
+    "--security-opt", "no-new-privileges:true"
+  ],
+
+  // Automatically install required course packages upon first creation
+  "postCreateCommand": "pip install --upgrade pip && pip install jupyter pandas numpy requests"
 }
