@@ -8,6 +8,7 @@ This directory houses the curated, **best-of-breed skills, automation engines, t
 
 ```
 agent_tools_catalog/
+├── MASTER_COURSE_SETUP_AND_FORMATTING_GUIDE.md # Master Course Setup, Styling & Packaging Playbook
 ├── skills/                                      # Antigravity Progressive-Disclosure Skills
 │   ├── canvas-course-builder/SKILL.md          # Full Canvas .imscc Cartridge Generator
 │   ├── slide-deck-generator/SKILL.md           # Programmatic 16:9 Slide Presentation Engine
