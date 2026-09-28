@@ -160,6 +160,43 @@ class CanvasCourseBuilder:
 
         self.assignment_manifest.append((assign_id, html_file, title))
 
+    def add_wiki_page(self, page_id: str, filename: str, title: str, html_body: str):
+        """Writes wiki page HTML to wiki_content/ and records in pages manifest."""
+        file_path = os.path.join(self.wiki_dir, filename)
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(html_body)
+        self.pages_manifest.append((filename, title, page_id))
+
+    def build_quiz(self, quiz_id: str, quiz_title: str, group_id: str, questions: List[Dict[str, Any]], due_iso: Optional[str] = None):
+        """Compiles QTI 1.2 XML and Canvas assessment_meta.xml."""
+        quiz_meta_id = make_canvas_id(f"meta_{quiz_id}")
+        q_dir = os.path.join(self.build_dir, quiz_id)
+        os.makedirs(q_dir, exist_ok=True)
+
+        qti_xml_str = build_qti_xml(quiz_id, quiz_title, questions)
+        with open(os.path.join(q_dir, "assessment_qti.xml"), "w", encoding="utf-8") as qf:
+            qf.write(qti_xml_str)
+
+        meta_xml_str = build_assessment_meta_xml(
+            quiz_id, quiz_title, group_id,
+            due_at=due_iso, lock_at=due_iso
+        )
+        with open(os.path.join(q_dir, "assessment_meta.xml"), "w", encoding="utf-8") as mf:
+            mf.write(meta_xml_str)
+
+        with open(os.path.join(self.non_cc_dir, f"{quiz_id}.xml.qti"), "w", encoding="utf-8") as ncf:
+            ncf.write(qti_xml_str)
+
+        self.quiz_manifest.append((quiz_id, quiz_meta_id, quiz_title))
+
+    def add_module(self, mod_id: str, title: str, items: List[Dict[str, Any]]):
+        """Adds a module structure with ordered items."""
+        self.modules_data.append({
+            "id": mod_id,
+            "title": title,
+            "items": items
+        })
+
     def build_module_meta_and_manifest(self):
         """Generates synchronized module_meta.xml and imsmanifest.xml with deterministic IDs."""
         modules_xml_items = []

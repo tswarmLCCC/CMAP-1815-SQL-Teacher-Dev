@@ -17,6 +17,7 @@ Guarantees:
 import os
 import shutil
 import re
+import stat
 
 WORKSPACE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUTPUT_DIR = os.path.join(WORKSPACE_ROOT, "build", "student_template")
@@ -325,25 +326,28 @@ SELECT version(), current_database(), current_user;
 
 """
 
+def remove_readonly(func, path, exc_info):
+    try:
+        os.chmod(path, stat.S_IWRITE)
+        func(path)
+    except Exception:
+        pass
+
 def clean_and_make_dirs():
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
     if os.path.exists(OUTPUT_DIR):
-        # Preserve .git directory if already initialized
-        git_dir = os.path.join(OUTPUT_DIR, ".git")
-        temp_git = None
-        if os.path.exists(git_dir):
-            temp_git = os.path.join(WORKSPACE_ROOT, "scratch", "temp_student_git")
-            if os.path.exists(temp_git):
-                shutil.rmtree(temp_git)
-            shutil.copytree(git_dir, temp_git)
-
-        shutil.rmtree(OUTPUT_DIR)
-        os.makedirs(OUTPUT_DIR, exist_ok=True)
-
-        if temp_git and os.path.exists(temp_git):
-            shutil.copytree(temp_git, os.path.join(OUTPUT_DIR, ".git"))
-            shutil.rmtree(temp_git)
-    else:
-        os.makedirs(OUTPUT_DIR, exist_ok=True)
+        for item in os.listdir(OUTPUT_DIR):
+            if item == ".git":
+                continue
+            item_path = os.path.join(OUTPUT_DIR, item)
+            if os.path.isdir(item_path):
+                shutil.rmtree(item_path, onerror=remove_readonly)
+            else:
+                try:
+                    os.chmod(item_path, stat.S_IWRITE)
+                    os.remove(item_path)
+                except Exception:
+                    pass
 
     os.makedirs(os.path.join(OUTPUT_DIR, ".devcontainer"), exist_ok=True)
     os.makedirs(os.path.join(OUTPUT_DIR, ".vscode"), exist_ok=True)
@@ -477,12 +481,12 @@ def audit_student_template():
     print("=" * 60)
     print(f"Total files packaged: {total_files}")
     if leaks:
-        print(f"❌ CRITICAL AUDIT FAILURE! Found {len(leaks)} instructor files:")
+        print(f"[FAIL] CRITICAL AUDIT FAILURE! Found {len(leaks)} instructor files:")
         for leak in leaks:
             print(f"   - {leak}")
         raise ValueError("Audit failed: instructor solution files found in student template.")
     else:
-        print("✅ AUDIT PASSED: 100% clean. Zero instructor solution or quiz files present.")
+        print("[PASS] AUDIT PASSED: 100% clean. Zero instructor solution or quiz files present.")
     print("=" * 60 + "\n")
 
 if __name__ == "__main__":

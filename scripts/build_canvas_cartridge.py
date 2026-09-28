@@ -4,6 +4,8 @@ import re
 import hashlib
 import zipfile
 import html
+import shutil
+import datetime
 import xml.etree.ElementTree as ET
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -1905,7 +1907,17 @@ def main():
                     sys.exit(1)
     print(f"SUCCESS: Verified {xml_files_tested} XML files. Zero syntax errors!")
 
-    # 9. Package into .imscc
+    # 9. Package into .imscc (with automated pre-build backup)
+    if os.path.exists(IMSCC_OUTPUT_FILE):
+        backup_dir = os.path.join(BASE_DIR, "archive", "cartridge_backups")
+        os.makedirs(backup_dir, exist_ok=True)
+        mtime = os.path.getmtime(IMSCC_OUTPUT_FILE)
+        mtime_str = datetime.datetime.fromtimestamp(mtime).strftime("%Y-%m-%d_%H%M%S")
+        backup_path = os.path.join(backup_dir, f"CMAP_1815_Complete_{mtime_str}.imscc")
+        if not os.path.exists(backup_path):
+            shutil.copy2(IMSCC_OUTPUT_FILE, backup_path)
+            print(f"[Backup] Preserved previous cartridge to: {backup_path}")
+
     print(f"\n--- Packaging into {IMSCC_OUTPUT_FILE} ---")
     total_files = 0
     with zipfile.ZipFile(IMSCC_OUTPUT_FILE, 'w', zipfile.ZIP_DEFLATED) as zipf:
