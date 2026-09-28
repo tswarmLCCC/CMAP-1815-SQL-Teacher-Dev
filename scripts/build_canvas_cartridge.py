@@ -1383,6 +1383,74 @@ def main():
         f.write(render_standard_page_html("Student Guide: How to Complete & Submit Weekly SQL Labs", setup_lead, setup_panels, p_setup_id))
     pages_manifest.append((p_setup_file, "Student Guide: How to Complete & Submit Weekly SQL Labs", p_setup_id))
 
+    # Page: Student Guide - Navigating Codespaces & SQLTools
+    p_codespace_guide_id = make_id("page_student_codespace_guide")
+    p_codespace_guide_file = "student-codespaces-sqltools-guide.html"
+    codespace_lead = "<p>A visual, step-by-step walkthrough for launching your cloud development environment, browsing relational tables with the <strong>SQLTools</strong> GUI, executing live queries with <code>Ctrl+Enter</code>, using the <code>psql</code> terminal, and submitting weekly lab assignments.</p>"
+    codespace_panels = [
+        ("1. Launching Your Codespace & Interface Layout",
+         "<p>In CMAP 1815, you have an entire Linux cloud workstation with PostgreSQL 16 and VS Code pre-configured—zero local software installation required!</p>"
+         "<ol><li>Open your personal student sandbox repository on GitHub.</li>"
+         "<li>Click the green <strong>Code</strong> button &rarr; select the <strong>Codespaces</strong> tab &rarr; click <strong>Create codespace on main</strong>.</li>"
+         "<li>Your Codespace will open in any modern web browser. The primary workspace areas are:</li></ol>"
+         "<ul><li><strong>Activity Bar (Far Left):</strong> Access the File Explorer (📁), Search (🔍), Git Source Control (🔀), and the <strong>SQLTools Database Manager</strong> (stacked cylinder icon).</li>"
+         "<li><strong>Editor (Center/Top):</strong> Where you write, format, and execute your SQL queries.</li>"
+         "<li><strong>Panel Area (Bottom):</strong> Displays interactive <strong>SQLTools Results</strong> tables and the integrated Linux <strong>Terminal</strong> (<code>Ctrl + `</code>).</li></ul>"),
+        
+        ("2. Connecting & Browsing Tables with SQLTools",
+         "<p><strong>SQLTools</strong> is your built-in graphical database client (similar to DBeaver or pgAdmin):</p>"
+         "<ol><li>Click the <strong>SQLTools icon</strong> (database cylinder) in the far-left Activity Bar.</li>"
+         "<li>In the <strong>CONNECTIONS</strong> panel, locate the pre-configured connection (<strong>cmap1815</strong> or <strong>mydb</strong>).</li>"
+         "<li>Click the connection name or the plug icon to connect. A green indicator confirms you are active!</li>"
+         "<li>Expand the connection &rarr; expand <code>public</code> &rarr; expand <code>Tables</code>. You will see all 5 core tables: <code>employees</code>, <code>locations</code>, <code>products</code>, <code>orders</code>, and <code>order_lines</code>.</li>"
+         "<li>Expand any table's <code>Columns</code> folder to inspect column names, types (e.g. <code>varchar</code>, <code>numeric</code>, <code>integer</code>), and primary keys.</li>"
+         "<li>Click the small table icon next to any table name to instantly view a 50-row data preview!</li></ol>"),
+        
+        ("3. Writing & Executing Queries with Keyboard Shortcuts",
+         "<p>Executing SQL in Codespaces is lightning-fast:</p>"
+         "<ol><li>Open an existing query script (like <code>sql/week1_orientation.sql</code> or <code>sql/lab_solutions_annotated.sql</code>) or create a new file named <code>lab1_yourname.sql</code>.</li>"
+         "<li>Type your query with keywords in <strong>UPPERCASE</strong> (<code>SELECT</code>, <code>FROM</code>, <code>WHERE</code>, <code>ORDER BY</code>).</li>"
+         "<li>Place your text cursor anywhere inside the SQL statement.</li>"
+         "<li>Press <strong>Ctrl + Enter</strong> (Windows / Linux / Chromebook) or <strong>Cmd + Enter</strong> (Mac) to execute! You can also click the floating <em>'Run on active connection'</em> link right above the query.</li>"
+         "<li>The <strong>SQLTools Results</strong> panel immediately opens, displaying the live result table, column headers, and total row count. You can click column headers to sort, search within the results, or copy rows to your clipboard.</li></ol>"),
+        
+        ("4. Using the Integrated Terminal & psql",
+         "<p>In addition to the visual GUI, you can interact with the PostgreSQL engine directly via the professional command-line utility, <strong>psql</strong>:</p>"
+         "<ol><li>Open the terminal by pressing <strong>Ctrl + `</strong> (or menu: <strong>Terminal &rarr; New Terminal</strong>).</li>"
+         "<li>Type <code>psql -U postgres -d cmap1815</code> (or <code>psql -U postgres</code>) and press Enter.</li></ol>"
+         "<p><strong>Essential psql Meta-Commands:</strong></p>"
+         "<table style='width: 100%; border-collapse: collapse; border: 1px solid #cbd5e1; margin: 1rem 0;'>"
+         "<thead><tr style='background: #1e3a8a; color: #ffffff;'><th style='padding: 0.6rem 0.75rem; text-align: left; border: 1px solid #cbd5e1;'>Command</th><th style='padding: 0.6rem 0.75rem; text-align: left; border: 1px solid #cbd5e1;'>Name</th><th style='padding: 0.6rem 0.75rem; text-align: left; border: 1px solid #cbd5e1;'>Purpose</th></tr></thead>"
+         "<tbody>"
+         "<tr style='background: #ffffff;'><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'><code>\\l</code></td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>List Databases</td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Displays all databases on the PostgreSQL instance.</td></tr>"
+         "<tr style='background: #f8fafc;'><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'><code>\\dt</code></td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>List Tables</td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Lists all user tables in the current schema.</td></tr>"
+         "<tr style='background: #ffffff;'><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'><code>\\d [table]</code></td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Describe Table</td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Shows column types, nullability, defaults, and constraints (e.g., <code>\\d employees</code>).</td></tr>"
+         "<tr style='background: #f8fafc;'><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'><code>\\x</code></td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Expanded Display</td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Toggles vertical record display (ideal for wide tables).</td></tr>"
+         "<tr style='background: #ffffff;'><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'><code>\\q</code></td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Quit</td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Exits psql back to the bash terminal prompt.</td></tr>"
+         "</tbody></table>"),
+        
+        ("5. Standard Lab Workflow & Submission Protocol",
+         "<p>Follow this routine for every weekly laboratory assignment:</p>"
+         "<ol><li><strong>Read the Lab Guide:</strong> Review the assignment objectives, scenarios, and challenge questions in Canvas.</li>"
+         "<li><strong>Create Your Submission Script:</strong> In your Codespace Explorer, create a new file named <code>labX_yourname.sql</code> (e.g. <code>lab1_jane_doe.sql</code>).</li>"
+         "<li><strong>Draft and Execute:</strong> Write each query one by one. Use <strong>Ctrl + Enter</strong> to test execution against live PostgreSQL.</li>"
+         "<li><strong>Verify Outputs:</strong> Check your live row counts and data against the annotated lab solution reference (<code>sql/lab_solutions_annotated.sql</code>).</li>"
+         "<li><strong>Save Frequently:</strong> Press <strong>Ctrl + S</strong> (Cmd + S on Mac) to save your work.</li>"
+         "<li><strong>Submit to Canvas:</strong> Right-click your completed <code>.sql</code> file in the Codespace Explorer &rarr; select <strong>Download...</strong> &rarr; upload the file directly to the Canvas Applied SQL Lab Assignment!</li></ol>"),
+        
+        ("6. Troubleshooting & Emergency Database Reset",
+         "<p><strong>Q: SQLTools says 'Connection Refused' or disconnects.</strong><br/>"
+         "PostgreSQL runs inside your container. If it stopped, open the terminal (<code>Ctrl + `</code>) and run: <code>sudo service postgresql start</code>, then reconnect in SQLTools.</p>"
+         "<p><strong>Q: I modified or corrupted table data during an experiment. How do I reset?</strong><br/>"
+         "You can reset the entire database to factory condition in 2 seconds. Run this terminal command:<br/>"
+         "<code style='background: #0f172a; color: #38bdf8; padding: 0.3rem 0.6rem; border-radius: 4px; display: inline-block; margin-top: 0.3rem;'>psql -U postgres -d cmap1815 -f sql/setup_chap1.sql</code></p>"
+         "<p><strong>Q: My Codespace stopped after being idle. Did I lose my work?</strong><br/>"
+         "No! Codespaces automatically suspends after 30 minutes of inactivity to save compute hours. All saved files and git commits are permanently stored on your persistent cloud volume. Simply click <strong>Restart Codespace</strong> to resume immediately.</p>")
+    ]
+    with open(os.path.join(wiki_dir, p_codespace_guide_file), "w", encoding="utf-8") as f:
+        f.write(render_standard_page_html("Student Guide: Navigating Codespaces & SQLTools", codespace_lead, codespace_panels, p_codespace_guide_id))
+    pages_manifest.append((p_codespace_guide_file, "Student Guide: Navigating Codespaces & SQLTools", p_codespace_guide_id))
+
     # Page: External Resources Guide
     p_res_id = make_id("page_resources")
     p_res_file = "external-resources-guide.html"
@@ -1405,6 +1473,7 @@ def main():
             {"type": "WikiPage", "title": "Start Here: Course Overview & Orientation", "ref": p_start_here_id, "indent": 0, "state": "active"},
             {"type": "WikiPage", "title": "Orientation: Learn with AI — Course Guidelines & Free Tools", "ref": p_orient_ai_id, "indent": 1, "state": "active"},
             {"type": "WikiPage", "title": "Student Guide: How to Complete & Submit Weekly SQL Labs", "ref": p_setup_id, "indent": 1, "state": "active"},
+            {"type": "WikiPage", "title": "Student Guide: Navigating Codespaces & SQLTools", "ref": p_codespace_guide_id, "indent": 1, "state": "active"},
             {"type": "WikiPage", "title": "External Learning Resources & Media Guide", "ref": p_res_id, "indent": 1, "state": "active"}
         ]
     })
