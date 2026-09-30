@@ -25,7 +25,7 @@ UNIT_METADATA = [
         "folder": "unit_01_selection_and_fundamentals",
         "date_range": "10/19 to 10/25",
         "title": "10/19 to 10/25 Unit 1: Selection & Relational Fundamentals",
-        "short_title": "10/19 to 10/25 Unit 1",
+        "short_title": "Unit 1",
         "topic": "Selection & Relational Fundamentals",
         "due_date_str": "Friday, October 23, 2026 at 11:59 PM (Midnight MT)",
         "due_iso": "2026-10-23T23:59:00",
@@ -52,7 +52,7 @@ UNIT_METADATA = [
         "folder": "unit_02_filtering_and_logic",
         "date_range": "10/26 to 11/1",
         "title": "10/26 to 11/1 Unit 2: Targeted Retrieval & Logic Gates",
-        "short_title": "10/26 to 11/1 Unit 2",
+        "short_title": "Unit 2",
         "topic": "Targeted Retrieval & Three-Valued Logic",
         "due_date_str": "Friday, October 30, 2026 at 11:59 PM (Midnight MT)",
         "due_iso": "2026-10-30T23:59:00",
@@ -82,7 +82,7 @@ UNIT_METADATA = [
         "folder": "unit_03_joins_and_relations",
         "date_range": "11/2 to 11/8",
         "title": "11/2 to 11/8 Unit 3: Relational Joins & Set Relationships",
-        "short_title": "11/2 to 11/8 Unit 3",
+        "short_title": "Unit 3",
         "topic": "Relational Joins & Foreign Key Relationships",
         "due_date_str": "Friday, November 6, 2026 at 11:59 PM (Midnight MT)",
         "due_iso": "2026-11-06T23:59:00",
@@ -108,7 +108,7 @@ UNIT_METADATA = [
         "folder": "unit_04_aggregation_and_pivoting",
         "date_range": "11/9 to 11/15",
         "title": "11/9 to 11/15 Unit 4: Summarization, Aggregation & Pivoting",
-        "short_title": "11/9 to 11/15 Unit 4",
+        "short_title": "Unit 4",
         "topic": "Summarization, Aggregation & Pivoting",
         "due_date_str": "Friday, November 13, 2026 at 11:59 PM (Midnight MT)",
         "due_iso": "2026-11-13T23:59:00",
@@ -134,7 +134,7 @@ UNIT_METADATA = [
         "folder": "unit_05_safe_dml_and_modifications",
         "date_range": "11/16 to 11/22",
         "title": "11/16 to 11/22 Unit 5: Safe DML, Transaction Integrity & Staging",
-        "short_title": "11/16 to 11/22 Unit 5",
+        "short_title": "Unit 5",
         "topic": "Safe DML, Transaction Integrity & Staging Tables",
         "due_date_str": "Friday, November 20, 2026 at 11:59 PM (Midnight MT)",
         "due_iso": "2026-11-20T23:59:00",
@@ -162,7 +162,7 @@ UNIT_METADATA = [
         "folder": "unit_06_subqueries_and_window_functions",
         "date_range": "11/30 to 12/6",
         "title": "11/30 to 12/6 Unit 6: Query Modularity, CTEs & Window Functions",
-        "short_title": "11/30 to 12/6 Unit 6",
+        "short_title": "Unit 6",
         "topic": "Query Modularity, CTEs & Analytical Window Functions",
         "due_date_str": "Friday, December 4, 2026 at 11:59 PM (Midnight MT)",
         "due_iso": "2026-12-04T23:59:00",
@@ -187,7 +187,7 @@ UNIT_METADATA = [
         "folder": "unit_07_schema_design_and_integrity",
         "date_range": "12/7 to 12/13",
         "title": "12/7 to 12/13 Unit 7: Schema Design, DDL & Data Integrity",
-        "short_title": "12/7 to 12/13 Unit 7",
+        "short_title": "Unit 7",
         "topic": "Schema Design, Normalization (1NF–3NF), DDL & Constraints",
         "due_date_str": "Friday, December 11, 2026 at 11:59 PM (Midnight MT)",
         "due_iso": "2026-12-11T23:59:00",
@@ -215,7 +215,7 @@ UNIT_METADATA = [
         "folder": "unit_08_performance_indexing_and_capstone",
         "date_range": "12/14 to 12/18",
         "title": "12/14 to 12/18 Unit 8: Performance Tuning, Indexing & Capstone Defense",
-        "short_title": "12/14 to 12/18 Unit 8",
+        "short_title": "Unit 8",
         "topic": "Query Optimization, EXPLAIN ANALYZE, Indexes & Capstone Defense",
         "due_date_str": "Friday, December 18, 2026 at 11:59 PM (Midnight MT)",
         "due_iso": "2026-12-18T23:59:00",
@@ -1535,7 +1535,7 @@ def main():
         # ----------------------------------------------------
         overview_id = make_id(f"page_u{u_num}_overview")
         overview_file = f"unit-{u_num:02d}-overview.html"
-        overview_lead = f"<p>Welcome to <strong>{u_title}</strong>. This unit focuses on mastering <em>{u_topic}</em> in modern PostgreSQL 16.</p><p>This overview guides you through the complete weekly learning sequence: review the assigned readings and embedded video lectures, complete the asynchronous preparatory drills, execute the applied hands-on SQL laboratory assignment, submit your work through Canvas, engage in supplemental AI practice, and complete the unit knowledge check.</p>"
+        overview_lead = f"<p>Welcome to <strong>Unit {u_num}: {u_topic}</strong>. This unit focuses on mastering <em>{u_topic}</em> in modern PostgreSQL 16.</p><p>This overview guides you through the complete weekly learning sequence: review the assigned readings and embedded video lectures, complete the asynchronous preparatory drills, execute the applied hands-on SQL laboratory assignment, submit your work through Canvas, engage in supplemental AI practice, and complete the unit knowledge check.</p>"
         
         overview_panels = [
             ("Unit Learning Objectives", 
@@ -1561,7 +1561,7 @@ def main():
         # ----------------------------------------------------
         reading_id = make_id(f"page_u{u_num}_readings")
         reading_file = f"unit-{u_num:02d}-readings-and-media.html"
-        reading_lead = f"""<p><strong>Welcome to the core instructional lecture and study hub for {u_title}.</strong> This page organizes all weekly learning materials into four structured chapters:</p>
+        reading_lead = f"""<p><strong>Welcome to the core instructional lecture and study hub for Unit {u_num}: {u_topic}.</strong> This page organizes all weekly learning materials into four structured chapters:</p>
 <ol style="padding-left: 1.5rem; margin: 0.75rem 0; line-height: 1.7;">
   <li><strong>Instructor Lecture &amp; Conceptual Deep Dive:</strong> Master the core concepts, mental models, syntax rules, and guided live exercises authored specifically for this unit.</li>
   <li><strong>Required Readings &amp; PostgreSQL Tutorial Guides:</strong> Review curated reference guides and official PostgreSQL 16 documentation links.</li>
