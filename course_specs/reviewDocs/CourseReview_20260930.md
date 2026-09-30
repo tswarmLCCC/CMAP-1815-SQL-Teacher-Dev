@@ -41,4 +41,82 @@ Unit 1
 
         100 points on the rubric, but you made it a 50 point assignment - pick one
 
-Unit 2
+Unit 3
+    Unit Overview - 
+
+    Required Readings, Concepts & Video Lectures -
+
+    Asynchronous Preparation & Drills
+
+    Applied SQL Lab Guide
+
+    Applied SQL Lab Assignment
+
+    Learn with AI — Supplemental Practice Drill
+
+Unit 4
+    Unit Overview - 
+
+    Required Readings, Concepts & Video Lectures -
+
+    Asynchronous Preparation & Drills
+
+    Applied SQL Lab Guide
+
+    Applied SQL Lab Assignment
+
+    Learn with AI — Supplemental Practice Drill
+
+Unit 5
+    Unit Overview - 
+
+    Required Readings, Concepts & Video Lectures -
+
+    Asynchronous Preparation & Drills
+
+    Applied SQL Lab Guide
+
+    Applied SQL Lab Assignment
+
+    Learn with AI — Supplemental Practice Drill
+
+
+Unit 6
+    Unit Overview - 
+
+    Required Readings, Concepts & Video Lectures -
+
+    Asynchronous Preparation & Drills
+
+    Applied SQL Lab Guide
+
+    Applied SQL Lab Assignment
+
+    Learn with AI — Supplemental Practice Drill
+
+Unit 7
+    Unit Overview - 
+
+    Required Readings, Concepts & Video Lectures -
+
+    Asynchronous Preparation & Drills
+
+    Applied SQL Lab Guide
+
+    Applied SQL Lab Assignment
+
+    Learn with AI — Supplemental Practice Drill
+
+Unit 8
+    Unit Overview - 
+
+    Required Readings, Concepts & Video Lectures -
+
+    Asynchronous Preparation & Drills
+
+    Applied SQL Lab Guide
+
+    Applied SQL Lab Assignment
+
+    Learn with AI — Supplemental Practice Drill
+
