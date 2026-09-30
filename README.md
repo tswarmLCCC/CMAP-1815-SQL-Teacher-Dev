@@ -50,7 +50,14 @@ Everything runs directly in your browser—no local database installation requir
 ├── shared_assets/             # Core Datasets & Seed Scripts
 │   └── datasets/              # setup_chap1.sql, superstore.csv
 │
+├── docs/                      # Institutional Guides & Socratic AI Framework
+│   ├── SOCRATIC_AI_DRILL_PROMPT_ENGINEERING_GUIDE.md # Gemini Gem & Socratic Prompt Framework
+│   ├── MASTER_COURSE_SETUP_AND_FORMATTING_GUIDE.md   # DesignPLUS & Canvas Course Setup
+│   ├── STUDENT_LAB_WORKFLOW_GUIDE.md                 # Codespaces & SQLTools Lab Guide
+│   └── CANVAS_PORTABILITY_AND_TROUBLESHOOTING_GUIDE.md
+│
 └── archive/                   # Consolidated Legacy Materials
+    ├── cartridge_backups/     # Archived .imscc Course Builds
     └── v1_original_drafts/    # Original brainstorms and early unit drafts (also tagged in Git)
 ```
 

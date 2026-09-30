@@ -1,134 +1,418 @@
-# **Unit 2: Advanced Filtering & Logic**
+# **Unit 2: Targeted Retrieval, Pattern Matching & Boolean Logic**
 
-## **Precision Retrieval: Slicing Data and Logic**
+## **Precision Retrieval: Slicing Data with The Scalpel**
 
 ### **1. Unit Overview & Objectives**
 
-In Unit 1, we learned how to "shine a flashlight" on specific columns using the SELECT statement. However, in professional database work, identifying *what* you want to see is only half the battle. You must also determine *which* specific rows deserve to be seen. In this unit, we introduce the WHERE clause—the engine of database filtering—and explore the mathematical logic that allows a database to make decisions.
+In Unit 1, you learned how to project columns and explore data structures using the foundational `SELECT` statement—essentially "shining a flashlight" across entire database tables. In professional relational database engineering, however, identifying *what* attributes you want to view is only half the battle. Real-world databases contain millions or billions of rows; extracting the entire table is slow, wasteful, and often dangerous in production microservices.
 
-**Learning Objectives:**
+In this unit, you master **The Scalpel**: the SQL `WHERE` clause. You will learn how the database engine evaluates conditional expressions, explore ANSI Three-Valued Logic (3VL), navigate the subtle traps of `NULL` values, construct sophisticated pattern matching with wildcards and regular expressions, evaluate operator precedence, paginate large result sets, and transform raw numbers using on-the-fly arithmetic calculations.
 
-* **Master** the WHERE clause to filter datasets based on specific, multi-layered criteria.  
-* **Analyze** the implications of Three-Valued Logic and how NULL values impact query results.  
-* **Construct** complex search patterns using LIKE, ILIKE, IN, BETWEEN, and Regular Expressions (POSIX).  
-* **Implement** Scalar Expressions to transform the database into a high-speed calculator for derived data.  
-* **Standardize** output using Column Aliasing (AS) to create professional, self-documenting reports.
+**Unit Learning Objectives:**
+
+* **Master** the `WHERE` clause to filter datasets based on specific, multi-layered criteria.
+* **Analyze** the operational implications of Three-Valued Logic (TRUE, FALSE, UNKNOWN) and understand how `NULL` values propagate through relational filters.
+* **Construct** robust search patterns using `LIKE`, `ILIKE`, `IN`, `BETWEEN`, and POSIX regular expressions (`~`, `~*`).
+* **Enforce** Boolean operator precedence using explicit grouping parentheses to prevent logic leakage between `AND` and `OR` gates.
+* **Implement** pagination controls using deterministic `ORDER BY ... LIMIT ... OFFSET` patterns.
+* **Standardize** report headers and calculated columns using expressions and the `AS` aliasing keyword.
+
+---
 
 ### **2. The Problem Statement: Precision vs. Noise**
 
-A modern database is like a digital ocean. If you are looking for information on a specific subset of citizens in a Wyoming Census dataset of 500,000 people, a simple SELECT statement (even with specific columns) still leaves you with a massive, unreadable list.
+A modern enterprise database is a digital ocean. Consider an e-commerce platform with 500,000 customers or a government agency managing census records. Executing a simple `SELECT` statement (even when specifying three or four columns) produces hundreds of megabytes of raw text. No human analyst or downstream microservice can process that volume of data efficiently.
 
-#### **The Need for the "Surgical" Lookup**
+#### **The Need for Surgical Retrieval**
+In high-frequency operational systems, queries frequently target an individual entity:
+* A customer support representative searches for an order by tracking number.
+* A university registrar retrieves a student profile by student ID number.
+* A security engineer audits server access logs for a specific malicious IP address.
 
-Sometimes, you aren't looking for a "list" at all—you are looking for one specific person. Imagine a student walks into your office and provides their ID number. Without filtering, you would have to scroll through the entire campus directory to find their record. The WHERE clause allows for **Surgical Retrieval**, where the database ignores 49,999 records to return the exact one you need instantly. This precision is vital for tasks like customer support, medical records, and security audits.
+Without surgical row filtering, the database would be forced to perform a Full Table Scan (evaluating and transmitting every single row across the network), choking bandwidth and causing severe client lag. The `WHERE` clause empowers the database engine to discard 499,999 non-matching rows and return the exact record required in milliseconds.
 
-#### **Creating a "Decision Space"**
+#### **Constructing Focused Decision Spaces**
+Beyond single-row lookups, analytical queries require isolating targeted segments of data before performing downstream aggregations or management decisions:
+* "What is the average transaction value for premium loyalty members in the Mountain West region during Q3?"
+* "Which pharmaceutical batches have an expiration date within the next 30 days and a current stock quantity below safety thresholds?"
 
-Beyond simple lookups, filtering allows us to create a restricted "space" for analysis. If a manager asks, "How much are we paying in overtime this month?", you don't look at all salary data. You first slice the data to include only "Overtime" records. This focused **Decision Space** is the essential first step before we perform aggregations (calculations like sums and averages), which we will master in later units. This unit gives you the tools to filter out the noise and present only the specific facts that lead to action.
+The `WHERE` clause defines this **Decision Space**. Slicing away irrelevant data is the mandatory prerequisite before calculating sums, averages, or pivots. Filtering out operational noise ensures that the metrics presented to stakeholders are accurate, targeted, and actionable.
+
+---
 
 ### **3. Theoretical Framework: The Logic of Retrieval**
 
-To master filtering, you must understand that the WHERE clause is actually a **Decision Engine**. It evaluates every single row in your table against a set of rules and decides whether to "keep" or "discard" that row.
+To write reliable SQL, you must understand that the `WHERE` clause is an internal **Decision Engine**. The PostgreSQL query executor inspects rows and evaluates an expression against each one, deciding whether the row satisfies the criteria to move forward into the output pipeline.
 
 #### **A. Predicates and Comparison Operators**
 
-At the heart of the WHERE clause is the **Predicate**. A predicate is a statement that can be evaluated as either **True**, **False**, or **Unknown**. In SQL, every expression in your WHERE clause must boil down to one of these three Boolean values for a row to be processed.
+At the heart of every `WHERE` clause is the **Predicate**. In relational database theory, a predicate is a conditional statement that evaluates to a Boolean truth value. In PostgreSQL, predicates evaluate to one of three possible values: **TRUE**, **FALSE**, or **UNKNOWN**.
 
-| Operator | Name | Definition | Example |
-| :---- | :---- | :---- | :---- |
-| \= | **Equal to** | Returns true if the values on both sides are identical. | WHERE department \= 'Sales' |
-| \<\> or != | **Not equal to** | Returns true if the values are different. | WHERE status \<\> 'Retired' |
-| \> | **Greater than** | Returns true if the left value is strictly larger than the right. | WHERE age \> 21 |
-| \< | **Less than** | Returns true if the left value is strictly smaller than the right. | WHERE price \< 10.00 |
-| \>= | **Greater than or equal** | Returns true if the left value is larger than or exactly equal to the right. | WHERE GPA \>= 3.5 |
-| \<= | **Less than or equal** | Returns true if the left value is smaller than or exactly equal to the right. | WHERE stock \<= 10 |
+The fundamental comparison operators available in PostgreSQL include:
 
-*Note: BETWEEN and IN are also technically predicates. BETWEEN is shorthand for (x \>= a AND x \<= b), and IN is shorthand for a series of \= checks joined by OR.*
+| Operator | Comparison Type | Definition | Example Syntax |
+| :---: | :--- | :--- | :--- |
+| `=` | **Equal to** | Evaluates to TRUE if both operands are identical in value and type. | `WHERE department = 'Sales'` |
+| `<>` or `!=` | **Not equal to** | Evaluates to TRUE if the values on both sides are different. | `WHERE status <> 'Retired'` |
+| `>` | **Greater than** | Evaluates to TRUE if the left operand is strictly larger than the right. | `WHERE age > 21` |
+| `<` | **Less than** | Evaluates to TRUE if the left operand is strictly smaller than the right. | `WHERE retail_price < 10.00` |
+| `>=` | **Greater than or equal** | Evaluates to TRUE if the left operand is larger than or equal to the right. | `WHERE gpa >= 3.5` |
+| `<=` | **Less than or equal** | Evaluates to TRUE if the left operand is smaller than or equal to the right. | `WHERE stock_quantity <= 10` |
 
-#### **B. Condition Expressions: The "Rules"**
+*Note: Special comparison predicates such as `BETWEEN`, `IN`, and `IS NULL` are syntactic shorthands. For instance, `age BETWEEN 18 AND 25` is logically equivalent to `(age >= 18 AND age <= 25)`.*
 
-A **Condition Expression** is the actual rule you write. It can be a simple comparison or a complex calculation. When the database evaluates these, it treats them as a **Boolean Expression**. If the computer cannot confidently say "True" (as is the case with NULL), it defaults to a "No" for the sake of data safety.
+#### **B. Boolean Logic Gates & Operator Precedence**
 
-* **Calculated Conditions:** You can perform math inside the rule. For example, WHERE (annual_income / 12\) \> 5000 calculates the monthly income for *every row* before applying the filter.
+Real-world filtering criteria rarely consist of a single comparison. We combine multiple predicates using Boolean logic gates: `AND`, `OR`, and `NOT`.
 
-#### **C. Order of Evaluation: How the Database "Thinks"**
+* **The `AND` Gate (Conjunction):** Both conditions must evaluate to TRUE for the row to qualify.
+  ```sql
+  SELECT product_name, retail_price, stock_quantity
+  FROM products
+  WHERE retail_price > 50.00 AND stock_quantity > 0;
+  ```
+* **The `OR` Gate (Disjunction):** If either condition (or both) evaluates to TRUE, the row qualifies.
+  ```sql
+  SELECT first_name, last_name, state
+  FROM customers
+  WHERE state = 'WY' OR state = 'CO';
+  ```
+* **The `NOT` Gate (Negation):** Inverts the truth value of a predicate (TRUE becomes FALSE; FALSE becomes TRUE; UNKNOWN remains UNKNOWN).
+  ```sql
+  SELECT employee_id, first_name, department
+  FROM employees
+  WHERE NOT (department = 'Human Resources');
+  ```
 
-It is critical to understand that the database engine evaluates expressions in a specific pipeline. A common beginner mistake is trying to use an alias (like AS total_tax) in the WHERE clause. This fails because the database filters the rows *before* it ever looks at your SELECT labels.
+##### **The Operator Precedence Trap: AND Before OR**
+One of the most dangerous bugs in enterprise SQL occurs when mixing `AND` and `OR` without explicit grouping. In standard SQL operator precedence:
+$$\mathbf{NOT} \succ \mathbf{AND} \succ \mathbf{OR}$$
 
-1. **Row Access (FROM):** The engine identifies and opens the table.  
-2. **Filter Evaluation (WHERE):** For the current row, the engine calculates expressions and performs comparisons.  
-3. **Projection (SELECT):** Only rows that passed the filter are then "projected" to show specific columns and aliases.  
-4. **Final Trim (LIMIT/OFFSET):** The very last step is trimming the result set to the requested size.
+The database evaluates all `AND` conditions **before** it evaluates `OR` conditions. Consider the following query intended to find active employees in either Cheyenne or Laramie:
+
+```sql
+-- DANGEROUS LOGIC BUG:
+SELECT first_name, last_name, city, is_active
+FROM employees
+WHERE city = 'Cheyenne' OR city = 'Laramie' AND is_active = TRUE;
+```
+
+Because `AND` binds more tightly than `OR`, the database interprets this query as:
+$$\text{city = 'Cheyenne'} \quad\mathbf{OR}\quad (\text{city = 'Laramie'} \;\mathbf{AND}\; \text{is\_active = TRUE})$$
+
+As a result, **every single employee living in Cheyenne will be returned**, even if they were terminated five years ago (`is_active = FALSE`)! To enforce correct business logic, you must wrap disjunctions in parentheses:
+
+```sql
+-- CORRECT SECURE IMPLEMENTATION:
+SELECT first_name, last_name, city, is_active
+FROM employees
+WHERE (city = 'Cheyenne' OR city = 'Laramie') 
+  AND is_active = TRUE;
+```
+
+#### **C. The Logical Execution Lifecycle: How the Database "Thinks"**
+
+A common point of confusion for beginners is the difference between the **written order** of a query and its **logical execution lifecycle**. You write queries starting with `SELECT`, but the database executes clauses in an entirely different sequence:
+
+1. **`FROM` & `JOIN`:** The database engine identifies and opens the physical tables, constructing the base row-source dataset and performing Cartesian or join alignments.
+2. **`WHERE`:** The engine iterates through the row stream and applies filter predicates. Non-qualifying rows are discarded immediately.
+3. **`GROUP BY`:** Qualifying rows are partitioned into distinct aggregation buckets.
+4. **`HAVING`:** Aggregated buckets are evaluated against summary predicates.
+5. **`SELECT`:** The remaining rows are projected into columns, mathematical expressions are computed, and column aliases are assigned.
+6. **`DISTINCT`:** Duplicate rows in the projected output are eliminated.
+7. **`ORDER BY`:** The final result set is sorted according to specified columns or aliases.
+8. **`LIMIT` / `OFFSET`:** The sorted result stream is trimmed to the requested window size.
+
+##### **Why Column Aliases Fail in the WHERE Clause**
+Notice where `WHERE` sits in relation to `SELECT`: `WHERE` executes in Step 2, while column aliases created with `AS` are not generated until Step 5!
+
+```sql
+-- COMPILATION ERROR: column "estimated_profit" does not exist
+SELECT product_name, retail_price - cost_to_produce AS estimated_profit
+FROM products
+WHERE estimated_profit > 20.00;
+```
+
+Because the alias `estimated_profit` does not yet exist when Step 2 executes, the query fails with a compilation error. To filter on this calculation, you must repeat the expression in the `WHERE` clause:
+
+```sql
+-- CORRECT: The calculation is evaluated directly during Step 2
+SELECT product_name, retail_price - cost_to_produce AS estimated_profit
+FROM products
+WHERE (retail_price - cost_to_produce) > 20.00;
+```
+*(Note: Because `ORDER BY` executes in Step 7, you CAN safely use column aliases in your `ORDER BY` clause!)*
 
 #### **D. Three-Valued Logic & The Mystery of NULL**
 
-Unlike binary logic (True/False), SQL uses **Three-Valued Logic (3VL)**.
+Most programming languages use binary Boolean logic (True or False). Relational databases, however, operate on **ANSI Three-Valued Logic (3VL)** consisting of three distinct states:
+* **TRUE** (1)
+* **FALSE** (0)
+* **UNKNOWN** (Null logic state)
 
-* **NULL is "Unknown":** In SQL, NULL isn't a broken value; it's a question the database can't answer. If you ask Is age \> 21? and the age is NULL, the answer is **Unknown**.  
-* **The Propagation of NULL:** 5 \+ NULL is NULL. NULL \= NULL is actually Unknown.  
-* **The Consequence:** Because the WHERE clause only keeps "True" results, "Unknown" rows are discarded. You must use IS NULL or IS NOT NULL to interact with missing data.
+##### **What is NULL?**
+In relational database theory, `NULL` is **not a value**. It is not zero (`0`), it is not an empty string (`''`), and it is not a blank space. `NULL` is a marker signifying **missing, unrecorded, or inapplicable information**.
+
+Because `NULL` represents the unknown, any comparison against `NULL` produces `UNKNOWN`:
+* Is an unknown age greater than 21? We cannot know: **UNKNOWN**.
+* Is an unknown salary equal to $50,000? We cannot know: **UNKNOWN**.
+* Is one unknown value equal to another unknown value (`NULL = NULL`)? In SQL, the answer is **UNKNOWN**, not TRUE!
+
+##### **The Truth Table for Three-Valued Logic**
+
+| Operand A | Operator | Operand B | Resulting Evaluation |
+| :---: | :---: | :---: | :---: |
+| `TRUE` | `AND` | `UNKNOWN` | **UNKNOWN** |
+| `FALSE` | `AND` | `UNKNOWN` | **FALSE** |
+| `TRUE` | `OR` | `UNKNOWN` | **TRUE** |
+| `FALSE` | `OR` | `UNKNOWN` | **UNKNOWN** |
+| `UNKNOWN` | `AND` | `UNKNOWN` | **UNKNOWN** |
+| `UNKNOWN` | `OR` | `UNKNOWN` | **UNKNOWN** |
+| `NOT` | | `UNKNOWN` | **UNKNOWN** |
+
+##### **The Golden Filtering Rule: Only TRUE Rows Pass**
+In SQL, the `WHERE` clause filters rows according to a strict threshold: **a row is included in the output IF AND ONLY IF the final predicate evaluates to TRUE**.
+* If a predicate evaluates to `FALSE` &rarr; the row is discarded.
+* If a predicate evaluates to `UNKNOWN` &rarr; the row is discarded!
+
+##### **The Fatal "= NULL" Trap**
+Because developers intuitively expect equality checks to work, beginners frequently write:
+
+```sql
+-- WRONG: ALWAYS RETURNS ZERO ROWS
+SELECT first_name, last_name, commission_pct
+FROM employees
+WHERE commission_pct = NULL;
+```
+
+For every employee with a missing commission, `NULL = NULL` evaluates to `UNKNOWN`. Because `UNKNOWN` is not `TRUE`, the database discards every single row! To test for missing data, SQL provides dedicated predicates:
+
+```sql
+-- CORRECT SYNTAX:
+SELECT first_name, last_name, commission_pct
+FROM employees
+WHERE commission_pct IS NULL;
+
+-- TO FIND COMPLETED RECORDS:
+SELECT first_name, last_name, commission_pct
+FROM employees
+WHERE commission_pct IS NOT NULL;
+```
+
+##### **The Propagation of NULL in Arithmetic**
+When performing arithmetic, `NULL` is infectious: any mathematical operation involving `NULL` yields `NULL`:
+$$5 + \text{NULL} = \text{NULL}$$
+$$100 \times \text{NULL} = \text{NULL}$$
+
+If an employee earns a base salary of $60,000 and has a `NULL` bonus, calculating `salary + bonus` produces `NULL` rather than $60,000! To handle missing values gracefully, PostgreSQL provides the `COALESCE` function, which returns the first non-null argument in its list:
+
+```sql
+-- Safe calculation: if bonus is NULL, substitute 0
+SELECT 
+    first_name, 
+    last_name, 
+    salary, 
+    bonus,
+    salary + COALESCE(bonus, 0) AS total_compensation
+FROM employees;
+```
+
+---
 
 ### **4. Implementation: The Advanced Filtering Tutorial**
 
-#### **A. Range and List Matching (IN & BETWEEN)**
+#### **A. Range and Set Membership (BETWEEN & IN)**
 
-* **IN (The "Set" Operator):** WHERE city IN ('Laramie', 'Cheyenne').  
-* **BETWEEN (The "Range" Operator):** WHERE age BETWEEN 18 AND 25 (Inclusive of 18 and 25).
+##### **1. The IN Operator (Discrete Set Membership)**
+When filtering against a list of specific allowable values, writing long chains of `OR` clauses is verbose and prone to error. The `IN` operator checks whether a value matches any member of a specified set:
 
-#### **B. Pattern Matching: LIKE, ILIKE, vs. Regular Expressions**
+```sql
+-- Verbose, repetitive approach:
+SELECT product_name, category
+FROM products
+WHERE category = 'Electronics' OR category = 'Computers' OR category = 'Audio';
 
-##### **1. Basic Wildcards (LIKE & ILIKE)**
+-- Clean, idiomatic SQL using IN:
+SELECT product_name, category
+FROM products
+WHERE category IN ('Electronics', 'Computers', 'Audio');
+```
 
-* **LIKE**: Case-sensitive matching. 'Wyoming' will not match 'wyoming'.  
-* **ILIKE**: PostgreSQL's "Case-Insensitive" version. This is much more forgiving for user-entered data.  
-* **%**: Matches any sequence of characters.  
-* **_**: Matches exactly one character.
+You can negate the set with `NOT IN`:
 
-##### **2. Regular Expressions (POSIX Operators)**
+```sql
+SELECT product_name, category
+FROM products
+WHERE category NOT IN ('Discontinued', 'Seasonal');
+```
 
-Regex is used for highly sophisticated patterns that LIKE cannot handle.
+> **Warning (The NOT IN + NULL Trap):** If the list passed to `NOT IN` contains a `NULL` value (e.g. `category NOT IN ('Discontinued', NULL)`), the entire condition evaluates to `UNKNOWN` for all rows, causing the query to return zero records! Always ensure lists evaluated with `NOT IN` are sanitized against `NULL`s.
 
-* **\~**: Case-sensitive match.  
-* **\~***: Case-insensitive match (**Pro-Tip:** Start here if you aren't sure about the casing).  
-* **!\~**: Does not match.
+##### **2. The BETWEEN Operator (Continuous Ranges)**
+The `BETWEEN` operator filters values within an **inclusive** range:
+$$\text{val BETWEEN low AND high} \iff \text{val} \ge \text{low} \;\mathbf{AND}\; \text{val} \le \text{high}$$
 
-**Common Regex Characters:**
+```sql
+SELECT employee_id, first_name, last_name, salary
+FROM employees
+WHERE salary BETWEEN 50000 AND 75000
+ORDER BY salary ASC;
+```
 
-* **^ / $**: Start / End of string.  
-* **[ ]**: Match any character inside.  
-* **.**: Match any single character.  
-* *** / \+**: Zero or more / One or more of the preceding character.
+##### **The Timestamp Boundary Trap with BETWEEN**
+While `BETWEEN` works cleanly for integers and standard dates, using it on `timestamp` columns containing hours, minutes, and seconds often introduces subtle data omission bugs:
 
-**Example:** WHERE last_name \~ '^B...s$'; (Starts with B, ends with s, 5 letters total).
+```sql
+-- SUBTLE BUG:
+SELECT order_id, order_date, total_amount
+FROM orders
+WHERE order_date BETWEEN '2026-09-01' AND '2026-09-30';
+```
 
-#### **C. The NULL Dilemma: IS NULL**
+When PostgreSQL casts `'2026-09-30'` to a timestamp, it defaults to midnight: `'2026-09-30 00:00:00'`. Any order placed on September 30th at 10:15 AM or 4:30 PM will be omitted from the results!
 
-Never use \= NULL. Use IS NULL to find missing data or IS NOT NULL to find completed records.
+In production database environments, always write open-ended half-interval timestamp ranges:
 
-#### **D. Using Expressions and Aliasing (AS)**
+```sql
+-- INDUSTRY BEST PRACTICE: Half-Open Interval [Start, End)
+SELECT order_id, order_date, total_amount
+FROM orders
+WHERE order_date >= '2026-09-01' 
+  AND order_date < '2026-10-01';
+```
 
-Use expressions for on-the-fly math (salary * 0.12) and AS to give them professional names. Remember: you cannot use this alias in the WHERE clause because the filter happens before the name is assigned.
+#### **B. Pattern Matching: LIKE, ILIKE, and Regular Expressions**
 
-### **5. Student Exercises: The "Census Audit"**
+When searching text fields where exact equality (`=`) is too restrictive, SQL provides pattern matching engines.
 
-*Connect to your GitHub Codespace and execute the following against the wyoming_census table.*
+##### **1. Standard SQL Wildcards: LIKE & ILIKE**
+The `LIKE` operator compares a text column against a pattern string using two special wildcard characters:
+* `%` (Percent): Matches **zero or more** arbitrary characters.
+* `_` (Underscore): Matches **exactly one** character.
 
-1. **High Earners:** Find residents earning over $100,000, sorted descending.  
-2. **The Geographic Filter:** Find residents in 'Sheridan', 'Gillette', or 'Laramie' born between 1980 and 1995.  
-3. **The Regex Search:** Use \~* to find residents whose last name contains "th", then any single character, then "n" (e.g., Smithson).  
-4. **The Missing Data Audit:** Identify residents who do not have an address listed (IS NULL).  
-5. **The Tax Estimator:** Calculate a virtual column "Estimated Tax" as 12% of annual_income and alias it.  
-6. **Top 10 Report:** Retrieve the 10 residents with the longest first names. (Hint: Use LENGTH(first_name) to calculate the character count).
+| Pattern | Match Description | Example Matches |
+| :--- | :--- | :--- |
+| `'John%'` | Starts with "John" followed by any characters. | "John", "Johnson", "Johnathan" |
+| `'%son'` | Ends with "son" preceded by any characters. | "Wilson", "Johnson", "Nelson" |
+| `'%tech%'` | Contains "tech" anywhere in the string. | "Biotech", "Initech Corp", "Technical" |
+| `'_a%'` | Has any character in position 1, 'a' in position 2. | "Data", "Sales", "Marketing" |
+| `'INV-____'` | "INV-" followed by exactly four characters. | "INV-1001", "INV-9999" |
 
-### **6. Instructor Unit Notes**
+```sql
+-- Case-sensitive pattern search (Standard SQL):
+SELECT customer_name, email
+FROM customers
+WHERE email LIKE '%@gmail.com';
+```
 
-* **Regex Performance:** Regex is powerful but slower. Use LIKE or ILIKE for simple tasks.  
-* **Parentheses in Logic:** (A OR B) AND C is not the same as A OR (B AND C). Grouping is vital.  
-* **Alias Trap:** Remind students that aliases belong to the output, not the search criteria.
+##### **The PostgreSQL ILIKE Superpower**
+Standard SQL `LIKE` is strictly case-sensitive: searching for `LIKE '%wyoming%'` will miss `"Wyoming"` or `"WYOMING"`. PostgreSQL introduces the case-insensitive operator `ILIKE`:
 
-### **Appendix: GitHub Codespaces & Psql Refresher**
+```sql
+-- Case-insensitive pattern search (Matches 'cheyenne', 'Cheyenne', 'CHEYENNE'):
+SELECT city, county, population
+FROM wyoming_census
+WHERE city ILIKE 'cheyenne';
+```
 
-* **Starting:** psql -U postgres  
-* **Switching Databases:** \\c census_db  
-* **Viewing Schema:** \\d wyoming_census  
-* **Exiting:** \\q
+##### **Escaping Literal Wildcards**
+If you need to search for a literal percent sign (`%`) or underscore (`_`) in your data (such as finding product codes like `PROMO_50`), use the `ESCAPE` clause:
+
+```sql
+-- Search for literal underscore using backslash as escape character:
+SELECT product_code, description
+FROM products
+WHERE product_code LIKE '%!_%' ESCAPE '!';
+```
+
+##### **2. Advanced POSIX Regular Expressions**
+For complex string matching where simple wildcards are insufficient, PostgreSQL supports full POSIX regular expressions:
+
+* `~` : Case-sensitive regex match.
+* `~*` : Case-insensitive regex match.
+* `!~` : Does not match case-sensitive regex.
+* `!~*` : Does not match case-insensitive regex.
+
+```sql
+-- Match phone numbers formatted as (XXX) XXX-XXXX:
+SELECT customer_id, phone_number
+FROM customers
+WHERE phone_number ~ '^\([0-9]{3}\) [0-9]{3}-[0-9]{4}$';
+
+-- Case-insensitive search for names starting with B, ending in s, exactly 5 letters:
+SELECT first_name, last_name
+FROM wyoming_census
+WHERE last_name ~* '^B...s$';
+```
+
+> **Performance Warning on Text Patterns:** Queries utilizing leading wildcards (e.g. `LIKE '%smith'`) or unanchored regular expressions cannot utilize standard B-Tree database indexes. The database engine must perform a slow, full table scan to inspect every row. For high-volume production searches, reserve regex for batch data cleaning or configure specialized trigram indexes (`pg_trgm`).
+
+#### **C. Pagination & Result Windowing (LIMIT & OFFSET)**
+
+When rendering search results on the web or building APIs, sending 100,000 records to a client browser will crash the front-end application. We use `LIMIT` and `OFFSET` to paginate data:
+
+* `LIMIT n` : Caps the output stream to a maximum of $n$ rows.
+* `OFFSET m` : Skips the first $m$ rows before beginning to return records.
+
+```sql
+-- Page 1: Retrieve the first 10 highest-paid employees (Rows 1 to 10)
+SELECT employee_id, first_name, last_name, salary
+FROM employees
+ORDER BY salary DESC
+LIMIT 10 OFFSET 0;
+
+-- Page 2: Retrieve the next 10 employees (Rows 11 to 20)
+SELECT employee_id, first_name, last_name, salary
+FROM employees
+ORDER BY salary DESC
+LIMIT 10 OFFSET 10;
+```
+
+##### **The Deterministic Ordering Requirement**
+`LIMIT` and `OFFSET` should **never** be executed without an explicit `ORDER BY` clause! Relational tables are unordered sets. Without `ORDER BY`, the database engine returns rows in arbitrary physical storage order. Consecutive page requests could return duplicate records or omit rows entirely.
+
+---
+
+### **5. Student Exercises: Live Practice in GitHub Codespaces**
+
+Connect to your live PostgreSQL 16 database in GitHub Codespaces using the integrated terminal (`psql`) or the SQLTools extension. Execute the following queries against the `cmap1815` database:
+
+1. **High Earners Audit:** Retrieve all employees with a salary strictly greater than $75,000. Display `first_name`, `last_name`, `department`, and `salary`, sorted by `salary DESC`.
+2. **Geographic Multi-City Filter:** Write a query using `IN` to find all customers located in `'Cheyenne'`, `'Laramie'`, or `'Casper'`.
+3. **Compound Boolean Logic with Parentheses:** Retrieve all active products (`is_active = TRUE`) that belong to either the `'Apparel'` or `'Footwear'` category, with a `retail_price` under $50.00. (Ensure your parentheses prevent logic leakage!).
+4. **Missing Data Inspection:** Query the `customers` table to find all accounts that have a `NULL` phone number (`phone_number IS NULL`).
+5. **Case-Insensitive Domain Search:** Using `ILIKE`, find all employees whose email address ends with `@company.org`.
+6. **Safe Compensation Calculation:** Display each employee's `first_name`, `salary`, `bonus`, and a calculated column named `total_pay` that sums salary and bonus, using `COALESCE` to convert missing bonuses to 0.
+7. **Deterministic Top 5 Pagination:** Retrieve the 5 least expensive products in the catalog (`retail_price ASC`). Ensure you include both `ORDER BY` and `LIMIT`.
+
+---
+
+### **6. Frequently Asked Questions & Common Pitfalls**
+
+* **Q: Why does `WHERE bonus = NULL` never return any rows?**  
+  **A: The Three-Valued Logic Principle:** In ANSI SQL, `NULL` represents an unknown state rather than an empty value. Comparing anything to `NULL` using `=` produces `UNKNOWN`. Because the `WHERE` clause only keeps rows that evaluate strictly to `TRUE`, all rows are discarded. You must use `IS NULL` or `IS NOT NULL`.
+
+* **Q: Why do I get `ERROR: column "net_income" does not exist` when I filter on an alias?**  
+  **A: The Logical Execution Pipeline:** The `WHERE` clause executes in Step 2 of the query lifecycle to discard non-qualifying rows, while `SELECT` aliases are not evaluated until Step 5. Because the alias does not exist yet when the filter runs, you must repeat the full mathematical expression in the `WHERE` clause (e.g. `WHERE (gross_income - taxes) > 50000`).
+
+* **Q: How does `AND` precedence cause data leaks when combined with `OR`?**  
+  **A: Conjunction Binds Tighter Than Disjunction:** Without parentheses, `WHERE A OR B AND C` is evaluated as `A OR (B AND C)`. Any row satisfying condition `A` will pass the filter regardless of condition `C`. Always wrap your `OR` conditions in parentheses: `WHERE (A OR B) AND C`.
+
+* **Q: What is the difference between `LIKE` and `ILIKE` in PostgreSQL?**  
+  **A: Case Sensitivity:** `LIKE` is standard SQL and performs strictly case-sensitive pattern matching (`'Apple'` will not match `'apple'`). `ILIKE` is a PostgreSQL extension that performs case-insensitive pattern matching, making it ideal for user-submitted text search queries.
+
+* **Q: Why does `BETWEEN '2026-09-01' AND '2026-09-30'` miss transactions on September 30th?**  
+  **A: Implicit Midnight Timestamp Casting:** When a date string without a time component is cast to a timestamp, PostgreSQL defaults to `00:00:00` (midnight). Therefore, any order created after midnight on September 30th falls outside the boundary. Use half-open intervals instead: `WHERE order_date >= '2026-09-01' AND order_date < '2026-10-01'`.
+
+* **Q: Why does `NOT IN` return zero rows when the list contains a NULL?**  
+  **A: UNKNOWN Negation Trap:** `x NOT IN (1, 2, NULL)` expands to `x != 1 AND x != 2 AND x != NULL`. Because `x != NULL` evaluates to `UNKNOWN`, the conjunction evaluates to `UNKNOWN` for every single row. To prevent this, ensure subqueries or lists filtered by `NOT IN` exclude `NULL`s.
+
+---
+
+### **Appendix: GitHub Codespaces & Environment Reference**
+
+* **Connecting to PostgreSQL via Terminal:** Open your terminal and run `psql` (or `psql -U postgres -d cmap1815`).
+* **Inspecting Table Columns:** Use `\d table_name` (e.g. `\d employees`) to view data types, nullability constraints, and primary keys.
+* **Toggling Expanded Display:** For queries with many columns, run `\x` inside `psql` to toggle vertical row display for easy reading.
+* **Exiting psql:** Type `\q` and press Enter to return to the Linux shell.
+* **Visual Querying in SQLTools:** Click the cylinder icon on the left VS Code activity bar, expand **CMAP 1815 Local PostgreSQL**, and double-click any table to inspect its schema and data visually.

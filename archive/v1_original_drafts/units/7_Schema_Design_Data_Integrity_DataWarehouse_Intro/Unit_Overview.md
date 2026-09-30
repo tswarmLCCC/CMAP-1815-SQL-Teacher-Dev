@@ -171,12 +171,16 @@ COMMENT ON COLUMN fact_job_applications.base_salary_offered IS 'Source: Recruite
 3. **The Universe (Coverage):** Design a coverage table that maps every student_id to every major_id currently offered. Use this to identify students who are registered but do not have an assigned major.  
 4. **The Time Machine (SCD Type 2):** Write a SQL script that "retires" a student's old career advisor and "inserts" a new one using the versioning logic (Start Date, End Date, Is Current).
 
-## **Instructor Unit Notes**
+### **6. Frequently Asked Questions & Common Pitfalls**
 
-* **The Coverage Gap:** Explain that most business errors come from not knowing what *didn't* happen. Coverage tables solve this by providing the "Denominator" for your calculations.  
-* **Indexing FKs:** Remind students that in a Star Schema, every Foreign Key in the Fact table **must** be indexed. Without indexes, joining a Fact table of 10 million rows to a Dimension table will require a "Sequential Scan," which will cripple analytical performance.  
-* **Storage-for-Truth Trade-off:** SCD Type 2 "bloats" the database by adding new rows for every change. This is a purposeful trade: we spend disk space to buy **Historical Truth**.  
-* **Bitemporal Logic:** Advanced students should consider **Transaction Time** (when the data hit the DB) vs **Valid Time** (when the change happened in the world). SCD Type 2 usually tracks Valid Time.
+* **Q: Why are Foreign Key constraints essential even if they introduce slight INSERT overhead?**  
+  **A: Referential Integrity Enforcement:** Without foreign keys, child tables inevitably accumulate orphaned records (e.g. order lines pointing to deleted products), causing catastrophic report inaccuracies. The slight validation overhead is the price of structural truth.
+* **Q: What is the difference between ON DELETE CASCADE and ON DELETE RESTRICT?**  
+  **A: Safety vs. Convenience:** `CASCADE` automatically deletes all referencing child rows when a parent row is deleted. `RESTRICT` (or `NO ACTION`) blocks deletion of the parent if any dependent child rows exist. In financial or order records, `RESTRICT` is required to prevent accidental mass deletion.
+* **Q: Why must foreign keys in Fact tables always be indexed?**  
+  **A: Avoiding Full Table Scans on Joins:** In a Star Schema, joining a 10-million-row Fact table to Dimension tables on non-indexed foreign key columns forces the query planner to perform slow Sequential Scans. Indexing foreign keys enables rapid Index Scans and Hash Joins.
+* **Q: How does Slowly Changing Dimension (SCD) Type 2 balance storage vs. historical truth?**  
+  **A: Versioned Audit History:** Rather than overwriting attributes (Type 1), SCD Type 2 inserts a new record with valid date ranges (`start_date`, `end_date`, `is_current`). We deliberately spend modest disk space to preserve historical reporting accuracy over time.
 
 [image1]: <data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEkAAAAXCAYAAABH92JbAAADTklEQVR4Xu2XP2gUQRjF71BBURCReHi5u727iJLKyKlBUbEQIYIiaiFRRGy0sFADEQOCElIoKMRGSRfEzsImgn/AgI2ojYUKWogSTGUKUcFA0N/LzmyGyS3n5eCisg8+dvfN+2bmezu7O5tKJUiQIMFfiFwutyQIgm5iiLhaKpXW+ZpaIG9DPp/f7fPNguasuZsaulWTr6kGtKuJi8orFouXyVvja1Llcnk5gkdEf0tLyzKEHZy/IQ76Wh9oOwuFQi/aF8Qvzs/7mmZAc9WcNXfVoFpUk2rztS4wdrN03NztnK/nfER1ED00pyOhClORHFdYjusjxFsSM5GwCoxJe9HuIb43YhJ9naGPLp+vhWw2myfvveZsOdWimojTrtaFVhq6e2hOcLlAXGtr60rm8dzUUpkW2s5oGHY7wNlN8N847nP5OKjDRk1Srgz3+VowN3SmqBBpuDvEqFaWw0cIwsfsI/FVq8jh+4JwNZ2zRDvxxTfJFk0MuHwc5tmkG1VM0sochh+HL7u8RaVSWYRmkPYHMszymodMimqxxcWZ5PNxmE+TjBlxJs3ia2AhOXeJKfJ3TjOalFzzzfhXTDIv6dFqZszFJHI6lUMMaaVNk1x0NdskDa4PQhC+E9zoJ/+Yz7e1ta1KmRerj0wmsxTNYzN2QyaZr7z6uq1+o4Y4M+L4ONRjErqtQbiX8eMl4z30ebhBouj3YxFnRhxfDbpx6G6hvz5rf0VDmYZx3wxbNNHn8nGox6Q4KLdQ5+MmMO5ANTOMSWN81nMu78MahP5CyqxY8tqjjbHzTI8gWmwTSdoFN6mj5bQcScym3E2WwXyapG0KY0+5c1UtqsmtyzzmQfSuCaGtQg+aszq3JNcn4Q9EKjo/SnyCLBlKidqxPrM7Vm2yuH5F/CS2RMkG9a68apirSXYDSFyynH4tmMsY3GHLcX0tCN+/Vpfm/DjcD2nlgQ2uJzhus7l2ud2k4QlJ+41BrznvsBqz4u6je6e7YXk0p+A/a3AnJoin5oX7x5irSQKraSNjfiC/lzgUhBvkK+6qKYY7+snA/G4FM5tJd+42qu6v0qyatRoAE3Z4S7IpaMQkQV8kvUd0o/Wr4rf/FwjCr167zydIkCBBghn8BoQaL2dBKaBrAAAAAElFTkSuQmCC>
 

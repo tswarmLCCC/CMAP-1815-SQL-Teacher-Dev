@@ -170,11 +170,16 @@ In high-end Data Warehousing and AI projects, we use a circular workflow:
    * **Part B:** Re-pivot that grab bag into a single row with three columns, but only for students whose values in the grab bag are all greater than zero.  
 6. **Manual Query Tracing:** Look at Student #505. They had 10 logins, 0 library visits, and a 3.5 GPA. Trace the unpivot/re-pivot logic on paper. Will this student appear in the final wide-format output?
 
-### **6. Instructor Unit Notes**
+### **6. Frequently Asked Questions & Common Pitfalls**
 
-* **The "Grouping Error":** Remind students: if it's not a bucket label (Group By), it must be squished (Aggregate).  
-* **Lateral Joins:** This is a "lightbulb" moment. Explain that LATERAL lets you do things a standard Join can't—it lets the right side of the join "see" the data in the left side.  
-* **AI Readiness:** Emphasize that the Pivot/Unpivot loop is the secret to **Feature Engineering**.
+* **Q: Why do I get `ERROR: column "first_name" must appear in the GROUP BY clause or be used in an aggregate function`?**  
+  **A: The Aggregation Boundary Rule:** When you group rows by department, the output collapses multiple rows into a single summary line per department. If `first_name` is selected without grouping or aggregating it, the database engine cannot know which employee's name to pick. Every non-aggregated column in `SELECT` must be included in `GROUP BY`.
+* **Q: What is the difference between WHERE and HAVING?**  
+  **A: Filter Timing:** `WHERE` filters individual base rows *before* aggregation occurs; `HAVING` filters summarized groups *after* aggregation is calculated. You cannot use aggregate functions like `SUM()` in a `WHERE` clause.
+* **Q: What is the difference between UNION and UNION ALL?**  
+  **A: Deduplication Performance:** `UNION` removes duplicate rows between sets by performing an expensive sort operation. `UNION ALL` concatenates result sets directly without deduplication, executing significantly faster.
+* **Q: How does conditional aggregation (`CASE` inside `SUM`) create pivots?**  
+  **A: Matrix Transformations:** Instead of executing separate queries for each category, wrapping a `CASE` expression inside `COUNT()` or `SUM()` evaluates metrics across multiple columns in a single scan of the table.
 
 ### **Appendix: GitHub Codespaces & Performance Reference**
 

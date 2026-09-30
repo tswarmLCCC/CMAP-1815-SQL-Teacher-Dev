@@ -232,11 +232,16 @@ In the examples above, we used AS s and AS g. These are **Table Aliases**. When 
 3. **The Revenue Risk Report:** Join Profiles, Enrollment, and Financials. Find students enrolled in \> 12 credits but with an account_balance \> $5,000.  
 4. **The 5-Table Synthesis:** Connect Profiles, Financials, Courses, Enrollment, and Grades. Generate a report showing Student Name, Major, Course Name, Grade, and Balance.
 
-### **6. Instructor Unit Notes**
+### **6. Frequently Asked Questions & Common Pitfalls**
 
-* **Ambiguity:** Remind students to use alias.column for all joined queries.  
-* **Inner vs. Left:** If a query returns 0 rows, check if a student used an INNER JOIN where a LEFT JOIN was needed to see the data gaps.  
-* **Join Order:** Teach students to start with the "Anchor" table (usually Students) and branch out.
+* **Q: Why do I get `ERROR: column reference "department" is ambiguous`?**  
+  **A: Explicit Table Prefixing:** When joining multiple tables that share identical column names, the database cannot guess which table's column you intend to select. Always prefix columns with their table name or table alias (e.g., `e.department` vs `d.department`).
+* **Q: Why does my query return zero rows when I know the customer exists?**  
+  **A: INNER JOIN Exclusion vs. LEFT JOIN:** An `INNER JOIN` only returns rows where the join condition matches in BOTH tables. If a customer has never placed an order, joining `customers` to `orders` via `INNER JOIN` discards the customer entirely. Use a `LEFT JOIN` to preserve unmatched left-table records.
+* **Q: Does table order matter in an INNER JOIN?**  
+  **A: Commutative Performance:** In an `INNER JOIN`, table ordering is mathematically commutative (A join B is equivalent to B join A). The query optimizer chooses the optimal execution order regardless. However, in `LEFT JOIN`, order is critical because unmatched rows are preserved exclusively from the first (left) table.
+* **Q: How do I avoid Cartesian products (server-killing explosions of rows)?**  
+  **A: Always Supply an Explicit ON Condition:** If you join tables without a valid `ON` or `USING` clause, the database produces a Cartesian Product (N * M rows). Always link foreign keys directly to their matching primary keys.
 
 ### **Appendix: GitHub Codespaces & Relational Reference**
 

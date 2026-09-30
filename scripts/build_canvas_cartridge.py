@@ -465,8 +465,8 @@ def load_and_clean_unit_overview(unit_num: int) -> str:
     text = text.replace('(![][image2] complexity)', '(logarithmic O(log N) complexity)')
     text = text.replace('( complexity)', '(computational complexity)')
 
-    # Unescape escaped markdown punctuation
-    text = re.sub(r'\\([*_#!\\[\\]\.\-])', r'\1', text)
+    # Unescape escaped markdown punctuation and operators
+    text = re.sub(r'\\([*_#!\\[\\]\.\-+=\<\>~|`])', r'\1', text)
 
     # Remove duplicate title header lines if present
     lines = text.splitlines()
@@ -480,6 +480,7 @@ def load_and_clean_unit_overview(unit_num: int) -> str:
 
 def format_inline(s: str) -> str:
     """Formats inline markdown syntax to HTML."""
+    s = re.sub(r'\\([*_#!\\[\\]\.\-+=\<\>~|`])', r'\1', s)
     s = re.sub(r'`([^`]+)`', r'<code style="background: #f1f5f9; color: #0369a1; padding: 0.15rem 0.35rem; border-radius: 3px; font-size: 0.9em; font-family: Consolas, monospace; font-weight: 600;">\1</code>', s)
     s = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', s)
     s = re.sub(r'(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)', r'<em>\1</em>', s)
@@ -492,8 +493,8 @@ def parse_markdown_to_html(md: str) -> str:
     if not md:
         return ""
 
-    # Unescape markdown punctuation first to fix any escaped syntax (\*, 1\., \_, etc.)
-    md = re.sub(r'\\([*_#!\\[\\]\.\-])', r'\1', md)
+    # Unescape markdown punctuation and operators first (\+, \=, \*, 1\., \_, etc.)
+    md = re.sub(r'\\([*_#!\\[\\]\.\-+=\<\>~|`])', r'\1', md)
 
     code_blocks = []
     def code_block_sub(match):
@@ -1168,6 +1169,7 @@ def main():
     modules_data = []         # Modules for module_meta.xml and imsmanifest.xml
     assignment_manifest = []  # List of (assign_id, folder_name, html_file, title)
     quiz_manifest = []        # List of (quiz_id, quiz_meta_id, title)
+    discussions_manifest = [] # List of (disc_id, disc_title, disc_file)
 
     # Pre-generate Module IDs so Home Page accordion can reference them
     mod_orient_id = make_id("module_orientation")
@@ -1316,7 +1318,18 @@ def main():
          "<p>Writing SQL with AI is NOT about asking an AI to 'do the homework for you.' Blindly pasting AI-generated SQL into production environments causes catastrophic data outages, Cartesian product server crashes, and silent NULL propagation bugs.</p><p>Instead, in this course you will practice <strong>Active Socratic Learning with AI</strong>: you will assign the AI specialized roles to challenge your reasoning, test edge cases, and simulate real-world stakeholder requests.</p>"),
         ("The Big Four 100% Free AI Platforms",
          "<p>Every AI exercise in this course is designed for <strong>100% free web chat tools</strong>. You do NOT need any paid account or API key:</p><ul><li><strong>ChatGPT Free:</strong> <a href='https://chatgpt.com' target='_blank' rel='noopener'>chatgpt.com</a> (select GPT-4o-mini / Free tier).</li><li><strong>Claude Free:</strong> <a href='https://claude.ai' target='_blank' rel='noopener'>claude.ai</a> (free web tier).</li><li><strong>Google Gemini Free:</strong> <a href='https://gemini.google.com' target='_blank' rel='noopener'>gemini.google.com</a> (free with any Google account).</li><li><strong>Microsoft Copilot Free:</strong> <a href='https://copilot.microsoft.com' target='_blank' rel='noopener'>copilot.microsoft.com</a> (free web chat).</li></ul>"),
-        ("The Verification Protocol: Grounded in PostgreSQL 16 (HOTL Defense)",
+        ("The Permission to Struggle: How to Learn with Your AI Partner",
+         """<p>The weekly AI practice drills are <strong>intentionally challenging, high-friction Socratic exercises</strong> designed to expose subtle relational traps and deepen your conceptual mastery. You are NOT expected to know all the answers immediately!</p>
+<p>When interacting with the AI, remember that it is always completely okay and encouraged to:</p>
+<ul style="line-height: 1.8;">
+  <li><strong>Say "I don't know" or "I'm stuck":</strong> The AI is acting as your tutor. If you don't know where to start, tell it!</li>
+  <li><strong>Ask for Explanations &amp; Hints:</strong> Ask: <em>"Can you explain the underlying concept without giving me the code?"</em> or <em>"Give me a hint to get started."</em></li>
+  <li><strong>Ask for Simpler Step-by-Step Breakdowns:</strong> If a prompt feels overwhelming, ask: <em>"Can you break this challenge down into smaller, simpler steps?"</em></li>
+  <li><strong>Ask for More Practice Problems:</strong> If a concept (like Three-Valued Logic or Anti-Joins) feels tricky, ask: <em>"Can you give me another practice puzzle like this to make sure I've got it?"</em></li>
+  <li><strong>Request Authoritative Web Resources:</strong> Ask: <em>"Where in the official PostgreSQL 16 documentation or free tutorials can I read more about this?"</em></li>
+  <li><strong>Probe Edge Cases:</strong> Ask: <em>"What happens if our data contains NULLs, empty strings, or duplicate rows?"</em></li>
+</ul>"""),
+        ("The Human-On-The-Loop (HOTL) Verification Protocol Grounded in PostgreSQL 16",
          """<p>Never assume an AI's SQL answer is correct! The Golden Rule of CMAP 1815: <strong>Every single SQL snippet must be executed and verified against your live PostgreSQL 16 database in GitHub Codespaces before submission!</strong></p>
 <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 0.85rem 1.25rem; margin: 1rem 0; border-radius: 0 6px 6px 0;">
   <p style="margin: 0 0 0.5rem 0; font-weight: 600; color: #991b1b;"><i class="fas fa-shield-alt"></i> The Understanding &amp; Defense Requirement:</p>
@@ -1748,11 +1761,33 @@ def main():
   </div>
 </div>"""
 
+        ai_coaching_html = """<p>This Socratic drill is an <strong>intentionally challenging exercise designed to deepen your learning</strong> and test subtle relational traps. You are NOT expected to know all the answers right away!</p>
+<p>When working with your AI assistant, remember that it is always completely okay and encouraged to:</p>
+<ul style="line-height: 1.8;">
+  <li><strong>Say "I don't know" or "I'm stuck":</strong> The AI is acting as your tutor. If you don't know where to start, tell it!</li>
+  <li><strong>Ask for Explanations &amp; Hints:</strong> Ask: <em>"Can you explain the underlying concept without giving me the code?"</em> or <em>"Give me a hint to get started."</em></li>
+  <li><strong>Ask for More Practice Problems:</strong> Ask: <em>"Can you give me another practice puzzle like this to make sure I've got it?"</em></li>
+  <li><strong>Ask for Web Resources &amp; Documentation:</strong> Ask: <em>"Where in the official PostgreSQL 16 documentation can I read more about this?"</em></li>
+  <li><strong>Explore Edge Cases:</strong> Ask: <em>"What happens if our data contains NULLs, empty strings, or duplicate rows?"</em></li>
+</ul>"""
+
+        hotl_defense_html = """<p>Never assume an AI's SQL answer is correct! The Golden Rule of CMAP 1815: <strong>Every single SQL snippet must be executed and verified against your live PostgreSQL 16 database in GitHub Codespaces before submission!</strong></p>
+<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 0.85rem 1.25rem; margin: 1rem 0; border-radius: 0 6px 6px 0;">
+  <p style="margin: 0 0 0.5rem 0; font-weight: 600; color: #991b1b;"><i class="fas fa-shield-alt"></i> The Human-On-The-Loop (HOTL) Defense Requirement:</p>
+  <p style="margin: 0 0 0.5rem 0; color: #7f1d1d; font-size: 0.95em;">You are 100% accountable for every query you submit. <strong>The instructor reserves the right to question any submission for evidence of understanding</strong>—including asking you to explain your query line-by-line, defend your choice of clauses or joins, or write an equivalent query on the fly.</p>
+  <p style="margin: 0; color: #7f1d1d; font-size: 0.95em; font-weight: 600;">Do NOT submit work you don't fully understand or could not write yourself!</p>
+</div>"""
+
+        debrief_panel_html = f"""<p>{html.escape(ai_data['discussion_prompt'])}</p>
+<p>After completing your interactive drill, navigate to the <strong>{u_short} Discussion: Learn with AI Debrief &amp; Reflection</strong> in this module to post your findings and compare notes with classmates.</p>"""
+
         ai_panels = [
             ("The Role-Play Practice Scenario",
              f"<p><strong>AI Persona:</strong> {html.escape(ai_data['persona'])}</p>"
              f"<p><strong>Core Topic / Focus:</strong> {html.escape(ai_data['drill_topic'])}</p>"
              "<p>In this exercise, you assign the AI a specific technical persona that tests your reasoning and challenges you to debug or construct SQL queries.</p>"),
+            ("How to Interact with Your AI Partner (Coaching & Permission to Struggle)", ai_coaching_html),
+            ("The Human-On-The-Loop (HOTL) Verification & Defense Protocol", hotl_defense_html),
             ("100% Free AI Tool Setup",
              "<p>Use any free web chat assistant (no subscription or API key required):</p>"
              "<ul><li><strong>ChatGPT Free:</strong> <a href='https://chatgpt.com' target='_blank' rel='noopener'>chatgpt.com</a></li>"
@@ -1760,13 +1795,52 @@ def main():
              "<li><strong>Google Gemini Free:</strong> <a href='https://gemini.google.com' target='_blank' rel='noopener'>gemini.google.com</a></li>"
              "<li><strong>Microsoft Copilot Free:</strong> <a href='https://copilot.microsoft.com' target='_blank' rel='noopener'>copilot.microsoft.com</a></li></ul>"),
             ("Copy-and-Paste Master Prompt", prompt_box_html),
-            ("Graded Asynchronous Participation Task",
-             f"<p>{html.escape(ai_data['discussion_prompt'])}</p>"
-             "<p>Post your response to the weekly Canvas discussion board to earn full participation credit.</p>")
+            ("Asynchronous Participation & Reflection Debrief", debrief_panel_html)
         ]
         with open(os.path.join(wiki_dir, ai_page_file), "w", encoding="utf-8") as f:
             f.write(render_standard_page_html(f"{u_short}: Learn with AI — Supplemental Practice Drill", ai_lead, ai_panels, ai_page_id))
         pages_manifest.append((ai_page_file, f"{u_short}: Learn with AI — Supplemental Practice Drill", ai_page_id))
+
+        # ----------------------------------------------------
+        # Discussion Topic: Learn with AI Debrief & Reflection
+        # ----------------------------------------------------
+        disc_id = make_id(f"disc_u{u_num}")
+        disc_title = f"{u_short} Discussion: Learn with AI Debrief & Reflection"
+        disc_dir = os.path.join(OUTPUT_BUILD_DIR, disc_id)
+        os.makedirs(disc_dir, exist_ok=True)
+
+        disc_html = f"""<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 1rem; line-height: 1.6; color: #1e293b;">
+  <div style="background: #f8fafc; border-left: 4px solid #1e3a8a; padding: 1rem 1.25rem; margin-bottom: 1.5rem; border-radius: 0 6px 6px 0;">
+    <h3 style="color: #1e3a8a; margin-top: 0; margin-bottom: 0.5rem;"><i class="far fa-comments"></i> {u_short} Collaborative Reflection: Learn with AI Debrief</h3>
+    <p style="margin: 0; color: #475569;">This weekly discussion board is where you share insights, traps, and breakthroughs from your interactive practice session with our AI Persona: <strong>{html.escape(ai_data['persona'])}</strong>.</p>
+  </div>
+
+  <h4 style="color: #1e3a8a; margin-top: 1rem; margin-bottom: 0.5rem;">Discussion Prompts &amp; Deliverables:</h4>
+  <p>{html.escape(ai_data['discussion_prompt'])}</p>
+
+  <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 0.85rem 1.25rem; margin: 1.25rem 0; border-radius: 0 6px 6px 0;">
+    <strong style="color: #991b1b;"><i class="fas fa-shield-alt"></i> The Human-On-The-Loop (HOTL) Defense Standard:</strong>
+    <p style="margin: 0.35rem 0 0 0; color: #7f1d1d; font-size: 0.95em;">Never share or turn in SQL queries without verifying them! Every SQL snippet discussed or submitted must be executed against your live PostgreSQL 16 database in GitHub Codespaces. Make sure you fully understand and can defend every line of SQL you post.</p>
+  </div>
+
+  <h4 style="color: #1e3a8a; margin-top: 1.25rem; margin-bottom: 0.5rem;">Peer Collaboration Guidelines:</h4>
+  <ul style="padding-left: 1.5rem; line-height: 1.7;">
+    <li>Post your initial reflection answering the prompts above.</li>
+    <li>Read through your classmates' findings. Reply to at least one classmate: did you encounter the same trap or persona question? How does their query approach compare to yours?</li>
+    <li>Constructive debate and alternative query formulations are highly encouraged!</li>
+  </ul>
+</div>"""
+
+        disc_xml_str = f"""<?xml version="1.0" encoding="UTF-8"?>
+<topic xmlns="http://www.imsglobal.org/xsd/imsccv1p1/imsdt_v1p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsccv1p1/imsdt_v1p1 http://www.imsglobal.org/xsd/imsccv1p1/ccv1p1_imsdt_v1p1.xsd">
+  <title>{html.escape(disc_title)}</title>
+  <text texttype="text/html">{html.escape(disc_html)}</text>
+</topic>
+"""
+        with open(os.path.join(disc_dir, "discussion_topic.xml"), "w", encoding="utf-8") as df:
+            df.write(disc_xml_str)
+
+        discussions_manifest.append((disc_id, disc_title, f"{disc_id}/discussion_topic.xml"))
 
         # ----------------------------------------------------
         # Item 7: Unit Knowledge Check (Quiz)
@@ -1839,7 +1913,7 @@ def main():
         pages_manifest.append((teacher_file, f"[Instructor Guide] {u_short} Teaching Notes & Solutions", teacher_id))
 
         # ----------------------------------------------------
-        # Assemble Clean Unit Module Items (Standard 8-Item Sequence)
+        # Assemble Clean Unit Module Items (Standard 9-Item Sequence with Discussion)
         # ----------------------------------------------------
         modules_data.append({
             "id": unit_mod_ids[u_num],
@@ -1851,6 +1925,7 @@ def main():
                 {"type": "WikiPage", "title": f"{u_short}: Applied SQL Lab Guide", "ref": lab_guide_id, "indent": 1, "state": "active"},
                 {"type": "Assignment", "title": assign_title, "ref": assign_id, "indent": 1, "state": "active"},
                 {"type": "WikiPage", "title": f"{u_short}: Learn with AI — Supplemental Practice Drill", "ref": ai_page_id, "indent": 1, "state": "active"},
+                {"type": "DiscussionTopic", "title": disc_title, "ref": disc_id, "indent": 1, "state": "active"},
                 {"type": "Quizzes::Quiz", "title": quiz_title, "ref": quiz_id, "indent": 1, "state": "active"},
                 {"type": "WikiPage", "title": f"[Instructor Guide] {u_short} Teaching Notes & Solutions", "ref": teacher_id, "indent": 1, "state": "unpublished"}
             ]
@@ -1971,6 +2046,12 @@ def main():
     <resource identifier="{q_meta_id}" type="associatedcontent/imscc_xmlv1p1/learning-application-resource" href="{q_id}/assessment_meta.xml">
       <file href="{q_id}/assessment_meta.xml"/>
       <file href="non_cc_assessments/{q_id}.xml.qti"/>
+    </resource>""")
+
+    # Discussion Topics Resources
+    for d_id, d_title, d_file in discussions_manifest:
+        resources_xml.append(f"""    <resource identifier="{d_id}" type="imsdt_xmlv1p1">
+      <file href="{d_file}"/>
     </resource>""")
 
     resources_xml_joined = "\n".join(resources_xml)

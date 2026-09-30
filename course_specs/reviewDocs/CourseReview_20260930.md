@@ -53,7 +53,9 @@ Unit 2
 
     Required Readings, Concepts & Video Lectures -
         same problem with escape characters
-            --still there for the table on the operations, but the numbering is good note
+            --still there for the table on the operations, but the numbering is good note.  it seems to happen whereever we see operators or any special characters (for example, it reads as The Propagation of NULL: 5 \+ NULL is NULL. NULL \= NULL is actually Unknown.)
+        in the second part of secion 3 and from 4 on, our descriptions are a little sparse - let's exapnd those to read more like a lecture
+        same thing here, these student facing pages should not have Instructor Unit Notes, those sould be faqs or key points, and move those to the lecture part of the instructor notes unpublished page.  do this throughout the course
 
     Asynchronous Preparation & Drills
 
@@ -62,7 +64,16 @@ Unit 2
     Applied SQL Lab Assignment
 
     Learn with AI — Supplemental Practice Drill
-    
+        reviewer feedback:  THESE ARE AMAZING, but let's flush out the instruction pages course wide that these are tough excersizes meant to deepen learning.  also tell them that it's ok to do the following as well
+            - say i don't know
+            - ask for explanations or hints
+            - ask for more problems like this
+            - ask for resources from the web to help
+            (and other things like that)
+
+        the other thing, course wide, is that you say these are graded discussion boards, let's not say graded, but do provide discussion boards in the course for these in each unit along with a nice description of where that is coming from.  right now there are no discussions for these in each module!
+
+        
 Unit 3
     Unit Overview - 
 

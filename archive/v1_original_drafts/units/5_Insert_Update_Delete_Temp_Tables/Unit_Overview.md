@@ -105,11 +105,16 @@ By separating these, you can run SELECT * FROM high_load_seniors to ensure your 
 5. **The Trust Exercise (Destroy and Restore):** Run BEGIN;, then DELETE every record in the grades table. Run a SELECT to prove the table is empty. Then, run ROLLBACK; and run the SELECT again to prove the data has returned safely.  
 6. **The High-Stakes Transaction:** Script the Enrollment Heartbeat: BEGIN;, DELETE a student from an old class, UPDATE the seat count in the courses table, and INSERT them into a new class. Verify all results, then COMMIT;.
 
-### **6. Instructor Unit Notes**
+### **6. Frequently Asked Questions & Common Pitfalls**
 
-* **Session Scope:** Remind students that TEMP tables are invisible to other terminal tabs. If they open a second connection, their scratchpad won't be there.  
-* **The "Where" Trap:** This is a trust exercise. Sophomores often fear DELETE. Use the ROLLBACK exercise to show them that as long as they are in a transaction, they are safe.  
-* **EXCLUDED Keyword:** Explain that this only exists during the split-second of a conflict.
+* **Q: Why should I wrap modification queries in BEGIN and ROLLBACK during development?**  
+  **A: The Safety Transaction Block:** Executing an `UPDATE` or `DELETE` without a `WHERE` clause permanently overwrites or wipes out the entire table. By executing `BEGIN;`, running your statement, checking the affected row count, and running `ROLLBACK;`, you can test changes with zero risk of permanent data corruption.
+* **Q: What is the lifespan and visibility of a temporary table (CREATE TEMP TABLE)?**  
+  **A: Session-Scoped Isolation:** Temporary tables exist exclusively within the current client database session (terminal or connection). They are invisible to other concurrent users and are automatically dropped when the connection closes.
+* **Q: What does the RETURNING clause do in PostgreSQL?**  
+  **A: Instant Modification Feedback:** Standard SQL does not return rows after DML statements. In PostgreSQL, adding `RETURNING *` or `RETURNING id, updated_at` allows you to immediately capture auto-generated keys or modified values without executing a separate query.
+* **Q: What is the purpose of ON CONFLICT DO UPDATE (UPSERT)?**  
+  **A: Idempotent Atomic Ingestion:** When inserting records that might violate unique constraints, `ON CONFLICT` prevents query crashes by dynamically redirecting PostgreSQL to update the conflicting row using values from the `EXCLUDED` virtual record.
 
 ### **Appendix: GitHub Codespaces & State Reference**
 
