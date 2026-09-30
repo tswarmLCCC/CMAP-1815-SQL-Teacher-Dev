@@ -19,7 +19,7 @@ Unit 1
      Required Readings, Concepts & Video Lectures - fix the double numbering and 1\. style list formatting
      typo - fix the select * on the wild card - it used a backslash. probably an issue with excape characters (see the double numbering and list numerization problem as well)
          - well done! this is fixed now
-         
+
      add a coveat to the distinct section to warn that this can inforn the database engine to look at everythign and refine to the unique set of that, so it will sometimes appear to be slower
      clarify that the \dt is the console command, if using the gui, expand down properly
        
@@ -53,6 +53,7 @@ Unit 2
 
     Required Readings, Concepts & Video Lectures -
         same problem with escape characters
+            --still there for the table on the operations, but the numbering is good note
 
     Asynchronous Preparation & Drills
 

@@ -924,7 +924,6 @@ def main():
 
     context_xml = """<?xml version="1.0" encoding="UTF-8"?>
 <context_info xmlns="http://canvas.instructure.com/xsd/cccv1p0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://canvas.instructure.com/xsd/cccv1p0 https://canvas.instructure.com/xsd/cccv1p0.xsd">
-  <course_id>1815</course_id>
   <course_name>CMAP 1815: Introduction to Modern SQL</course_name>
   <root_account_id>105390000000000001</root_account_id>
   <root_account_name>Laramie County Community College</root_account_name>
