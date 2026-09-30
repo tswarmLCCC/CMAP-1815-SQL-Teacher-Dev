@@ -1,13 +1,21 @@
 /*
 ====================================================================
-CMAP 1815 - Unit 1: In-Class Active Learning Challenges
-Session 2 Hands-on Practice
+CMAP 1815 - Unit 1: Lecture Walkthrough & Coding Clinic
+Follow-Along Practice: Gradual Release ("Try First, Then Watch")
 ====================================================================
 
+Pedagogical Purpose:
+These coding clinic challenges follow the "Gradual Release of Responsibility"
+model. Before watching the instructor video walkthrough, attempt each query
+below in your Codespace sandbox. Then watch the recording to compare your
+syntax, observe execution plans, and examine common beginner pitfalls!
+
 Instructions:
-Work with your assigned lab partner. One partner is the "Driver" 
-(typing), and one is the "Navigator" (guiding logic and checking syntax).
-Ensure all SQL keywords are in UPPERCASE and clauses are formatted neatly.
+1. Ensure your PostgreSQL connection is active in Codespaces.
+2. Draft your query below each challenge block.
+3. Test execution with Ctrl+Enter (or in psql).
+4. SQL keywords should be UPPERCASE (SELECT, FROM, ORDER BY, AS).
+====================================================================
 */
 
 -- ==================================================================
@@ -79,4 +87,5 @@ Ensure all SQL keywords are in UPPERCASE and clauses are formatted neatly.
 -- Order the results by department, then by title.
 
 -- [YOUR QUERY HERE]
+
 

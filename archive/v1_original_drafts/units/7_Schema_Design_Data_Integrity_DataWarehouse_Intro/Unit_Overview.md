@@ -20,7 +20,7 @@ We will explore how to design schemas that do not just store values, but enforce
 
 In production environments, you will face two catastrophic architectural failures that can bankrupt a data project’s credibility and lead to multi-million dollar business errors:
 
-### **1\. The "Garbage-In" Syndrome (Integrity Failure)**
+### **1. The "Garbage-In" Syndrome (Integrity Failure)**
 
 **The Problem:** Without hard-coded constraints, a database is just a "Data Swamp" or a glorified, shared Excel sheet. If a Career Services table allows a negative salary, or a Healthcare table allows a heart rate of 0 for a living patient, the database has failed its primary mission.
 
@@ -28,7 +28,7 @@ In production environments, you will face two catastrophic architectural failure
 
 **The Solution:** **Constraints as the Structural Defense**. We use CHECK and FOREIGN KEY constraints to force the data to prove its validity before it is allowed to occupy a single byte of space on the disk. We treat the schema as a contract that the data must sign.
 
-### **2\. The "Historical Void" (The Overwrite Problem)**
+### **2. The "Historical Void" (The Overwrite Problem)**
 
 **The Problem:** Standard transactional databases are "destructive" by design. When a student changes their major or a product changes its price, a standard UPDATE statement overwrites the old value, deleting it forever.
 
@@ -36,7 +36,7 @@ In production environments, you will face two catastrophic architectural failure
 
 **The Solution:** **SCD Type 2**. We move from "destructive updates" to "versioned inserts," ensuring we can "time travel" to see the world exactly as it existed on any specific calendar date.
 
-## **1\. Data Modeling: Types, Identity & Lineage**
+## **1. Data Modeling: Types, Identity & Lineage**
 
 ### **Specialized Data Types & Precision Errors**
 
@@ -48,10 +48,10 @@ Choosing a data type is an act of engineering. It impacts storage, speed, and ma
 
 ### **Identity: SERIAL vs. UUID (Security & Scalability)**
 
-* **SERIAL:** Incremental integers (![][image3]). Easy to read but predictable. In a public portal, an ID of 1005 tells a scraper exactly how to find user 1006\. This is a security vulnerability known as an IDOR risk.  
+* **SERIAL:** Incremental integers (![][image3]). Easy to read but predictable. In a public portal, an ID of 1005 tells a scraper exactly how to find user 1006. This is a security vulnerability known as an IDOR risk.  
 * **UUID:** 128-bit random identifiers. These provide "Identity Obfuscation," making it impossible for unauthorized users to "guess" the next record's URL. Furthermore, UUIDs allow for merging data from different servers without ever worrying about "ID collisions."
 
-## **2\. Advanced Dimensional Modeling: The Taxonomy**
+## **2. Advanced Dimensional Modeling: The Taxonomy**
 
 To optimize for analytical speed, we use the **Star Schema**. This requires a strict separation between **Context** (Dimensions) and **Metrics** (Facts).
 
@@ -71,7 +71,7 @@ The "Grain" is the level of detail represented by a single row in a fact table. 
 
 **Data Preview:**
 
-| center\_id (UUID) | campus\_name | lead\_coordinator | regional\_code | is\_active |
+| center_id (UUID) | campus_name | lead_coordinator | regional_code | is_active |
 | :---- | :---- | :---- | :---- | :---- |
 | 550e8400... | West Campus | Sarah Jenkins | WC-01 | TRUE |
 
@@ -83,9 +83,9 @@ The "Grain" is the level of detail represented by a single row in a fact table. 
 
 **Data Preview:**
 
-| application\_id | student\_key | job\_key | center\_key | base\_salary\_offered | days\_to\_offer |
+| application_id | student_key | job_key | center_key | base_salary_offered | days_to_offer |
 | :---- | :---- | :---- | :---- | :---- | :---- |
-| f47ac10... | student\_123 | job\_888 | center\_wc | 85000.00 | 14 |
+| f47ac10... | student_123 | job_888 | center_wc | 85000.00 | 14 |
 
 ### **D. Factless Fact Tables (The Event)**
 
@@ -95,9 +95,9 @@ The "Grain" is the level of detail represented by a single row in a fact table. 
 
 **Data Preview:**
 
-| meetup\_id | student\_key | recruiter\_key | interaction\_timestamp |
+| meetup_id | student_key | recruiter_key | interaction_timestamp |
 | :---- | :---- | :---- | :---- |
-| 111-aaa | student\_123 | recruiter\_ibm | 2024-10-12 09:30:00 |
+| 111-aaa | student_123 | recruiter_ibm | 2024-10-12 09:30:00 |
 
 ### **E. Coverage Tables (The Universe)**
 
@@ -107,18 +107,18 @@ The "Grain" is the level of detail represented by a single row in a fact table. 
 
 **Data Preview:**
 
-| student\_key | benefit\_type | eligibility\_start |
+| student_key | benefit_type | eligibility_start |
 | :---- | :---- | :---- |
-| student\_123 | Resume Review | 2024-01-01 |
-| student\_456 | Resume Review | 2024-01-01 |
+| student_123 | Resume Review | 2024-01-01 |
+| student_456 | Resume Review | 2024-01-01 |
 
-## **3\. Implementation: Slowly Changing Dimensions (SCD Type 2\)**
+## **3. Implementation: Slowly Changing Dimensions (SCD Type 2\)**
 
 SCD Type 2 is the industry standard for maintaining **Historical Integrity**. It transforms a static table into a chronological ledger by adding three "Administrative Columns":
 
-1. **effective\_start**: The timestamp when this specific version of the row became "the truth."  
-2. **effective\_end**: The timestamp when this version was superseded (NULL for current records).  
-3. **is\_current**: A boolean flag used for high-speed filtering of the "now."
+1. **effective_start**: The timestamp when this specific version of the row became "the truth."  
+2. **effective_end**: The timestamp when this version was superseded (NULL for current records).  
+3. **is_current**: A boolean flag used for high-speed filtering of the "now."
 
 ### **The SCD Lifecycle: A Step-by-Step Evolution**
 
@@ -126,7 +126,7 @@ Imagine Student 123 changes their major from **Biology** to **Computer Science**
 
 **Phase 1: Initial State (January 2023\)**
 
-| student\_id | name | major | effective\_start | effective\_end | is\_current |
+| student_id | name | major | effective_start | effective_end | is_current |
 | :---- | :---- | :---- | :---- | :---- | :---- |
 | 123 | John Doe | **Biology** | 2023-01-01 | NULL | TRUE |
 
@@ -134,41 +134,41 @@ Imagine Student 123 changes their major from **Biology** to **Computer Science**
 
 John switches his major. We perform a **Two-Step Atomic Operation**:
 
-1. **Retire Version 1:** Update effective\_end to 2024-01-01 and is\_current to FALSE.  
-2. **Birth Version 2:** Insert a brand new row with the updated major and a new effective\_start.
+1. **Retire Version 1:** Update effective_end to 2024-01-01 and is_current to FALSE.  
+2. **Birth Version 2:** Insert a brand new row with the updated major and a new effective_start.
 
 **Phase 3: The Resulting Ledger**
 
-| student\_id | name | major | effective\_start | effective\_end | is\_current |
+| student_id | name | major | effective_start | effective_end | is_current |
 | :---- | :---- | :---- | :---- | :---- | :---- |
 | 123 | John Doe | **Biology** | 2023-01-01 | **2024-01-01** | **FALSE** |
 | 123 | John Doe | **CompSci** | **2024-01-01** | NULL | **TRUE** |
 
-## **4\. Practical Applications & Exercises**
+## **4. Practical Applications & Exercises**
 
 ### **Healthcare: The Plausibility Shield**
 
 In healthcare, data integrity is a safety feature. We use CHECK constraints to ensure sensors or human input aren't providing "impossible" data.
 
-ALTER TABLE patient\_vitals   
-ADD CONSTRAINT bio\_integrity\_check   
+ALTER TABLE patient_vitals   
+ADD CONSTRAINT bio_integrity_check   
 CHECK (  
-    (heart\_rate BETWEEN 20 AND 250\) AND   
-    (body\_temp\_f BETWEEN 90 AND 110\)  
+    (heart_rate BETWEEN 20 AND 250\) AND   
+    (body_temp_f BETWEEN 90 AND 110\)  
 );
 
 ### **Career Services: Data Lineage & Provenance**
 
 We use the COMMENT command to bake metadata directly into the system catalog so AI agents and auditors can trust the source.
 
-COMMENT ON TABLE fact\_job\_applications IS 'Source: Handshake API v2. Lineage: Raw \-\> Cleaned. Owner: Career Services Admin.';  
-COMMENT ON COLUMN fact\_job\_applications.base\_salary\_offered IS 'Source: Recruiter Entry. Lineage: Manual \-\> Cleansed.';
+COMMENT ON TABLE fact_job_applications IS 'Source: Handshake API v2. Lineage: Raw -\> Cleaned. Owner: Career Services Admin.';  
+COMMENT ON COLUMN fact_job_applications.base_salary_offered IS 'Source: Recruiter Entry. Lineage: Manual -\> Cleansed.';
 
 ## **Student Exercises**
 
-1. **The Integrity Shield:** Build a jobs table for a Career Services portal. Implement a CHECK constraint ensuring min\_salary \< max\_salary and a NOT NULL constraint on job\_title.  
+1. **The Integrity Shield:** Build a jobs table for a Career Services portal. Implement a CHECK constraint ensuring min_salary \< max_salary and a NOT NULL constraint on job_title.  
 2. **Factless Design:** Create a table to track "Recruiter Interchanges" where the goal is to record every time a student speaks to a recruiter, regardless of whether a job was offered.  
-3. **The Universe (Coverage):** Design a coverage table that maps every student\_id to every major\_id currently offered. Use this to identify students who are registered but do not have an assigned major.  
+3. **The Universe (Coverage):** Design a coverage table that maps every student_id to every major_id currently offered. Use this to identify students who are registered but do not have an assigned major.  
 4. **The Time Machine (SCD Type 2):** Write a SQL script that "retires" a student's old career advisor and "inserts" a new one using the versioning logic (Start Date, End Date, Is Current).
 
 ## **Instructor Unit Notes**

@@ -1,7 +1,7 @@
 # Unit 1: Asynchronous Guided Study Guide (150 Minutes)
 
 ## Welcome to Unit 1 Asynchronous Preparation!
-In our hybrid model, **150 minutes** of each week are dedicated to guided self-study **before** attending our synchronous in-class sessions. Completing these readings, video modules, and self-checks ensures you come to class ready for hands-on active coding rather than passive listening.
+In our asynchronous curriculum model, **150 minutes** of each week are dedicated to guided self-study **before** executing your hands-on lab assignment. Completing these readings, video modules, and self-checks ensures you master foundational relational concepts and build confidence in query design.
 
 ---
 
@@ -11,9 +11,9 @@ In our hybrid model, **150 minutes** of each week are dedicated to guided self-s
 | :---: | :--- | :---: | :--- |
 | **Step 1** | Watch Unit 1 Micro-Lectures (Videos 1.1, 1.2, 1.3) | **30 mins** | Foundational concepts & demo notes |
 | **Step 2** | Curated PostgreSQL Tutorials & Reference | **45 mins** | Core syntax, rules, and variations |
-| **Step 3** | Environment Onboarding: GitHub Codespaces Launch | **30 mins** | First login and database ping |
+| **Step 3** | Environment Onboarding: GitHub Codespaces Launch | **30 mins** | Personal repo setup and database ping |
 | **Step 4** | Conceptual Deep-Dive & Focus Questions | **30 mins** | Narrative reflection & RAG grounding |
-| **Step 5** | Formative Self-Check Drills | **15 mins** | 5-question pre-class knowledge check |
+| **Step 5** | Formative Self-Check Drills | **15 mins** | 5-question pre-lab knowledge check |
 | **Step 6** | Learn with AI: Interactive Practice Drill | **20 mins** | Persona-based prompt engineering & discussion post |
 | **Total** | | **150 mins** | |
 
@@ -43,33 +43,34 @@ Watch these exact chapter segments from **[FreeCodeCamp: Learn PostgreSQL Tutori
 ---
 
 ## Step 2: Curated PostgreSQL Documentation & Readings (45 Mins)
-Read through the following tutorials from the verified **[PostgreSQL Tutorial Guide](https://www.postgresqltutorial.com/)** and official docs:
-* [PostgreSQL Getting Started & SELECT](https://www.postgresqltutorial.com/postgresql-getting-started/postgresql-select/) (12 mins) — Basic query structure and projecting specific columns.
-* [Column Aliases (`AS`)](https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-alias/) (8 mins) — Renaming column headers and calculated expressions.
-* [The ORDER BY Clause](https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-order-by/) (10 mins) — Sorting rules, ASC vs. DESC, and NULL positioning.
-* [The DISTINCT Clause](https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-select-distinct/) (8 mins) — De-duplicating rows and evaluating multi-column unique sets.
+Read through the following tutorials from the verified **[Neon PostgreSQL Tutorial Guide](https://neon.tech/postgresql/tutorial/)** and official docs:
+* [PostgreSQL SELECT](https://neon.tech/postgresql/tutorial/select) (12 mins) — Basic query structure and projecting specific columns.
+* [Column Aliases (`AS`)](https://neon.tech/postgresql/tutorial/column-alias) (8 mins) — Renaming column headers and calculated expressions.
+* [The ORDER BY Clause](https://neon.tech/postgresql/tutorial/order-by) (10 mins) — Sorting rules, ASC vs. DESC, and NULL positioning.
+* [The DISTINCT Clause](https://neon.tech/postgresql/tutorial/select-distinct) (8 mins) — De-duplicating rows and evaluating multi-column unique sets.
 * [Official PostgreSQL Documentation: The SELECT Statement](https://www.postgresql.org/docs/current/sql-select.html) (7 mins) — Syntax reference and standards.
 
 ---
 
 ## Step 3: Environment Setup & Codespaces Launch (30 Mins)
-1. Navigate to our course repository: `github.com/tswarmLCCC/CMAP-1815-SQL-Teacher-Dev`.
-2. Click the green **Code** button $\rightarrow$ select **Codespaces** $\rightarrow$ **Create codespace on main**.
-3. Wait ~2 minutes for the automated setup container to spin up.
-4. When the terminal displays `>>> Done!`, test your connection by typing:
+1. Navigate to our course template repository: `https://github.com/tswarmLCCC/CMAP-1815-Student-Sandbox`.
+2. Click **Use this template** &rarr; **Create a new repository** to create your own personal student repository.
+3. Open your personal repository, click the green **Code** button &rarr; select **Codespaces** &rarr; **Create codespace on main**.
+4. Wait ~90 seconds for the automated setup container to spin up.
+5. In the terminal, test your connection by typing:
    ```bash
-   psql $DATABASE_URL
+   psql -U postgres -d cmap1815
    ```
-5. Run your first query:
+6. Run your first query:
    ```sql
    SELECT version();
    ```
-6. Type `\q` to exit the `psql` shell.
+7. Type `\q` to exit the `psql` shell.
 
 ---
 
-## Step 4: Focus Questions for Synchronous Class Discussion (30 Mins)
-Reflect on these questions before class. You will be asked to discuss these in pairs during Period 1:
+## Step 4: Conceptual Reflection & Focus Questions (30 Mins)
+Reflect on these questions before starting your applied laboratory assignment:
 1. *The Flashlight Metaphor:* Explain how `SELECT first_name, last_name FROM employees;` mimics walking into a dark warehouse with a flashlight. What represents the warehouse? What represents the filing cabinet?
 2. *Order of Operations:* Why does PostgreSQL execute `FROM` before `SELECT`?
 3. *The Sledgehammer Risk:* Name three distinct operational risks associated with using `SELECT *` in production software.
@@ -77,10 +78,7 @@ Reflect on these questions before class. You will be asked to discuss these in p
 ---
 
 ## Step 5: Formative Self-Check (15 Mins)
-Complete the 5 self-check questions in `units/unit_01_selection_and_fundamentals/async/self_check_drills.md` to confirm your understanding before attending class.
-
-
----
+Complete the 5 self-check questions in `units/unit_01_selection_and_fundamentals/async/self_check_drills.md` to confirm your understanding before starting the weekly applied laboratory assignment.
 
 ---
 
@@ -108,4 +106,4 @@ Start by asking me your first question about query execution order. Wait for my 
 
 #### Asynchronous Participation Deliverable
 > **Canvas Discussion Prompt:**
-> In the Canvas Asynchronous Discussion for Unit 1, share: (1) The toughest question Professor Codd asked you, (2) The key insight you discovered about execution order or projection, and (3) One question you still have for our in-class session.
+> In the Canvas Asynchronous Discussion for Unit 1, share: (1) The toughest question Professor Codd asked you, (2) The key insight you discovered about execution order or projection, and (3) One question you still have about this unit's concepts.

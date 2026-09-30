@@ -2,7 +2,7 @@
 
 ## **Analytical Reporting & Feature Engineering**
 
-### **1\. Unit Overview & Objectives**
+### **1. Unit Overview & Objectives**
 
 In previous units, we focused on "Row-Level" operations—finding, filtering, and joining individual records to build a detailed view of specific entities. However, in professional data science and business intelligence, we rarely present raw lists of thousands of rows to decision-makers. Instead, we provide high-level summaries that drive strategy.
 
@@ -17,7 +17,7 @@ This unit introduces **Aggregation**, the process of collapsing massive datasets
 * **Perform** Unpivoting operations using LATERAL joins to normalize "Wide" data into "Long" formats.  
 * **Analyze** the circular data workflow: Unpivoting wide records into a "Feature Grab Bag" and Re-Pivoting them into custom, optimized datasets for AI and warehousing.
 
-### **2\. The Problem Statement: Data Summarization vs. Data Dumps**
+### **2. The Problem Statement: Data Summarization vs. Data Dumps**
 
 Imagine you are the Lead Analyst for a global financial institution. Your database captures every single credit card transaction made by 10 million customers. On a Monday morning, your CEO asks: "What was our total revenue per branch last month, and which branches are performing below average?"
 
@@ -33,10 +33,10 @@ If you provide a "Data Dump" (the raw list of 10 million transactions), you have
 
 Furthermore, data is often stored in ways that are convenient for input but impossible for analysis.
 
-* **Pivoting (Long-to-Wide):** Turning row-based records (e.g., individual monthly sales) into columns (e.g., Jan\_Sales, Feb\_Sales) for comparison.  
+* **Pivoting (Long-to-Wide):** Turning row-based records (e.g., individual monthly sales) into columns (e.g., Jan_Sales, Feb_Sales) for comparison.  
 * **Unpivoting (Wide-to-Long):** Turning column-based data back into rows. This is often necessary when you inherit a messy spreadsheet where someone has used columns to represent dates or categories, making it impossible to perform standard database operations like filtering or joining.
 
-### **3\. Theoretical Framework: The Logic of Aggregation & Restructuring**
+### **3. Theoretical Framework: The Logic of Aggregation & Restructuring**
 
 #### **A. The "Bucket" Metaphor (GROUP BY)**
 
@@ -70,13 +70,13 @@ If Pivoting is about "squishing" data into a summary, **Unpivoting** is about "u
 
 * **The "Key-Value" Pair:** When you unpivot, you create a standard format of two columns: an **Attribute Name** (The Key) and the **Value**.
 
-### **4\. Implementation: The Reporting & Restructuring Tutorial**
+### **4. Implementation: The Reporting & Restructuring Tutorial**
 
 **Note for T-SQL/Oracle Users:** Unlike SQL Server or Oracle, PostgreSQL does not have a dedicated PIVOT or UNPIVOT keyword. Instead, PostgreSQL uses standard SQL patterns that are more powerful and transparent. We use **Conditional Aggregation** for pivoting and **Lateral Joins** for unpivoting.
 
 #### **A. The Core Aggregate Functions**
 
-* **COUNT(\*)**: Row count.  
+* **COUNT(*)**: Row count.  
 * **SUM(col)**: Total sum.  
 * **AVG(col)**: Mathematical mean.  
 * **MIN() / MAX()**: Extremes.
@@ -102,20 +102,20 @@ If you run the query *without* the MAX and GROUP BY, you see this:
 
 SELECT   
     id,  
-    CASE WHEN semester \= 'Fall' THEN gpa END AS fall\_val,  
-    CASE WHEN semester \= 'Spring' THEN gpa END AS spring\_val  
-FROM student\_history;
+    CASE WHEN semester \= 'Fall' THEN gpa END AS fall_val,  
+    CASE WHEN semester \= 'Spring' THEN gpa END AS spring_val  
+FROM student_history;
 
-| id | fall\_val | spring\_val |
+| id | fall_val | spring_val |
 | :---- | :---- | :---- |
 | 1 | 3.5 | **NULL** |
 | 1 | **NULL** | 4.0 |
 
 **Step 3: The Aggregate Squish**
 
-When we add GROUP BY id and MAX(), the database looks at the two rows for ID \#1. It sees (3.5, NULL) and (NULL, 4.0). Since MAX ignores NULL, it pulls the only real value from each column and "squishes" them into one row:
+When we add GROUP BY id and MAX(), the database looks at the two rows for ID #1. It sees (3.5, NULL) and (NULL, 4.0). Since MAX ignores NULL, it pulls the only real value from each column and "squishes" them into one row:
 
-| id | fall\_val | spring\_val |
+| id | fall_val | spring_val |
 | :---- | :---- | :---- |
 | 1 | 3.5 | 4.0 |
 
@@ -125,30 +125,30 @@ If a standard join is a "zipper," a **LATERAL Join** is a **"For-Each Loop."** I
 
 **The Logic of CROSS JOIN LATERAL:**
 
-1. **Row Selection:** The engine picks Row \#1 (which has 3 columns: Math, Science, English).  
+1. **Row Selection:** The engine picks Row #1 (which has 3 columns: Math, Science, English).  
 2. **The Explosion:** It passes that row into the LATERAL block.  
-3. **The Values Constructor:** Inside LATERAL, the VALUES command manually creates 3 new rows, effectively "hard-coding" the labels ('Math\_Score', 'Sci\_Score') and pairing them with the data from the current row.  
+3. **The Values Constructor:** Inside LATERAL, the VALUES command manually creates 3 new rows, effectively "hard-coding" the labels ('Math_Score', 'Sci_Score') and pairing them with the data from the current row.  
 4. **Result:** One wide row becomes three narrow rows.
 
 SELECT   
-    student\_id,  
-    feat.attr\_name,  
-    feat.attr\_value  
+    student_id,  
+    feat.attr_name,  
+    feat.attr_value  
 FROM students  
 CROSS JOIN LATERAL (  
     VALUES   
-        ('Math\_Score', math\_score),  
-        ('Sci\_Score', science\_score),  
-        ('Eng\_Score', english\_score)  
-) AS feat(attr\_name, attr\_value);
+        ('Math_Score', math_score),  
+        ('Sci_Score', science_score),  
+        ('Eng_Score', english_score)  
+) AS feat(attr_name, attr_value);
 
 **Visual Illustration of the Unpivot:**
 
-* **Input:** \[ID: 1, Math: 90, Sci: 80\]  
+* **Input:** [ID: 1, Math: 90, Sci: 80]  
 * **Process:** The VALUES clause creates:  
-  * ('Math\_Score', 90\)  
-  * ('Sci\_Score', 80\)  
-* **Output:** 2 distinct rows for ID \#1.
+  * ('Math_Score', 90\)  
+  * ('Sci_Score', 80\)  
+* **Output:** 2 distinct rows for ID #1.
 
 #### **E. The "Grab Bag" Workflow: Advanced Feature Engineering**
 
@@ -158,19 +158,19 @@ In high-end Data Warehousing and AI projects, we use a circular workflow:
 2. **Step 2: The Feature Filter.** We write one WHERE clause to remove outliers across every single feature type simultaneously.  
 3. **Step 3: The Re-Pivot (Reconstruction).** We rebuild a perfectly formatted "Wide" row containing only the clean "features" needed for our AI model.
 
-### **5\. Student Exercises: The "Student Success Pivot"**
+### **5. Student Exercises: The "Student Success Pivot"**
 
-*Connect to your GitHub Codespace and execute the following against the university\_records dataset.*
+*Connect to your GitHub Codespace and execute the following against the university_records dataset.*
 
 1. **Departmental ROI Report:** For every major, calculate COUNT of students, AVG credits, and MAX balance. Sort by the highest student count.  
-2. **The Sparse Proof (The "Why" Exercise):** Write the query from Section 4C, Step 2\. Do **not** use MAX or GROUP BY. Observe the resulting table. Identify why the NULL values are appearing where they are.  
+2. **The Sparse Proof (The "Why" Exercise):** Write the query from Section 4C, Step 2. Do **not** use MAX or GROUP BY. Observe the resulting table. Identify why the NULL values are appearing where they are.  
 3. **The Elite Majors:** Re-write the ROI report but use HAVING to show only departments with \> 15 students and an average GPA \> 3.2.  
-4. **The Unpivot Challenge:** Take the student\_test\_scores table. Use CROSS JOIN LATERAL to unpivot it into a "Long" format.  
-5. **The Feature Engineering Workflow:** \* **Part A:** Unpivot a student's logins, library\_visits, and grades into a "Grab Bag" (Key-Value pairs).  
+4. **The Unpivot Challenge:** Take the student_test_scores table. Use CROSS JOIN LATERAL to unpivot it into a "Long" format.  
+5. **The Feature Engineering Workflow:** * **Part A:** Unpivot a student's logins, library_visits, and grades into a "Grab Bag" (Key-Value pairs).  
    * **Part B:** Re-pivot that grab bag into a single row with three columns, but only for students whose values in the grab bag are all greater than zero.  
-6. **Manual Query Tracing:** Look at Student \#505. They had 10 logins, 0 library visits, and a 3.5 GPA. Trace the unpivot/re-pivot logic on paper. Will this student appear in the final wide-format output?
+6. **Manual Query Tracing:** Look at Student #505. They had 10 logins, 0 library visits, and a 3.5 GPA. Trace the unpivot/re-pivot logic on paper. Will this student appear in the final wide-format output?
 
-### **6\. Instructor Unit Notes**
+### **6. Instructor Unit Notes**
 
 * **The "Grouping Error":** Remind students: if it's not a bucket label (Group By), it must be squished (Aggregate).  
 * **Lateral Joins:** This is a "lightbulb" moment. Explain that LATERAL lets you do things a standard Join can't—it lets the right side of the join "see" the data in the left side.  
@@ -178,7 +178,7 @@ In high-end Data Warehousing and AI projects, we use a circular workflow:
 
 ### **Appendix: GitHub Codespaces & Performance Reference**
 
-* **Connecting:** psql \-U postgres  
+* **Connecting:** psql -U postgres  
 * **Performance Impact:** Aggregations and Unpivoting require "Full Table Scans."  
 * **Visualization:** Use \\x to toggle "Expanded Display" for wide Pivot tables.
 

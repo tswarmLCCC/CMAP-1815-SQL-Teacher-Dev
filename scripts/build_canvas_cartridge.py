@@ -30,13 +30,13 @@ UNIT_METADATA = [
         "due_date_str": "Friday, October 23, 2026 at 11:59 PM (Midnight MT)",
         "due_iso": "2026-10-23T23:59:00",
         "readings": [
-            ("PostgreSQL SELECT", "https://www.postgresqltutorial.com/postgresql-getting-started/postgresql-select/",
+            ("PostgreSQL SELECT", "https://neon.tech/postgresql/tutorial/select",
              "Learn how the SELECT statement retrieves data from relational tables and why specifying columns is superior to SELECT *."),
-            ("Column Alias (AS)", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-alias/",
+            ("Column Alias (AS)", "https://neon.tech/postgresql/tutorial/column-alias",
              "Understand how to assign descriptive temporary names to projected columns and calculated arithmetic expressions."),
-            ("ORDER BY Sorting", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-order-by/",
+            ("ORDER BY Sorting", "https://neon.tech/postgresql/tutorial/order-by",
              "Master sorting result sets in ASC and DESC order, handling multiple sort columns, and controlling NULL placement."),
-            ("DISTINCT Deduplication", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-select-distinct/",
+            ("DISTINCT Deduplication", "https://neon.tech/postgresql/tutorial/select-distinct",
              "Evaluate multi-column uniqueness and eliminate duplicate rows from query projections.")
         ],
         "videos": [
@@ -57,15 +57,15 @@ UNIT_METADATA = [
         "due_date_str": "Friday, October 30, 2026 at 11:59 PM (Midnight MT)",
         "due_iso": "2026-10-30T23:59:00",
         "readings": [
-            ("WHERE Clause", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-where/",
+            ("WHERE Clause", "https://neon.tech/postgresql/tutorial/where",
              "Filter row streams using comparison operators (=, !=, <, >, <=, >=) to extract precise records."),
-            ("BETWEEN Operator", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-between/",
+            ("BETWEEN Operator", "https://neon.tech/postgresql/tutorial/between",
              "Filter values within continuous numerical and temporal ranges, noting timestamp boundary rules."),
-            ("IN Operator", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-in/",
+            ("IN Operator", "https://neon.tech/postgresql/tutorial/in",
              "Match values against discrete lists or dynamic subqueries without writing repetitive OR chains."),
-            ("LIKE & ILIKE Pattern Matching", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-like/",
+            ("LIKE & ILIKE Pattern Matching", "https://neon.tech/postgresql/tutorial/like",
              "Search string data using wildcard pattern matching (% for multi-character, _ for single-character) and case-insensitive ILIKE."),
-            ("IS NULL & Three-Valued Logic", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-is-null/",
+            ("IS NULL & Three-Valued Logic", "https://neon.tech/postgresql/tutorial/is-null",
              "Master ANSI Three-Valued Logic (TRUE, FALSE, UNKNOWN) and avoid catastrophic NULL propagation bugs.")
         ],
         "videos": [
@@ -87,13 +87,13 @@ UNIT_METADATA = [
         "due_date_str": "Friday, November 6, 2026 at 11:59 PM (Midnight MT)",
         "due_iso": "2026-11-06T23:59:00",
         "readings": [
-            ("Visual Joins Overview", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-joins/",
+            ("Visual Joins Overview", "https://neon.tech/postgresql/tutorial/joins",
              "Conceptualize relational interconnectivity across tables using Venn diagrams and set intersection."),
-            ("INNER JOIN", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-inner-join/",
+            ("INNER JOIN", "https://neon.tech/postgresql/tutorial/inner-join",
              "Join multiple tables based on primary key to foreign key matches across shared join keys."),
-            ("LEFT JOIN & Anti-Joins", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-left-join/",
+            ("LEFT JOIN & Anti-Joins", "https://neon.tech/postgresql/tutorial/left-join",
              "Retain unmatched records from the left table and implement the Anti-Join pattern to identify orphaned records."),
-            ("Table Aliases", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-alias/",
+            ("Table Aliases", "https://neon.tech/postgresql/tutorial/column-alias",
              "Use compact table aliases to qualify ambiguous column names across multi-table queries.")
         ],
         "videos": [
@@ -113,13 +113,13 @@ UNIT_METADATA = [
         "due_date_str": "Friday, November 13, 2026 at 11:59 PM (Midnight MT)",
         "due_iso": "2026-11-13T23:59:00",
         "readings": [
-            ("GROUP BY Tutorial", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-group-by/",
+            ("GROUP BY Tutorial", "https://neon.tech/postgresql/tutorial/group-by",
              "Group vertical rows into summary buckets and understand the Golden Rule of GROUP BY."),
-            ("HAVING Clause", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-having/",
+            ("HAVING Clause", "https://neon.tech/postgresql/tutorial/having",
              "Filter aggregated groups after summarization, contrasting HAVING with pre-aggregation WHERE filters."),
-            ("Aggregate Functions (COUNT, SUM, AVG, MIN, MAX)", "https://www.postgresqltutorial.com/postgresql-aggregate-functions/",
+            ("Aggregate Functions (COUNT, SUM, AVG, MIN, MAX)", "https://neon.tech/postgresql/tutorial/aggregate-functions",
              "Compute statistical summarizations and understand how NULL values interact with aggregate computations."),
-            ("CASE Conditional Expressions", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-case/",
+            ("CASE Conditional Expressions", "https://neon.tech/postgresql/tutorial/case",
              "Implement conditional logic and matrix cross-tab pivoting (CASE WHEN inside SUM) for executive reporting.")
         ],
         "videos": [
@@ -139,15 +139,15 @@ UNIT_METADATA = [
         "due_date_str": "Friday, November 20, 2026 at 11:59 PM (Midnight MT)",
         "due_iso": "2026-11-20T23:59:00",
         "readings": [
-            ("INSERT Statement", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-insert/",
+            ("INSERT Statement", "https://neon.tech/postgresql/tutorial/insert",
              "Insert single and batch records with explicit column lists and atomic upserts (ON CONFLICT DO UPDATE)."),
-            ("UPDATE Statement & RETURNING", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-update/",
+            ("UPDATE Statement & RETURNING", "https://neon.tech/postgresql/tutorial/update",
              "Safely modify records and use the RETURNING clause to audit changes in real time."),
-            ("DELETE Statement", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-delete/",
+            ("DELETE Statement", "https://neon.tech/postgresql/tutorial/delete",
              "Safely remove records using the 3-step pre-execution protocol to prevent accidental table wipes."),
-            ("Transactions (BEGIN, COMMIT, ROLLBACK)", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-transaction/",
+            ("Transactions (BEGIN, COMMIT, ROLLBACK)", "https://neon.tech/postgresql/tutorial/transaction",
              "Enforce ACID transaction boundaries to guarantee atomic database updates and prevent data corruption."),
-            ("Temporary Staging Tables", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-temporary-table/",
+            ("Temporary Staging Tables", "https://neon.tech/postgresql/tutorial/temporary-table",
              "Stage ETL transformations inside session-scoped temporary tables before committing to production.")
         ],
         "videos": [
@@ -167,13 +167,13 @@ UNIT_METADATA = [
         "due_date_str": "Friday, December 4, 2026 at 11:59 PM (Midnight MT)",
         "due_iso": "2026-12-04T23:59:00",
         "readings": [
-            ("Common Table Expressions (WITH)", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-cte/",
+            ("Common Table Expressions (WITH)", "https://neon.tech/postgresql/tutorial/cte",
              "Decompose complex nested subqueries into readable, sequential CTE pipelines."),
-            ("Window Functions Overview", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-window-function/",
+            ("Window Functions Overview", "https://neon.tech/postgresql/tutorial/window-function",
              "Compute non-collapsing aggregations, running totals, and moving averages across row partitions."),
-            ("ROW_NUMBER Function", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-row_number/",
+            ("ROW_NUMBER Function", "https://neon.tech/postgresql/tutorial/row_number",
              "Assign sequential integers to rows and implement the ROW_NUMBER() = 1 deduplication pattern."),
-            ("RANK & DENSE_RANK", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-rank/",
+            ("RANK & DENSE_RANK", "https://neon.tech/postgresql/tutorial/rank",
              "Evaluate ranking semantics, tied values, and gapless competitive rankings across partitions.")
         ],
         "videos": [
@@ -192,15 +192,15 @@ UNIT_METADATA = [
         "due_date_str": "Friday, December 11, 2026 at 11:59 PM (Midnight MT)",
         "due_iso": "2026-12-11T23:59:00",
         "readings": [
-            ("CREATE TABLE & Data Types", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-create-table/",
+            ("CREATE TABLE & Data Types", "https://neon.tech/postgresql/tutorial/create-table",
              "Define relational table architectures using optimal PostgreSQL data types (INT, NUMERIC, VARCHAR, TIMESTAMPTZ)."),
-            ("Primary Key Constraints", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-primary-key/",
+            ("Primary Key Constraints", "https://neon.tech/postgresql/tutorial/primary-key",
              "Declare surrogate and natural primary keys to enforce entity uniqueness."),
-            ("Foreign Key & Referential Actions", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-foreign-key/",
+            ("Foreign Key & Referential Actions", "https://neon.tech/postgresql/tutorial/foreign-key",
              "Establish relational links and configure cascading referential actions (ON DELETE RESTRICT, CASCADE, SET NULL)."),
-            ("CHECK & UNIQUE Constraints", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-check-constraint/",
+            ("CHECK & UNIQUE Constraints", "https://neon.tech/postgresql/tutorial/check-constraint",
              "Enforce declarative business rules and domain integrity directly at the database engine level."),
-            ("CREATE VIEW for Abstraction", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-views/",
+            ("CREATE VIEW for Abstraction", "https://neon.tech/postgresql/tutorial/views",
              "Encapsulate multi-table JOINs and security boundaries inside reusable virtual views.")
         ],
         "videos": [
@@ -220,13 +220,13 @@ UNIT_METADATA = [
         "due_date_str": "Friday, December 18, 2026 at 11:59 PM (Midnight MT)",
         "due_iso": "2026-12-18T23:59:00",
         "readings": [
-            ("EXPLAIN & Query Plans", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-explain/",
+            ("EXPLAIN & Query Plans", "https://neon.tech/postgresql/tutorial/explain",
              "Interpret cost-based query execution trees, comparing Sequential Scans against Index Scans."),
-            ("PostgreSQL Indexes Overview", "https://www.postgresqltutorial.com/postgresql-indexes/",
+            ("PostgreSQL Indexes Overview", "https://neon.tech/postgresql/tutorial/indexes",
              "Understand B-Tree indexing mechanisms, index selectivity, and query planner cost models."),
-            ("CREATE INDEX Best Practices", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-create-index/",
+            ("CREATE INDEX Best Practices", "https://neon.tech/postgresql/tutorial/create-index",
              "Balance read optimization against the Write Penalty imposed on INSERT, UPDATE, and DELETE operations."),
-            ("Composite Indexes", "https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-composite-index/",
+            ("Composite Indexes", "https://neon.tech/postgresql/tutorial/composite-index",
              "Design multi-column indexes adhering to the Leftmost Prefix Rule.")
         ],
         "videos": [
@@ -439,7 +439,7 @@ def load_and_clean_unit_overview(unit_num: int) -> str:
     folder_name = ARCHIVE_UNIT_FOLDERS.get(unit_num)
     if not folder_name:
         return ""
-    file_path = os.path.join(BASE_DIR, "legacy", "activities", "archive_units", folder_name, "Unit_Overview.md")
+    file_path = os.path.join(BASE_DIR, "archive", "v1_original_drafts", "units", folder_name, "Unit_Overview.md")
     if not os.path.exists(file_path):
         return ""
     
@@ -466,7 +466,7 @@ def load_and_clean_unit_overview(unit_num: int) -> str:
     text = text.replace('( complexity)', '(computational complexity)')
 
     # Unescape escaped markdown punctuation
-    text = text.replace(r'\_', '_').replace(r'\!', '!').replace(r'\#', '#').replace(r'\[', '[').replace(r'\]', ']')
+    text = re.sub(r'\\([*_#!\\[\\]\.\-])', r'\1', text)
 
     # Remove duplicate title header lines if present
     lines = text.splitlines()
@@ -481,8 +481,8 @@ def load_and_clean_unit_overview(unit_num: int) -> str:
 def format_inline(s: str) -> str:
     """Formats inline markdown syntax to HTML."""
     s = re.sub(r'`([^`]+)`', r'<code style="background: #f1f5f9; color: #0369a1; padding: 0.15rem 0.35rem; border-radius: 3px; font-size: 0.9em; font-family: Consolas, monospace; font-weight: 600;">\1</code>', s)
-    s = re.sub(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', s)
-    s = re.sub(r'\*([^*]+)\*', r'<em>\1</em>', s)
+    s = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', s)
+    s = re.sub(r'(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)', r'<em>\1</em>', s)
     s = s.replace(r'$\rightarrow$', '&rarr;')
     s = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2" target="_blank" rel="noopener">\1</a>', s)
     return s
@@ -491,6 +491,9 @@ def parse_markdown_to_html(md: str) -> str:
     """Converts structured markdown (tables, code blocks, lists, details) into clean styled HTML."""
     if not md:
         return ""
+
+    # Unescape markdown punctuation first to fix any escaped syntax (\*, 1\., \_, etc.)
+    md = re.sub(r'\\([*_#!\\[\\]\.\-])', r'\1', md)
 
     code_blocks = []
     def code_block_sub(match):
@@ -501,7 +504,7 @@ def parse_markdown_to_html(md: str) -> str:
         code_blocks.append(code_html)
         return f'__CODE_BLOCK_{idx}__'
 
-    text = re.sub(r'```([a-zA-Z0-9_-]*)\r?\n(.*?)\r?\n```', code_block_sub, md, flags=re.DOTALL)
+    text = re.sub(r'^[ \t]*```([a-zA-Z0-9_-]*)\r?\n(.*?)\r?\n[ \t]*```', code_block_sub, md, flags=re.DOTALL | re.MULTILINE)
 
     lines = text.splitlines()
     output = []
@@ -634,13 +637,16 @@ def parse_markdown_to_html(md: str) -> str:
             output.append(f'<li style="margin-bottom: 0.35rem;">{format_inline(ul_match.group(1))}</li>')
             continue
         elif ol_match:
+            item_text = ol_match.group(1).strip()
+            # Strip redundant internal numbering like "1. ", "**1. ", "**1.**" to prevent double numbering (e.g. "1. 1.")
+            item_text = re.sub(r'^(\*\*)?\d+[\.\)]\s*(\*\*)?\s*', '', item_text)
             if not in_list or list_type != 'ol':
                 if in_list:
                     output.append(flush_list())
                 in_list = True
                 list_type = 'ol'
                 output.append('<ol style="padding-left: 1.5rem; margin: 0.75rem 0;">')
-            output.append(f'<li style="margin-bottom: 0.35rem;">{format_inline(ol_match.group(1))}</li>')
+            output.append(f'<li style="margin-bottom: 0.35rem;">{format_inline(item_text)}</li>')
             continue
 
         if in_list:
@@ -966,7 +972,7 @@ def build_assessment_meta_xml(quiz_id: str, quiz_title: str, quiz_group_id: str,
 </quiz>
 """
 
-def build_assignment_settings_xml(assign_id: str, title: str, group_id: str, points: float = 50.0, due_at: str = None, lock_at: str = None) -> str:
+def build_assignment_settings_xml(assign_id: str, title: str, group_id: str, points: float = 100.0, due_at: str = None, lock_at: str = None) -> str:
     """Generates standard Canvas assignment_settings.xml matching institutional format."""
     due_block = f"  <due_at>{due_at}</due_at>\n  <lock_at>{lock_at}</lock_at>\n" if due_at else ""
     return f"""<?xml version="1.0" encoding="UTF-8"?>
@@ -1211,7 +1217,7 @@ def main():
         <p>There are <strong>zero textbook costs</strong> for this course. All tools and reading materials are 100% free and open-access:</p>
         <ul>
           <li><strong>PostgreSQL 16 in GitHub Codespaces:</strong> Pre-configured cloud Linux database environment with psql.</li>
-          <li><strong>Authoritative Documentation:</strong> PostgreSQLTutorial.com and official PostgreSQL 16 manuals.</li>
+          <li><strong>Authoritative Documentation:</strong> Neon PostgreSQL Tutorial (neon.tech) and official PostgreSQL 16 manuals.</li>
           <li><strong>Curated Video Lectures:</strong> High-definition video chapters embedded directly into each unit module.</li>
         </ul>
       </div>
@@ -1311,8 +1317,13 @@ def main():
          "<p>Writing SQL with AI is NOT about asking an AI to 'do the homework for you.' Blindly pasting AI-generated SQL into production environments causes catastrophic data outages, Cartesian product server crashes, and silent NULL propagation bugs.</p><p>Instead, in this course you will practice <strong>Active Socratic Learning with AI</strong>: you will assign the AI specialized roles to challenge your reasoning, test edge cases, and simulate real-world stakeholder requests.</p>"),
         ("The Big Four 100% Free AI Platforms",
          "<p>Every AI exercise in this course is designed for <strong>100% free web chat tools</strong>. You do NOT need any paid account or API key:</p><ul><li><strong>ChatGPT Free:</strong> <a href='https://chatgpt.com' target='_blank' rel='noopener'>chatgpt.com</a> (select GPT-4o-mini / Free tier).</li><li><strong>Claude Free:</strong> <a href='https://claude.ai' target='_blank' rel='noopener'>claude.ai</a> (free web tier).</li><li><strong>Google Gemini Free:</strong> <a href='https://gemini.google.com' target='_blank' rel='noopener'>gemini.google.com</a> (free with any Google account).</li><li><strong>Microsoft Copilot Free:</strong> <a href='https://copilot.microsoft.com' target='_blank' rel='noopener'>copilot.microsoft.com</a> (free web chat).</li></ul>"),
-        ("The Verification Protocol: Grounded in PostgreSQL 16",
-         "<p>Never assume an AI's SQL answer is correct! The Golden Rule of CMAP 1815: <strong>Every single SQL snippet must be executed and verified against your live PostgreSQL 16 database in GitHub Codespaces before submission!</strong></p>")
+        ("The Verification Protocol: Grounded in PostgreSQL 16 (HOTL Defense)",
+         """<p>Never assume an AI's SQL answer is correct! The Golden Rule of CMAP 1815: <strong>Every single SQL snippet must be executed and verified against your live PostgreSQL 16 database in GitHub Codespaces before submission!</strong></p>
+<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 0.85rem 1.25rem; margin: 1rem 0; border-radius: 0 6px 6px 0;">
+  <p style="margin: 0 0 0.5rem 0; font-weight: 600; color: #991b1b;"><i class="fas fa-shield-alt"></i> The Understanding &amp; Defense Requirement:</p>
+  <p style="margin: 0 0 0.5rem 0; color: #7f1d1d; font-size: 0.95em;">You are 100% accountable for every query you submit. <strong>The instructor reserves the right to question any submission for evidence of understanding</strong>—including asking you to explain your query line-by-line, defend your choice of clauses or joins, or write an equivalent query on the fly.</p>
+  <p style="margin: 0; color: #7f1d1d; font-size: 0.95em; font-weight: 600;">Do NOT submit work you don't fully understand or could not write yourself!</p>
+</div>""")
     ]
     with open(os.path.join(wiki_dir, p_orient_ai_file), "w", encoding="utf-8") as f:
         f.write(render_standard_page_html("Orientation: Learn with AI — Course Guidelines & Free Tools", orient_ai_lead, orient_ai_panels, p_orient_ai_id))
@@ -1323,63 +1334,80 @@ def main():
     p_setup_file = "database-setup-guide.html"
     setup_lead = "<p>Welcome to your hands-on SQL laboratory! In CMAP 1815, you will write and execute queries against a live, industry-standard <strong>PostgreSQL 16</strong> database running in your browser via <strong>GitHub Codespaces</strong>. This guide walks you through launching your environment, querying visually or via terminal, using starter files, and submitting your weekly lab work.</p>"
     setup_panels = [
-        ("🚀 1-Click Environment Setup (GitHub Codespaces)",
-         """<p>Your entire development environment—including PostgreSQL 16, pre-seeded datasets, and the SQLTools visual query interface—is pre-packaged into a cloud container. You do <strong>not</strong> need to install PostgreSQL or configure complex database ports on your personal computer!</p>
-<div style="margin: 1.25rem 0; text-align: center;">
-  <a href="https://codespaces.new/tswarmLCCC/CMAP-1815-Student-Sandbox?quickstart=1" target="_blank" rel="noopener" style="display: inline-block; background: #2563eb; color: #ffffff; padding: 0.75rem 1.5rem; font-weight: 600; font-size: 1.05em; text-decoration: none; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"><i class="fab fa-github"></i> Launch CMAP 1815 Student Sandbox in Codespaces</a>
-</div>
-<p style="text-align: center; color: #64748b; font-size: 0.9em;">Direct Repository: <a href="https://github.com/tswarmLCCC/CMAP-1815-Student-Sandbox" target="_blank" rel="noopener" style="color: #2563eb;">github.com/tswarmLCCC/CMAP-1815-Student-Sandbox</a></p>
-<h4 style="color: #1e3a8a; margin-top: 1.25rem;">What happens when you launch:</h4>
+        ("🚀 Step 1: Create Your Personal Student Repository",
+         """<p>Before launching Codespaces, create your own copy of the course template repository:</p>
 <ol style="line-height: 1.7;">
-  <li>Click the launch button above (or open the repo, click <strong>Code &rarr; Codespaces &rarr; Create codespace on main</strong>).</li>
-  <li>Wait ~90 seconds while GitHub provisions your private Linux container.</li>
-  <li>Once the integrated terminal prints <code>CMAP 1815: Modern SQL Student Sandbox Ready!</code>, your database is live and pre-seeded with all tables!</li>
+  <li>Navigate to the template repository: <a href="https://github.com/tswarmLCCC/CMAP-1815-Student-Sandbox" target="_blank" rel="noopener" style="color: #2563eb; font-weight: 600;">github.com/tswarmLCCC/CMAP-1815-Student-Sandbox</a>.</li>
+  <li>Click the green <strong>Use this template</strong> button at the top right &rarr; select <strong>Create a new repository</strong>.</li>
+  <li>Name your repository (e.g. <code>CMAP-1815-Student-Sandbox</code>) and set visibility to <strong>Private</strong>. Click <strong>Create repository</strong>.</li>
 </ol>
-<div style="background: #f0fdf4; border-left: 4px solid #16a34a; padding: 0.75rem 1rem; margin-top: 1rem; border-radius: 0 4px 4px 0;">
-  <strong>💡 Tip on Free GitHub Hours:</strong> Personal GitHub accounts receive 60 free core-hours per month. Claim your free <strong><a href="https://education.github.com/pack" target="_blank" rel="noopener" style="color: #15803d; text-decoration: underline;">GitHub Student Developer Pack</a></strong> using your college <code>.edu</code> email to upgrade to <strong>180 free core-hours per month</strong>! Always close your Codespace browser tab when you finish working so your container automatically pauses.
+<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 0.75rem 1rem; margin-top: 1rem; border-radius: 0 4px 4px 0;">
+  <strong style="color: #991b1b;"><i class="fas fa-exclamation-triangle"></i> CRITICAL WARNING — DO NOT WORK IN THE BASE TEMPLATE:</strong>
+  <p style="margin: 0.25rem 0 0 0; color: #7f1d1d; font-size: 0.95em;">Always launch and resume Codespaces from <strong>YOUR OWN personal repository</strong> (verify your username is in the URL). If you work in the instructor's base template, you cannot push git commits, and your work will be permanently deleted when the container shuts down!</p>
 </div>"""),
-        ("🛠️ Two Ways to Query PostgreSQL",
+        ("💻 Step 2: Launching & Resuming Your Codespace",
+         """<h4 style="color: #1e3a8a; margin-top: 0.5rem;">First-Time Launch:</h4>
+<ol style="line-height: 1.7;">
+  <li>In <strong>your personal repository</strong> on GitHub, click the green <strong>Code</strong> button &rarr; select the <strong>Codespaces</strong> tab &rarr; click <strong>Create codespace on main</strong>.</li>
+  <li>Wait ~90 seconds while GitHub provisions your container. When the terminal prints <code>CMAP 1815: Modern SQL Student Sandbox Ready!</code>, your environment is live!</li>
+</ol>
+
+<h4 style="color: #1e3a8a; margin-top: 1.25rem;">Resuming Work in Future Sessions:</h4>
+<p style="margin-bottom: 0.5rem;">Do NOT create a new Codespace every time you study! To return to your existing work:</p>
+<ol style="line-height: 1.7;">
+  <li>Return to <strong>your personal repository</strong> on GitHub &rarr; click <strong>Code</strong> &rarr; <strong>Codespaces</strong> &rarr; click your existing Codespace.</li>
+  <li>Or navigate to <a href="https://github.com/codespaces" target="_blank" rel="noopener" style="color: #2563eb;">github.com/codespaces</a> to see all active/stopped environments.</li>
+</ol>
+
+<div style="background: #f0fdf4; border-left: 4px solid #16a34a; padding: 0.75rem 1rem; margin-top: 1rem; border-radius: 0 4px 4px 0;">
+  <strong>💡 Conserving Cloud Hours &amp; Auto-Suspension:</strong>
+  <ul style="margin: 0.35rem 0 0 0; padding-left: 1.25rem; font-size: 0.95em;">
+    <li>Codespaces automatically suspends itself after <strong>30 minutes of inactivity</strong> to prevent hour runaway.</li>
+    <li>Personal accounts get 60 free hours/month. Claim the <a href="https://education.github.com/pack" target="_blank" rel="noopener" style="color: #15803d; text-decoration: underline;">GitHub Student Developer Pack</a> with your <code>.edu</code> email for <strong>180 free hours/month</strong>!</li>
+    <li>To stop manually when finished: press <code>Ctrl+Shift+P</code> &rarr; select <code>Codespaces: Stop Current Codespace</code>, or close the browser tab.</li>
+  </ul>
+</div>"""),
+        ("🛠️ Step 3: Two Ways to Query PostgreSQL",
          """<h4 style="color: #1e3a8a; margin-top: 0.5rem;">Option A: The Visual GUI (SQLTools Sidebar) — Recommended for Exploring</h4>
 <ol style="line-height: 1.7;">
-  <li>Click the <strong>Database (plug/server) icon</strong> on the far-left sidebar of VS Code.</li>
-  <li>Under the <strong>CONNECTIONS</strong> section, click <strong>CMAP 1815 Local PostgreSQL</strong> &rarr; <strong>Connect</strong>.</li>
-  <li>Expand <code>cmap1815</code> &rarr; <code>public</code> &rarr; <code>Tables</code> to inspect your five live entities: <code>employees</code>, <code>locations</code>, <code>products</code>, <code>orders</code>, and <code>order_lines</code>.</li>
-  <li>Click on any table name to inspect its column names and data types, or click <strong>Show Table Records</strong> to view data in an interactive spreadsheet grid!</li>
+  <li>Click the <strong>Database (cylinder) icon</strong> on the far-left sidebar of VS Code.</li>
+  <li>Under the <strong>CONNECTIONS</strong> section, click <strong>cmap1815</strong> &rarr; <strong>Connect</strong>.</li>
+  <li>Expand <code>cmap1815</code> &rarr; <code>public</code> &rarr; <code>Tables</code> to inspect: <code>employees</code>, <code>locations</code>, <code>products</code>, <code>orders</code>, and <code>order_lines</code>.</li>
+  <li>Click on any table to view columns, types, and primary keys, or click <strong>Show Table Records</strong> to preview data!</li>
 </ol>
 
 <h4 style="color: #1e3a8a; margin-top: 1.25rem;">Option B: The Terminal CLI (psql) — Recommended for Fast Query Testing</h4>
 <ol style="line-height: 1.7;">
-  <li>Open the integrated terminal in VS Code (press <code>Ctrl + `</code> or <code>Cmd + `</code>).</li>
-  <li>Simply type <code>psql</code> and press Enter. You will immediately enter the interactive PostgreSQL shell connected to the <code>cmap1815</code> database.</li>
-  <li>Run any query:
-    <div style="background: #0f172a; color: #f8fafc; padding: 0.5rem 0.75rem; border-radius: 4px; font-family: Consolas, monospace; margin: 0.5rem 0;"><pre style="margin: 0; background: transparent; color: inherit;"><code>SELECT first_name, last_name, salary FROM employees LIMIT 5;</code></pre></div>
-  </li>
-  <li>Type <code>\\q</code> and press Enter to exit the SQL prompt back to bash.</li>
+  <li>Open the integrated terminal in VS Code (press <code>Ctrl + `</code>).</li>
+  <li>Type <code>psql</code> and press Enter to enter the interactive shell at the <code>cmap1815=#</code> prompt.</li>
+  <li>Run any query: <code>SELECT first_name, last_name, salary FROM employees LIMIT 5;</code></li>
+  <li>Type <code>\\q</code> and press Enter to exit back to bash.</li>
 </ol>"""),
-        ("📝 The 5-Step Weekly Lab Submission Workflow",
-         """<ol style="line-height: 1.8;">
-  <li><strong>Navigate to the Unit Folder:</strong> In the VS Code file explorer (left panel), open the folder for the current week (e.g. <code>units/unit_01_selection_and_fundamentals/</code>).</li>
-  <li><strong>Review the Challenges:</strong> Open <code>lab_guide.md</code> in the unit folder (or view the <em>Applied SQL Lab Guide</em> page right here in Canvas) to read the business scenario, query specifications, and point values.</li>
-  <li><strong>Open Your Starter Template:</strong> Open <code>lab{N}_starter.sql</code> (e.g. <code>lab1_starter.sql</code>). This file has pre-formatted comment blocks for each challenge query.</li>
-  <li><strong>Write &amp; Verify Every Query:</strong> Write your SQL statements beneath each challenge prompt. <strong>Golden Rule:</strong> Never submit code you haven't executed! Run each query in your live PostgreSQL database to confirm zero syntax errors.</li>
-  <li><strong>Save &amp; Submit to Canvas:</strong> Save your completed file as <code>lab{N}_yourlastname.sql</code> (for example, <code>lab1_smith.sql</code>). Navigate to the corresponding weekly Canvas Lab Assignment and upload your <code>.sql</code> script file.</li>
-</ol>
+        ("💾 Step 4: Saving Query Outputs (Terminal & GUI)",
+         """<h4 style="color: #1e3a8a; margin-top: 0.5rem;">Saving Output from the Terminal (psql):</h4>
+<ul style="line-height: 1.7; padding-left: 1.25rem;">
+  <li><strong>Inside psql with <code>\\o</code>:</strong> Type <code>\\o lab1_output.txt</code>, run your query, then type <code>\\o</code> to close file redirection.</li>
+  <li><strong>From bash command line:</strong> Run <code>psql -U postgres -d cmap1815 -c "SELECT * FROM employees;" > employees_export.txt</code>.</li>
+</ul>
 
-<div style="background: #f8fafc; border-left: 4px solid #1e3a8a; padding: 0.75rem 1rem; margin-top: 1rem; border-radius: 0 4px 4px 0;">
-  <strong style="color: #1e3a8a;">LCCC Formatting &amp; Grading Standards:</strong>
-  <ul style="margin: 0.5rem 0 0 0; padding-left: 1.25rem;">
-    <li>All SQL keywords MUST be in <strong>UPPERCASE</strong> (<code>SELECT</code>, <code>FROM</code>, <code>WHERE</code>, <code>ORDER BY</code>, <code>AS</code>).</li>
-    <li>Each major SQL clause must begin on a <strong>new line</strong> for clean readability.</li>
-    <li>Always alias computed expressions using descriptive <code>snake_case</code> names (e.g. <code>AS total_inventory_value</code>).</li>
-  </ul>
-</div>"""),
-        ("🔄 Disaster Recovery: Screwed Up Your Data? (./reset_database.sh)",
-         """<p>In Unit 5 (Safe DML) and Unit 7 (Schema Design), you will be executing real <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>, and <code>DROP TABLE</code> statements. Mistakes happen—you might accidentally delete the entire employees table or alter a column type incorrectly.</p>
-<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 0.75rem 1rem; margin: 1rem 0; border-radius: 0 4px 4px 0;">
-  <p style="margin: 0 0 0.5rem 0; font-weight: 600; color: #991b1b;">Don't panic! You can reset your database in 5 seconds anytime:</p>
-  <div style="background: #0f172a; color: #f8fafc; padding: 0.5rem 0.75rem; border-radius: 4px; font-family: Consolas, monospace;"><pre style="margin: 0; background: transparent; color: inherit;"><code>./reset_database.sh</code></pre></div>
-  <p style="margin: 0.5rem 0 0 0; color: #7f1d1d; font-size: 0.9em;">This script drops and recreates all starter tables (locations, employees, products, orders, order_lines) back to day-one condition. <strong>It will NOT delete or alter your <code>.sql</code> homework files in the <code>units/</code> folder.</strong></p>
-</div>""")
+<h4 style="color: #1e3a8a; margin-top: 1.25rem;">Saving Output from SQLTools GUI:</h4>
+<ul style="line-height: 1.7; padding-left: 1.25rem;">
+  <li>After running a query, the <strong>SQLTools Results</strong> panel displays the grid.</li>
+  <li>Click <strong>Export Results</strong> (or the download icon) in the Results toolbar &rarr; choose <strong>Save as CSV</strong> or <strong>Save as JSON</strong>.</li>
+  <li>Click <strong>Copy All</strong> or select rows and right-click &rarr; <strong>Copy</strong> to paste output directly into notes or submission comments.</li>
+</ul>"""),
+        ("📝 Step 5: The 5-Step Weekly Lab Submission Workflow (100 Points Total)",
+         """<ol style="line-height: 1.8;">
+  <li><strong>Open Starter Template:</strong> In the VS Code file explorer, open <code>units/{current_unit}/lab{N}_starter.sql</code> (or copy the starter template code block from Canvas).</li>
+  <li><strong>Write &amp; Verify Every Query:</strong> Write your SQL statements beneath each challenge block. Run every query against PostgreSQL to ensure zero errors.</li>
+  <li><strong>Format to Standards:</strong> Keywords in <strong>UPPERCASE</strong> (<code>SELECT</code>, <code>FROM</code>, <code>WHERE</code>, <code>AS</code>), clauses on new lines, and computed columns aliased with <code>AS snake_case</code>.</li>
+  <li><strong>Commit &amp; Push to GitHub:</strong> In the terminal, run: <code>git add . &amp;&amp; git commit -m "Complete Lab {N}" &amp;&amp; git push origin main</code>. This permanently secures your work in the cloud.</li>
+  <li><strong>Submit to Canvas:</strong> Save as <code>lab{N}_yourlastname.sql</code>, right-click &rarr; <strong>Download...</strong>, and upload the <code>.sql</code> file to the weekly Canvas Lab Assignment for SpeedGrader evaluation (100 Points).</li>
+</ol>"""),
+        ("🔄 Step 6: Disaster Recovery (./reset_database.sh)",
+         """<p>Accidentally delete a table or corrupt rows during an experiment? Don't panic! You can restore all pristine tables in 2 seconds:</p>
+<div style="background: #0f172a; color: #f8fafc; padding: 0.5rem 0.75rem; border-radius: 4px; font-family: Consolas, monospace; margin: 0.5rem 0;"><pre style="margin: 0; background: transparent; color: inherit;"><code>./reset_database.sh</code></pre></div>
+<p style="color: #475569; font-size: 0.9em; margin-bottom: 0;">This script drops and recreates all starter tables (employees, locations, products, orders, order_lines). <strong>It will NOT delete your <code>.sql</code> files in your repository.</strong></p>""")
     ]
     with open(os.path.join(wiki_dir, p_setup_file), "w", encoding="utf-8") as f:
         f.write(render_standard_page_html("Student Guide: How to Complete & Submit Weekly SQL Labs", setup_lead, setup_panels, p_setup_id))
@@ -1461,7 +1489,7 @@ def main():
         ("Authoritative FreeCodeCamp Video Chapters",
          "<p>Official PostgreSQL Course (Timestamps verified to video description):</p><ul><li><strong>Unit 1:</strong> What is a Database (0:03:16) &amp; Relational Databases (0:05:17)</li><li><strong>Unit 2:</strong> Comparison Operators (1:50:18) &amp; Handling NULLs (2:15:42)</li><li><strong>Unit 3:</strong> Primary Keys (2:31:23) &amp; Foreign Key Joins (3:16:41)</li><li><strong>Unit 4:</strong> Aggregate Functions (2:36:14) &amp; GROUP BY (2:45:30)</li><li><strong>Unit 5:</strong> INSERT Operations (0:55:55) &amp; Safe DELETE/UPDATE (2:54:45)</li><li><strong>Unit 7:</strong> CREATE TABLE (0:41:37) &amp; Constraints (0:49:12)</li><li><strong>Unit 8:</strong> Exporting Results to CSV (3:47:27)</li></ul>"),
         ("Authoritative PostgreSQL Tutorial Guides",
-         "<p>All units link directly to <a href='https://www.postgresqltutorial.com/' target='_blank' rel='noopener'>PostgreSQLTutorial.com</a> and the <a href='https://www.postgresql.org/docs/current/' target='_blank' rel='noopener'>Official PostgreSQL 16 Documentation</a>.</p>")
+         "<p>All units link directly to the <a href='https://neon.tech/postgresql/tutorial/' target='_blank' rel='noopener'>Neon PostgreSQL Tutorial</a> and the <a href='https://www.postgresql.org/docs/current/' target='_blank' rel='noopener'>Official PostgreSQL 16 Documentation</a>.</p>")
     ]
     with open(os.path.join(wiki_dir, p_res_file), "w", encoding="utf-8") as f:
         f.write(render_standard_page_html("External Learning Resources & Media Guide", res_lead, res_panels, p_res_id))
@@ -1502,15 +1530,15 @@ def main():
              f"<p>Upon completing this unit, you will be able to apply core competencies in <strong>{u_topic}</strong>, analyze relational schema relationships, and execute production-grade queries with verified precision.</p>"),
             ("Weekly Learning Sequence & Roadmap",
              f"""<ol>
-  <li><strong>1. Required Readings &amp; Embedded Videos:</strong> Review the authoritative reading tutorials and watch the embedded video segments directly inside Canvas.</li>
-  <li><strong>2. Asynchronous Preparation &amp; Drills:</strong> Complete the conceptual focus questions and self-check drills before starting your lab assignment.</li>
-  <li><strong>3. Applied SQL Lab Assignment:</strong> Execute hands-on queries and scenario challenges against your live PostgreSQL 16 database.</li>
-  <li><strong>4. Canvas Lab Turn-in:</strong> Submit your verified SQL script (<code>.sql</code>) or query answers through Canvas for grading.</li>
-  <li><strong>5. Learn with AI (Supplemental Practice):</strong> Complete the interactive role-play prompt drill with a free AI assistant and post your findings to the weekly discussion board.</li>
-  <li><strong>6. Unit Knowledge Check:</strong> Take the 15-question multiple-choice assessment to evaluate your mastery.</li>
+  <li><strong>Required Readings &amp; Embedded Videos:</strong> Review the authoritative reading tutorials and watch the embedded video segments directly inside Canvas.</li>
+  <li><strong>Asynchronous Preparation &amp; Drills:</strong> Complete the conceptual focus questions and self-check drills before starting your lab assignment.</li>
+  <li><strong>Applied SQL Lab Assignment:</strong> Execute hands-on queries and scenario challenges against your live PostgreSQL 16 database.</li>
+  <li><strong>Canvas Lab Turn-in:</strong> Submit your verified SQL script (<code>.sql</code>) or query answers through Canvas for grading.</li>
+  <li><strong>Learn with AI (Supplemental Practice):</strong> Complete the interactive role-play prompt drill with a free AI assistant and post your findings to the weekly discussion board.</li>
+  <li><strong>Unit Knowledge Check:</strong> Take the 15-question multiple-choice assessment to evaluate your mastery.</li>
 </ol>"""),
             ("Time Budget & Contact Hours",
-             f"<p>In accordance with our asynchronous curriculum model, each unit is budgeted for:</p><ul><li><strong>150 Minutes Guided Self-Study:</strong> Video micro-lectures, PostgreSQLTutorial readings, and formative self-check drills with expandable answers.</li><li><strong>150 Minutes Applied Laboratory Practice:</strong> Real-world database scenarios, hands-on query writing in PostgreSQL 16, and unit knowledge checks.</li></ul>")
+             f"<p>In accordance with our asynchronous curriculum model, each unit is budgeted for:</p><ul><li><strong>150 Minutes Guided Self-Study:</strong> Video micro-lectures, Neon PostgreSQL Tutorial readings, and formative self-check drills with expandable answers.</li><li><strong>150 Minutes Applied Laboratory Practice:</strong> Real-world database scenarios, hands-on query writing in PostgreSQL 16, and unit knowledge checks.</li></ul>")
         ]
         with open(os.path.join(wiki_dir, overview_file), "w", encoding="utf-8") as f:
             f.write(render_designplus_html(f"{u_short} Overview: {u_topic}", overview_lead, overview_panels, overview_id))
@@ -1523,10 +1551,10 @@ def main():
         reading_file = f"unit-{u_num:02d}-readings-and-media.html"
         reading_lead = f"""<p><strong>Welcome to the core instructional lecture and study hub for {u_title}.</strong> This page organizes all weekly learning materials into four structured chapters:</p>
 <ol style="padding-left: 1.5rem; margin: 0.75rem 0; line-height: 1.7;">
-  <li><strong>1. Instructor Lecture &amp; Conceptual Deep Dive:</strong> Master the core concepts, mental models, syntax rules, and guided live exercises authored specifically for this unit.</li>
-  <li><strong>2. Required Readings &amp; PostgreSQL Tutorial Guides:</strong> Review curated reference guides and official PostgreSQL 16 documentation links.</li>
-  <li><strong>3. Required Micro-Video Lectures (Embedded):</strong> Watch high-definition video chapters with verified timestamp navigation to observe queries executed in live environments.</li>
-  <li><strong>4. Institutional Video Lecture Embeds:</strong> Access campus-specific video recordings and announcements uploaded by your instructor.</li>
+  <li><strong>Instructor Lecture &amp; Conceptual Deep Dive:</strong> Master the core concepts, mental models, syntax rules, and guided live exercises authored specifically for this unit.</li>
+  <li><strong>Required Readings &amp; PostgreSQL Tutorial Guides:</strong> Review curated reference guides and official PostgreSQL 16 documentation links.</li>
+  <li><strong>Required Micro-Video Lectures (Embedded):</strong> Watch high-definition video chapters with verified timestamp navigation to observe queries executed in live environments.</li>
+  <li><strong>Institutional Video Lecture Embeds:</strong> Access campus-specific video recordings and announcements uploaded by your instructor.</li>
 </ol>
 <p style="margin-top: 0.75rem; margin-bottom: 0; color: #64748b; font-size: 0.95em;"><em>Work through each section in sequence as part of your 150-minute asynchronous self-study allocation before starting the applied laboratory assignment.</em></p>"""
         
@@ -1595,7 +1623,7 @@ def main():
             ("Pre-Class Focus Questions", focus_questions_html),
             ("Formative Self-Check Drills", drills_html),
             ("Preparation Verification Checklist",
-             "<p>Before proceeding to the lab assignment, verify that you have:</p><ul><li>Read all tutorial guides on PostgreSQLTutorial.com.</li><li>Watched each embedded video chapter.</li><li>Answered the self-check drills without peeking at the solutions first.</li><li>Logged into your GitHub Codespaces PostgreSQL 16 environment.</li></ul>")
+             "<p>Before proceeding to the lab assignment, verify that you have:</p><ul><li>Read all tutorial guides on the Neon PostgreSQL Tutorial.</li><li>Watched each embedded video chapter.</li><li>Answered the self-check drills without peeking at the solutions first.</li><li>Logged into your GitHub Codespaces PostgreSQL 16 environment.</li></ul>")
         ]
         with open(os.path.join(wiki_dir, study_file), "w", encoding="utf-8") as f:
             f.write(render_standard_page_html(f"{u_short}: Asynchronous Preparation & Drills", study_lead, study_panels, study_id))
@@ -1615,12 +1643,26 @@ def main():
             with open(lab_path, "r", encoding="utf-8") as lf:
                 lab_content_html = parse_markdown_to_html(lf.read())
 
-        # Load Challenges
+        # Load Coding Clinic Walkthrough Challenges
         challenges_path = os.path.join(UNITS_DIR, u_folder, "sync", "inclass_challenges.sql")
-        challenges_html = "<p>Refer to your course repository for self-paced applied coding challenges.</p>"
+        challenges_html = "<p>Refer to your course repository for self-paced coding clinic challenges.</p>"
         if os.path.exists(challenges_path):
             with open(challenges_path, "r", encoding="utf-8") as cf:
-                challenges_html = f"<div style='background: #0f172a; color: #f8fafc; padding: 1rem 1.25rem; border-radius: 6px; overflow-x: auto; font-family: Consolas, Monaco, monospace; font-size: 0.9em; line-height: 1.5;'><pre style='margin: 0; background: transparent; color: inherit;'><code>{html.escape(cf.read().strip())}</code></pre></div>"
+                challenges_html = f"""<p style="margin-bottom: 0.75rem;">These follow-along challenges follow the <strong>Gradual Release of Responsibility</strong> model (&quot;I Do, We Do, You Do&quot;). Attempt each query on your own in your Codespace sandbox before or while watching the instructor video walkthrough, then compare your query logic and formatting against the instructor's demonstration!</p>
+<div style='background: #0f172a; color: #f8fafc; padding: 1rem 1.25rem; border-radius: 6px; overflow-x: auto; font-family: Consolas, Monaco, monospace; font-size: 0.9em; line-height: 1.5;'><pre style='margin: 0; background: transparent; color: inherit;'><code>{html.escape(cf.read().strip())}</code></pre></div>"""
+
+        # Check for starter template SQL file to embed copy-paste starter block
+        starter_sql_path = os.path.join(UNITS_DIR, u_folder, f"lab{u_num}_starter.sql")
+        if not os.path.exists(starter_sql_path):
+            starter_sql_path = os.path.join(UNITS_DIR, u_folder, "guides", f"lab{u_num}_starter.sql")
+        starter_box_html = ""
+        if os.path.exists(starter_sql_path):
+            with open(starter_sql_path, "r", encoding="utf-8") as stf:
+                starter_box_html = f"""<div style="margin-top: 1.5rem; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 1rem;">
+  <p style="font-weight: 600; color: #1e3a8a; margin-top: 0; margin-bottom: 0.5rem;"><i class="fas fa-file-code"></i> Copy-and-Paste Starter Template (<code>lab{u_num}_starter.sql</code>):</p>
+  <p style="color: #475569; font-size: 0.9em; margin-bottom: 0.5rem;">Copy this starter template into a new file named <code>lab{u_num}_yourlastname.sql</code> in your Codespace, or open the template file already located in your repository under <code>units/{u_folder}/</code>.</p>
+  <div style='background: #0f172a; color: #f8fafc; padding: 1rem 1.25rem; border-radius: 4px; overflow-x: auto; font-family: Consolas, Monaco, monospace; font-size: 0.9em; line-height: 1.5;'><pre style='margin: 0; background: transparent; color: inherit;'><code>{html.escape(stf.read().strip())}</code></pre></div>
+</div>"""
 
         # Load and parse Rubric (Converts markdown table into beautiful styled HTML table)
         rubric_path = os.path.join(UNITS_DIR, u_folder, "assessments", "lab_rubric.md")
@@ -1630,9 +1672,9 @@ def main():
                 rubric_html = parse_markdown_to_html(rf.read())
 
         lab_panels = [
-            ("Laboratory Scenario & Task Specifications", lab_content_html),
-            ("Self-Paced Applied Coding Challenges", challenges_html),
-            ("Grading Rubric & Scoring Criteria", rubric_html)
+            ("1. Lecture Walkthroughs & Coding Clinic (Gradual Release: Try First, Then Watch)", challenges_html),
+            ("2. Applied SQL Laboratory Challenges & Starter Script (Graded Submission — 100 Points)", lab_content_html + starter_box_html),
+            ("3. Grading Rubric & Scoring Criteria (100 Points Total)", rubric_html)
         ]
         with open(os.path.join(wiki_dir, lab_guide_file), "w", encoding="utf-8") as f:
             f.write(render_standard_page_html(f"{u_short}: Applied SQL Lab Guide", lab_guide_lead, lab_panels, lab_guide_id))
@@ -1649,7 +1691,7 @@ def main():
 
         # Write assignment_settings.xml with official B8 deadlines
         assign_settings_xml = build_assignment_settings_xml(
-            assign_id, assign_title, group_labs_id, points=50.0,
+            assign_id, assign_title, group_labs_id, points=100.0,
             due_at=unit.get("due_iso"), lock_at=unit.get("due_iso")
         )
         with open(os.path.join(assign_folder, "assignment_settings.xml"), "w", encoding="utf-8") as af:
@@ -1662,7 +1704,7 @@ def main():
 <title>Assignment: {html.escape(assign_title)}</title>
 </head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1e293b; padding: 1rem; max-width: 900px;">
-  <h2 style="color: #1e3a8a; border-bottom: 2px solid #1e3a8a; padding-bottom: 0.3rem;">{html.escape(assign_title)} (50 Points)</h2>
+  <h2 style="color: #1e3a8a; border-bottom: 2px solid #1e3a8a; padding-bottom: 0.3rem;">{html.escape(assign_title)} (100 Points)</h2>
   <div style="background: #eff6ff; border-left: 4px solid #2563eb; padding: 0.75rem 1.25rem; margin: 1rem 0; border-radius: 0 4px 4px 0;">
     <p style="margin: 0; font-weight: 600; color: #1e40af;"><i class="far fa-calendar-alt"></i> Due Date: {html.escape(unit["due_date_str"])}</p>
   </div>
@@ -1681,7 +1723,7 @@ def main():
   <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 0.6rem 1rem; margin: 1rem 0; border-radius: 0 4px 4px 0; font-size: 0.9em; color: #991b1b;">
     <strong>Accidental Data Deletion or Dropped Table?</strong> Run <code>./reset_database.sh</code> in your terminal to instantly restore pristine database tables without losing your saved query files.
   </div>
-  <h3 style="color: #0f172a; margin-top: 1.5rem;">Grading Criteria (50 Points Total)</h3>
+  <h3 style="color: #0f172a; margin-top: 1.5rem;">Grading Criteria (100 Points Total)</h3>
   <div style="margin-top: 0.5rem;">
     {rubric_html}
   </div>
@@ -1774,10 +1816,11 @@ def main():
 <ul style="padding-left: 1.5rem;">{''.join(video_blueprint_lis)}</ul>
 <p><strong>Where to Host &amp; Embed:</strong> Upload to <em>Canvas Studio</em>, <em>YouTube (Unlisted)</em>, or your campus media repository (Panopto/Kaltura). Replace or add the video embed iframe on the <code>{u_short}: Required Readings &amp; Video Lectures</code> page.</p>"""
 
-        # Synchronous Blueprint
-        sync_blueprint_html = f"""<p>If delivering this unit in a live classroom or synchronous Zoom session, follow this pacing schedule:</p>
+        # Asynchronous Video Walkthrough & Coding Clinic Blueprint
+        sync_blueprint_html = f"""<p>Use this blueprint when recording asynchronous lecture walkthroughs and coding clinics (Gradual Release: &quot;I Do, We Do, You Do&quot;):</p>
 <pre style="white-space: pre-wrap; font-family: inherit; background: #f8fafc; padding: 1rem; border: 1px solid #cbd5e1; border-radius: 4px;"><code>{html.escape(tg_info['sync_agenda'])}</code></pre>
-<p>Use the provided <code>sync/inclass_challenges.sql</code> file for student pair-programming breakout sessions.</p>"""
+<p>In your video recording, demonstrate the queries from <code>sync/inclass_challenges.sql</code>. Encourage students to pause the video, attempt each query first on their own, and then resume to watch your demonstration and trap analysis.</p>
+<p><em>Note: If delivering an optional live Q&amp;A or workshop session, this agenda also serves as a high-impact in-person schedule.</em></p>"""
 
         # Load Solution notes
         sol_path = os.path.join(UNITS_DIR, u_folder, "guides", "instructor_solution.sql")
@@ -1789,7 +1832,7 @@ def main():
 
         teacher_panels = [
             ("Video Production Blueprint (What Videos to Record & Where to Host)", video_blueprint_html),
-            ("Synchronous Delivery Blueprint (Alternative In-Person Schedule)", sync_blueprint_html),
+            ("Lecture Walkthrough Recording Guide & Coding Clinic Blueprint", sync_blueprint_html),
             ("Instructor Master Solution SQL & Answer Key", sol_html)
         ]
         with open(os.path.join(wiki_dir, teacher_file), "w", encoding="utf-8") as f:

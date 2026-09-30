@@ -2,7 +2,7 @@
 
 ## **The Science of Data Mutation and Transactional Safety**
 
-### **1\. Unit Overview & Objectives**
+### **1. Unit Overview & Objectives**
 
 In Units 1 through 4, we focused exclusively on Data Query Language (DQL)—the art of retrieving and analyzing existing information. In Unit 5, we transition to Data Manipulation Language (DML). You are moving from being a "reader" of data to a "writer" of data.
 
@@ -17,7 +17,7 @@ This transition carries immense responsibility. While a mistake in a SELECT stat
 * **Utilize** SELECT INTO for permanent snapshotting and **Temporary Tables** for session-level scratchpads.  
 * **Construct** "Stepped Calculation" workflows that break complex, multi-stage logic into verifiable intermediate steps.
 
-### **2\. The Problem Statement: The Fragility of the "Mirror of Reality"**
+### **2. The Problem Statement: The Fragility of the "Mirror of Reality"**
 
 Before touching the code, we must understand the fundamental challenge: **The Mirror of Reality**. A database is only valuable if it perfectly reflects the real world. If a bank’s database says you have $500, but you actually have $0, the mirror is cracked, and the system has failed.
 
@@ -32,12 +32,12 @@ The primary threat is **Synchronicity**. If a process requires three steps to re
 Imagine a course registration system where only one seat remains:
 
 1. **INSERT** a record into enrollment (Student is added).  
-2. **UPDATE** the course\_inventory (Seat count becomes 0).  
+2. **UPDATE** the course_inventory (Seat count becomes 0).  
 3. **INSERT** a record into billing (Invoice is generated).
 
 If the power fails after Step 1, the student thinks they are in the class, but the inventory still says a seat is available. The next student who clicks "Enroll" will be admitted to a full room. This is a **State Desync**.
 
-### **3\. Theoretical Framework: ACID and the Architecture of the Scratchpad**
+### **3. Theoretical Framework: ACID and the Architecture of the Scratchpad**
 
 #### **A. ACID Compliance: The Database's DNA**
 
@@ -56,16 +56,16 @@ Sophomore learners often fear the "permanence" of SQL. We solve this by creating
 2. **Session Scratchpads (INTO TEMP):** Think of this as a **Post-it Note**. These tables exist only in your current connection. They are private to you and are automatically deleted the moment you log out. This is the ultimate playground for testing destructive logic.  
 3. **Modular Steps (TEMP Tables):** Used for **Complexity Management**. Instead of one 100-line query, you break a problem into three small, verifiable temp tables. You calculate Part A, verify it, calculate Part B, verify it, then join them for the final result.
 
-### **4\. Implementation Guide: Writing and Guarding Data**
+### **4. Implementation Guide: Writing and Guarding Data**
 
 #### **A. The UPSERT Pattern (ON CONFLICT)**
 
 In high-speed systems, we often don't know if a record is "New" or "Returning." Instead of checking first (which is slow), we use an **UPSERT**.
 
-INSERT INTO student\_logins (student\_id, last\_login)  
+INSERT INTO student_logins (student_id, last_login)  
 VALUES (101, NOW())  
-ON CONFLICT (student\_id)   
-DO UPDATE SET last\_login \= EXCLUDED.last\_login;
+ON CONFLICT (student_id)   
+DO UPDATE SET last_login \= EXCLUDED.last_login;
 
 * **The EXCLUDED Virtual Table:** When a "collision" happens (the ID already exists), PostgreSQL creates a temporary table called EXCLUDED containing the new data you *tried* to insert. You use this to update the existing record.
 
@@ -81,31 +81,31 @@ Professional engineers avoid "Monster Queries" by using the **Stepped Workflow**
 
 **Step 1: Isolate specific data into a scratchpad.**
 
-SELECT student\_id, sum(credits) as total\_credits  
-INTO TEMP high\_load\_seniors  
+SELECT student_id, sum(credits) as total_credits  
+INTO TEMP high_load_seniors  
 FROM enrollment   
 WHERE year \= 'Senior'  
-GROUP BY student\_id  
+GROUP BY student_id  
 HAVING sum(credits) \> 15;
 
 **Step 2: Perform the next stage of logic using the scratchpad.**
 
-By separating these, you can run SELECT \* FROM high\_load\_seniors to ensure your math is correct before using it in a billing or graduation query.
+By separating these, you can run SELECT * FROM high_load_seniors to ensure your math is correct before using it in a billing or graduation query.
 
-### **5\. Student Exercises: The "Registration Gauntlet"**
+### **5. Student Exercises: The "Registration Gauntlet"**
 
 *Connect to your GitHub Codespace and execute the following against the university dataset.*
 
-1. **Manual Ingestion:** Use INSERT to add a new faculty member. Explicitly list the columns name, department, and hire\_date.  
-2. **The User Onboarding (UPSERT):** Use ON CONFLICT on the user\_login\_logs table. If the user\_id already exists, update the login\_count by incrementing it by 1 using the EXCLUDED table logic.  
-3. **The Permanent Snapshot:** Use SELECT INTO to create a permanent backup table called billing\_audit\_backup for all students with a balance \> $500.  
-4. **The Modular Step Challenge:** \* **Part A:** Create a TEMP table of students with a 4.0 GPA.  
+1. **Manual Ingestion:** Use INSERT to add a new faculty member. Explicitly list the columns name, department, and hire_date.  
+2. **The User Onboarding (UPSERT):** Use ON CONFLICT on the user_login_logs table. If the user_id already exists, update the login_count by incrementing it by 1 using the EXCLUDED table logic.  
+3. **The Permanent Snapshot:** Use SELECT INTO to create a permanent backup table called billing_audit_backup for all students with a balance \> $500.  
+4. **The Modular Step Challenge:** * **Part A:** Create a TEMP table of students with a 4.0 GPA.  
    * **Part B:** Create a TEMP table of students with outstanding library fines.  
    * **Part C:** Use INTERSECT to find students on both lists.  
 5. **The Trust Exercise (Destroy and Restore):** Run BEGIN;, then DELETE every record in the grades table. Run a SELECT to prove the table is empty. Then, run ROLLBACK; and run the SELECT again to prove the data has returned safely.  
 6. **The High-Stakes Transaction:** Script the Enrollment Heartbeat: BEGIN;, DELETE a student from an old class, UPDATE the seat count in the courses table, and INSERT them into a new class. Verify all results, then COMMIT;.
 
-### **6\. Instructor Unit Notes**
+### **6. Instructor Unit Notes**
 
 * **Session Scope:** Remind students that TEMP tables are invisible to other terminal tabs. If they open a second connection, their scratchpad won't be there.  
 * **The "Where" Trap:** This is a trust exercise. Sophomores often fear DELETE. Use the ROLLBACK exercise to show them that as long as they are in a transaction, they are safe.  
@@ -114,5 +114,5 @@ By separating these, you can run SELECT \* FROM high\_load\_seniors to ensure yo
 ### **Appendix: GitHub Codespaces & State Reference**
 
 * **\\dt**: Lists permanent tables.  
-* **\\dt \*.\***: Lists all tables, including the hidden pg\_temp schema.  
-* **Prompt Status:** If your prompt has a \* (e.g., postgres\#\*), you are inside a transaction. **Never** log out without typing COMMIT or ROLLBACK.
+* **\\dt *.***: Lists all tables, including the hidden pg_temp schema.  
+* **Prompt Status:** If your prompt has a * (e.g., postgres#*), you are inside a transaction. **Never** log out without typing COMMIT or ROLLBACK.

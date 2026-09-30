@@ -16,7 +16,7 @@ This unit marks your transition from being a "data retriever" to an **Analytical
 
 In basic SQL, your queries are simple enough to hold in your head all at once. However, as business requirements grow, you will hit a "Complexity Ceiling." Standard SQL provides two major points of failure:
 
-### **1\. The "Nesting Tax" (Cognitive Load & Debugging)**
+### **1. The "Nesting Tax" (Cognitive Load & Debugging)**
 
 **The Problem:** When a query requires multiple layers of logic (e.g., "Find the average of a sum of a count"), developers often resort to nested subqueries.
 
@@ -24,7 +24,7 @@ In basic SQL, your queries are simple enough to hold in your head all at once. H
 
 **The Solution:** **CTEs**. We solve this by "naming" our logic blocks and defining them sequentially. This allows you to test each block individually before moving to the next.
 
-### **2\. The "Aggregation Trade-off" (Data Loss)**
+### **2. The "Aggregation Trade-off" (Data Loss)**
 
 **The Problem:** The GROUP BY clause is "destructive."
 
@@ -32,45 +32,45 @@ In basic SQL, your queries are simple enough to hold in your head all at once. H
 
 **The Solution:** **Window Functions**. We solve this by creating a "window" that looks at the rest of the data without collapsing the row you are currently standing on.
 
-## **1\. Common Table Expressions (CTEs): The Procedural Shift**
+## **1. Common Table Expressions (CTEs): The Procedural Shift**
 
 A CTE is defined using the WITH keyword. It tells the SQL engine: "Run this logic first, call it 'X', and let me use 'X' for the rest of the query." This moves SQL away from a declarative "set" language toward a more procedural "pipeline" language.
 
 ### **How to Architect Modularity**
 
-Instead of one giant query, we build a pipeline that handles abstraction. Each layer handles one specific business rule. Crucially, we use **Debugging Checkpoints**: instead of running the whole query, you can stop at any layer and SELECT \* FROM \[LayerName\] to verify the data before moving on.
+Instead of one giant query, we build a pipeline that handles abstraction. Each layer handles one specific business rule. Crucially, we use **Debugging Checkpoints**: instead of running the whole query, you can stop at any layer and SELECT * FROM [LayerName] to verify the data before moving on.
 
 WITH RawEnrollments AS (  
-    \-- Layer 1: Data Cleaning & Extraction  
-    \-- DEBUG CHECKPOINT: SELECT \* FROM RawEnrollments  
-    SELECT student\_id, course\_id, COALESCE(credit\_hours, 0\) as credit\_hours   
-    FROM university\_records   
+    -- Layer 1: Data Cleaning & Extraction  
+    -- DEBUG CHECKPOINT: SELECT * FROM RawEnrollments  
+    SELECT student_id, course_id, COALESCE(credit_hours, 0\) as credit_hours   
+    FROM university_records   
     WHERE status \= 'Active'  
 ),  
 StudentTotals AS (  
-    \-- Layer 2: Business Logic (summarizing the clean data)  
-    \-- DEBUG CHECKPOINT: SELECT \* FROM StudentTotals  
-    SELECT student\_id, SUM(credit\_hours) as total\_credits  
+    -- Layer 2: Business Logic (summarizing the clean data)  
+    -- DEBUG CHECKPOINT: SELECT * FROM StudentTotals  
+    SELECT student_id, SUM(credit_hours) as total_credits  
     FROM RawEnrollments  
     GROUP BY 1  
 ),  
 HighlyActiveStudents AS (  
-    \-- Layer 3: Constraints (isolating the specific targets)  
-    SELECT student\_id   
+    -- Layer 3: Constraints (isolating the specific targets)  
+    SELECT student_id   
     FROM StudentTotals   
-    WHERE total\_credits \> 12  
+    WHERE total_credits \> 12  
 )  
-\-- Layer 4: Final Presentation (The Reporting Layer)  
-SELECT s.name, st.total\_credits  
+-- Layer 4: Final Presentation (The Reporting Layer)  
+SELECT s.name, st.total_credits  
 FROM HighlyActiveStudents has  
-JOIN students s ON s.id \= has.student\_id  
-JOIN StudentTotals st ON st.student\_id \= s.id;
+JOIN students s ON s.id \= has.student_id  
+JOIN StudentTotals st ON st.student_id \= s.id;
 
 ### **The Ephemeral Scope**
 
 A critical constraint of CTEs is their **Scope**. A CTE is temporary; it only exists for the duration of the single query that follows it. You cannot define a CTE in one script and call it in another 10 minutes later. For persistence, you would need to use a View or a Temporary Table.
 
-## **2\. Window Functions: The Moving Flashlight**
+## **2. Window Functions: The Moving Flashlight**
 
 Window functions are invoked using the OVER() clause. Think of a window function as a "moving flashlight." As SQL iterates through your table, the flashlight illuminates a specific subset of other rows (the **Window**) and performs a calculation based on what it sees.
 
@@ -79,25 +79,25 @@ Window functions are invoked using the OVER() clause. Think of a window function
 * **PARTITION BY**: This defines the "walls" of the window. If you partition by department, the flashlight only shines on other rows in that same department.  
 * **ORDER BY**: This defines the "flow." Inside an OVER() clause, ORDER BY is what turns a static average into a running calculation.  
 * **Aggregate Windows (Running Totals)**: By adding an ORDER BY to a SUM(), you create a cumulative calculation.  
-  \-- This creates a running total of revenue over time  
+  -- This creates a running total of revenue over time  
   SELECT   
-      sale\_date,   
+      sale_date,   
       amount,  
-      SUM(amount) OVER (ORDER BY sale\_date) as running\_total  
+      SUM(amount) OVER (ORDER BY sale_date) as running_total  
   FROM sales;
 
 ### **The Qualify Pattern (Filtering Rankings)**
 
 One of the most common student errors is trying to filter a ranking result in the same query:
 
-SELECT ... WHERE RANK() OVER(...) \<= 3 **(Error\!)**
+SELECT ... WHERE RANK() OVER(...) \<= 3 **(Error!)**
 
 Because Window Functions are calculated *after* the WHERE clause, the rank doesn't exist yet when the filter runs. You **must** use a CTE to "freeze" the calculation:
 
 1. **CTE:** Calculate the rank.  
-2. **Outer Query:** Filter where rank\_column \<= 3\.
+2. **Outer Query:** Filter where rank_column \<= 3.
 
-## **3\. Sequential Navigation: Bridging the Row Gap**
+## **3. Sequential Navigation: Bridging the Row Gap**
 
 SQL was originally designed to process "sets" (unordered piles of data). However, time-series data requires processing "sequences" (ordered lines of data).
 
@@ -107,9 +107,9 @@ SQL was originally designed to process "sets" (unordered piles of data). However
 
 ![][image1]**Practical Example: Finding the Delta**
 
-If a student's GPA was 3.5 last semester and is 3.2 this semester, LAG() allows you to subtract the 3.5 from the 3.2 to calculate a \-0.3 delta within a single row.
+If a student's GPA was 3.5 last semester and is 3.2 this semester, LAG() allows you to subtract the 3.5 from the 3.2 to calculate a -0.3 delta within a single row.
 
-## **4\. Recursive CTEs: The Hierarchy Engine**
+## **4. Recursive CTEs: The Hierarchy Engine**
 
 Recursive CTEs are used when data is self-referential, such as a "Reports To" column in an employee table.
 

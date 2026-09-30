@@ -1,6 +1,6 @@
 # Unit 1: Asynchronous Self-Check Drills
 
-Test your knowledge before attending this week's synchronous class session. Try answering these questions on paper or in your terminal before looking at the provided explanations!
+Test your knowledge before beginning this week's applied lab assignment. Try answering these questions in your terminal or on paper before revealing the expandable solutions below!
 
 ---
 

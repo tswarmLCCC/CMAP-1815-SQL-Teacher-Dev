@@ -18,7 +18,7 @@ As an Analytical Engineer, you must transition from being a "Query Writer" to an
 
 In high-scale data environments, you eventually hit a **Physical Ceiling**. Even the most elegant SQL logic can fail if the database engine is forced to work harder than the underlying hardware allows. This is the transition from "Soft" logic to "Hard" engineering.
 
-### **1\. The "Sequential Scan" Death Spiral**
+### **1. The "Sequential Scan" Death Spiral**
 
 **The Problem:** When you query a table without an index, the database engine must perform a **Full Table Scan** (known in PostgreSQL as a Seq Scan).
 
@@ -31,7 +31,7 @@ Imagine you are looking for a specific person, "Zachary Zeller," in a physical t
 
 **The Consequence:** If your table has 100 million rows, a Sequential Scan forces the hard drive to read every single byte of that table from the disk into the RAM. This saturates the **I/O Bandwidth**, essentially "choking" the database. While the engine is busy reading every row for your query, every other user on the system slows down. Eventually, the database hits a "deadlock" or a "timeout," and the application simply crashes.
 
-### **2\. The Freshness vs. Performance Paradox**
+### **2. The Freshness vs. Performance Paradox**
 
 **The Problem:** Analytical queries—the kind used for executive dashboards—often involve joining 10 or more tables and aggregating millions of records. Running this "live" calculation every time a user refreshes their browser is computationally impossible.
 
@@ -39,7 +39,7 @@ Imagine you are looking for a specific person, "Zachary Zeller," in a physical t
 
 **The Solution:** **Materialized Views**. We solve this by "freezing" the result of a query into a physical table on the disk. We intentionally sacrifice "real-time" freshness (the data might be 10 minutes old) in exchange for near-instant retrieval. This is the foundation of **Caching Strategy**.
 
-## **1\. Theoretical Framework: Reading the Engine's Mind**
+## **1. Theoretical Framework: Reading the Engine's Mind**
 
 ### **The EXPLAIN ANALYZE Workflow**
 
@@ -47,7 +47,7 @@ The EXPLAIN command is the "X-ray" of the database world. It reveals the **Execu
 
 * **Nodes:** These are the individual "verbs" of the database engine. You will see things like Hash Join (joining two tables via a hash map), Nested Loop (checking every row of one table against another), and Sort.  
 * **Cost:** This is a unitless number that represents the engine's "effort." A high cost in the top-level node indicates a query that is resource-heavy.  
-* **Width:** This tells you the average size of the rows being processed in bytes. If you see a high width, it usually means you are using SELECT \* and pulling unnecessary columns, which wastes memory.  
+* **Width:** This tells you the average size of the rows being processed in bytes. If you see a high width, it usually means you are using SELECT * and pulling unnecessary columns, which wastes memory.  
 * **Index Cond vs. Filter:** This is the most important distinction. An "Index Cond" means the engine used an index to "teleport" directly to the data. A "Filter" means the engine had to check every row manually and discard the ones that didn't match—this is a major performance red flag and usually indicates a missing index.
 
 ### **Indexing Taxonomy: The Multi-Tool Approach**
@@ -56,7 +56,7 @@ The EXPLAIN command is the "X-ray" of the database world. It reveals the **Execu
 2. **Hash Index:** This is a "one-trick pony." It is mathematically optimized for equality checks (e.g., WHERE id \= 500). It is technically faster than a B-Tree for that specific operation, but it cannot help you find a range of values.  
 3. **GIN (Generalized Inverted Index):** The "Inverted" index. This is essential for **JSONB** and Full-Text Search. A standard index can't see "inside" a JSON object. A GIN index creates a map of every key and value inside the JSON blob, allowing you to search complex, semi-structured data as if it were a flat table.
 
-## **2\. Views and Materialized Views: Caching Strategy**
+## **2. Views and Materialized Views: Caching Strategy**
 
 ### **The Virtual View (Logic Encapsulation)**
 
@@ -71,7 +71,7 @@ A MATERIALIZED VIEW is a query result that is physically written to a new table 
 * **The Trade-off:** Querying it is as fast as querying a simple table. However, the data is **static**. If the underlying tables change, the Materialized View does not update automatically.  
 * **Maintenance:** To synchronize the data, you must run REFRESH MATERIALIZED VIEW. This requires an Analytical Engineer to decide on a "Freshness Policy." Does the CEO need up-to-the-second data, or is a "Snapshot" from 8:00 AM sufficient for the daily briefing?
 
-## **3\. Automation: Triggers as "Silent Guardians"**
+## **3. Automation: Triggers as "Silent Guardians"**
 
 A Trigger is a "Side-Effect" function—code that executes automatically in response to a specific database event (INSERT, UPDATE, or DELETE).
 
@@ -84,37 +84,37 @@ In professional environments, we never trust the "application" to log its own ch
 * OLD: The row as it existed **before** the change.  
 * NEW: The row as it will exist **after** the change.
 
-\-- Step 1: Create the Function  
-CREATE OR REPLACE FUNCTION log\_grade\_audit()   
+-- Step 1: Create the Function  
+CREATE OR REPLACE FUNCTION log_grade_audit()   
 RETURNS TRIGGER AS $$  
 BEGIN  
-    \-- This function captures the state transition  
-    INSERT INTO grade\_audit\_log(  
-        student\_id,   
-        old\_grade,   
-        new\_grade,   
-        changed\_by,   
-        changed\_at  
+    -- This function captures the state transition  
+    INSERT INTO grade_audit_log(  
+        student_id,   
+        old_grade,   
+        new_grade,   
+        changed_by,   
+        changed_at  
     )  
     VALUES (  
-        OLD.student\_id,   
+        OLD.student_id,   
         OLD.grade,   
         NEW.grade,   
-        current\_user,   
+        current_user,   
         NOW()  
     );  
-    \-- We must return NEW to allow the original update to finish  
+    -- We must return NEW to allow the original update to finish  
     RETURN NEW;  
 END;  
 $$ LANGUAGE plpgsql;
 
-\-- Step 2: Bind the Trigger to the Table  
-CREATE TRIGGER trg\_grade\_audit  
-AFTER UPDATE ON student\_grades  
+-- Step 2: Bind the Trigger to the Table  
+CREATE TRIGGER trg_grade_audit  
+AFTER UPDATE ON student_grades  
 FOR EACH ROW  
-EXECUTE FUNCTION log\_grade\_audit();
+EXECUTE FUNCTION log_grade_audit();
 
-## **4\. Implementation: The LCCC Analytical Engine**
+## **4. Implementation: The LCCC Analytical Engine**
 
 ### **Capstone Scenario: The "Career Portal" Recovery**
 
@@ -122,16 +122,16 @@ The "LCCC Career Portal" database is grinding to a halt. The "Job Search" featur
 
 **The Task:**
 
-1. **Diagnose:** Use EXPLAIN ANALYZE to locate the "Sequential Scan" causing the 15-second delay. You will likely find the engine is reading the entire job\_listings table twice per search.  
-2. **Optimize:** Implement a **B-Tree index** on the job\_title to speed up text matches and a **GIN index** on the metadata JSONB column to allow instant searching of specific job requirements.  
+1. **Diagnose:** Use EXPLAIN ANALYZE to locate the "Sequential Scan" causing the 15-second delay. You will likely find the engine is reading the entire job_listings table twice per search.  
+2. **Optimize:** Implement a **B-Tree index** on the job_title to speed up text matches and a **GIN index** on the metadata JSONB column to allow instant searching of specific job requirements.  
 3. **Cache:** Build a **Materialized View** for the "Regional Hiring Dashboard." This report joins 8 tables and summarizes millions of data points; it should load in under 100 milliseconds using the cached snapshot.  
 4. **Automate:** Construct a **Trigger** that automatically archives any deleted or updated job application. This creates a "Bitemporal Audit Trail," ensuring that no piece of data is ever truly lost.
 
 ## **Student Exercises**
 
-1. **The Index Race:** Take a complex query from Unit 6\. Run it with EXPLAIN ANALYZE and record the "Execution Time." Apply a B-Tree index to the column used in your JOIN or WHERE clause and run it again. Report the performance gain as a percentage.  
+1. **The Index Race:** Take a complex query from Unit 6. Run it with EXPLAIN ANALYZE and record the "Execution Time." Apply a B-Tree index to the column used in your JOIN or WHERE clause and run it again. Report the performance gain as a percentage.  
 2. **JSONB Search & Destroy:** Create a table with a JSONB column containing 10,000 rows of mock data. Perform a search for a specific nested key (e.g., WHERE metadata-\>\>'remote' \= 'true'). Observe the Seq Scan. Apply a GIN index and observe the engine switch to an Index Scan.  
-3. **The Immutable Auditor:** Build a trigger that prevents a record from being deleted from the scholarships table. Instead of deleting the record, the trigger should move the record to an audit\_archive table and then "cancel" the original deletion.
+3. **The Immutable Auditor:** Build a trigger that prevents a record from being deleted from the scholarships table. Instead of deleting the record, the trigger should move the record to an audit_archive table and then "cancel" the original deletion.
 
 ## **Instructor Unit Notes**
 

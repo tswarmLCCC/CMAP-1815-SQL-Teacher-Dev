@@ -37,10 +37,24 @@ Unit 1
         -- and a calculated column retail_price - cost_to_produce aliased as estimated_unit_profit.
         -- Sort so the most profitable products appear first.
 
-        what's the point of the Self-Paced Applied Coding Challenges?  I love that format and that students can copy paste the instructions, but why not just tie it to what they do for that first part.  Let's combine these into one activity.
+        what's the point of the Self-Paced Applied Coding Challenges?  Let's have that second, copy/paste version be the lab they turn in for the grade.  The first part, let's repurpose those as the lecture walkthroughs demonstrating these sorts of queries, so put it in the instrutctor video guide part to do that and rewrite this activity as a follow along and write the query first on your own and then see how the instructor does it type of activity - gradual release of responsibility.
 
         100 points on the rubric, but you made it a 50 point assignment - pick one
 
+Unit 2
+    Unit Overview - 
+
+    Required Readings, Concepts & Video Lectures -
+        same problem with escape characters
+
+    Asynchronous Preparation & Drills
+
+    Applied SQL Lab Guide
+
+    Applied SQL Lab Assignment
+
+    Learn with AI — Supplemental Practice Drill
+    
 Unit 3
     Unit Overview - 
 
