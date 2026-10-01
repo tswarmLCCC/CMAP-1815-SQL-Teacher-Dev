@@ -86,7 +86,9 @@ Real-world filtering criteria rarely consist of a single comparison. We combine 
 
 ##### **The Operator Precedence Trap: AND Before OR**
 One of the most dangerous bugs in enterprise SQL occurs when mixing `AND` and `OR` without explicit grouping. In standard SQL operator precedence:
-$$\mathbf{NOT} \succ \mathbf{AND} \succ \mathbf{OR}$$
+<div style="background: #f1f5f9; border-left: 4px solid #1e3a8a; padding: 0.75rem 1.25rem; margin: 1rem 0; font-size: 1.05em; font-weight: 700; color: #1e3a8a;">
+  Standard Operator Precedence: &nbsp; NOT &nbsp;&gt;&nbsp; AND &nbsp;&gt;&nbsp; OR
+</div>
 
 The database evaluates all `AND` conditions **before** it evaluates `OR` conditions. Consider the following query intended to find active employees in either Cheyenne or Laramie:
 
@@ -98,7 +100,9 @@ WHERE city = 'Cheyenne' OR city = 'Laramie' AND is_active = TRUE;
 ```
 
 Because `AND` binds more tightly than `OR`, the database interprets this query as:
-$$\text{city = 'Cheyenne'} \quad\mathbf{OR}\quad (\text{city = 'Laramie'} \;\mathbf{AND}\; \text{is\_active = TRUE})$$
+<div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 4px; padding: 0.5rem 1rem; margin: 0.5rem 0; font-family: Consolas, monospace; font-size: 0.95em; color: #b91c1c;">
+  city = 'Cheyenne' OR (city = 'Laramie' AND is_active = TRUE)
+</div>
 
 As a result, **every single employee living in Cheyenne will be returned**, even if they were terminated five years ago (`is_active = FALSE`)! To enforce correct business logic, you must wrap disjunctions in parentheses:
 
@@ -200,9 +204,11 @@ WHERE commission_pct IS NOT NULL;
 ```
 
 ##### **The Propagation of NULL in Arithmetic**
-When performing arithmetic, `NULL` is infectious: any mathematical operation involving `NULL` yields `NULL`:
-$$5 + \text{NULL} = \text{NULL}$$
-$$100 \times \text{NULL} = \text{NULL}$$
+When performing arithmetic, `NULL` is infectious: any mathematical operation involving `NULL` yields `NULL`. In SQL:
+
+* `5 + NULL` &rarr; `NULL`
+* `100 * NULL` &rarr; `NULL`
+* `NULL = NULL` &rarr; `UNKNOWN` *(never TRUE!)*
 
 If an employee earns a base salary of $60,000 and has a `NULL` bonus, calculating `salary + bonus` produces `NULL` rather than $60,000! To handle missing values gracefully, PostgreSQL provides the `COALESCE` function, which returns the first non-null argument in its list:
 
@@ -250,7 +256,7 @@ WHERE category NOT IN ('Discontinued', 'Seasonal');
 
 ##### **2. The BETWEEN Operator (Continuous Ranges)**
 The `BETWEEN` operator filters values within an **inclusive** range:
-$$\text{val BETWEEN low AND high} \iff \text{val} \ge \text{low} \;\mathbf{AND}\; \text{val} \le \text{high}$$
+* `val BETWEEN low AND high` is logically identical to `(val >= low AND val <= high)`.
 
 ```sql
 SELECT employee_id, first_name, last_name, salary

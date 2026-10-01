@@ -102,7 +102,7 @@ WHERE retail_price BETWEEN 50.00 AND 100.00;
 <summary><b>Click to View Solution & Explanation</b></summary>
 
 **Result:** **Yes.**  
-**Reason:** The `BETWEEN` operator in SQL is strictly **inclusive** of both boundary values ($50.00 \le \text{price} \le 100.00$). Both 50.00 and 100.00 will match.
+**Reason:** The `BETWEEN` operator in SQL is strictly **inclusive** of both boundary values (`$50.00 <= price <= $100.00`). Both 50.00 and 100.00 will match.
 </details>
 
 ---

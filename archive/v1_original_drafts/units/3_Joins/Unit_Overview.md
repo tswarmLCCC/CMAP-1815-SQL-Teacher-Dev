@@ -102,7 +102,7 @@ Before the "Zipper" even starts, you must understand the **Cartesian Product**. 
 
 The ON clause acts as the physical alignment mechanism—the "teeth" of the zipper.
 
-* **The Condition:** When you write ON A.student_id \= B.student_id, you are providing a **Predicate**.  
+* **The Condition:** When you write `ON A.student_id = B.student_id`, you are providing a **Predicate**.  
 * **The Alignment:** The engine scans the Foreign Key in Table B and tries to find a perfect match in the Primary Key of Table A. If the "teeth" don't match exactly (e.g., ID 101 looking for ID 102), the zipper skips that row.
 
 ##### **3. Horizontal Concatenation: Extending the Record**
@@ -153,9 +153,11 @@ The INNER JOIN only returns rows where the "teeth" of the zipper match perfectly
 
 * **Effect:** Charlie is dropped (no grade), and Score 70 is dropped (no student).
 
+```sql
 SELECT s.name, g.score  
 FROM Students AS s  
-INNER JOIN Grades AS g ON s.id \= g.student_id;
+INNER JOIN Grades AS g ON s.id = g.student_id;
+```
 
 **Result:**
 
@@ -170,9 +172,11 @@ The LEFT JOIN returns everything from the table mentioned first (Students), rega
 
 * **Effect:** Charlie is kept. Since he has no score, the database fills that gap with NULL. Score 70 is dropped.
 
+```sql
 SELECT s.name, g.score  
 FROM Students AS s  
-LEFT JOIN Grades AS g ON s.id \= g.student_id;
+LEFT JOIN Grades AS g ON s.id = g.student_id;
+```
 
 **Result:**
 
@@ -188,9 +192,11 @@ The RIGHT JOIN returns everything from the second table (Grades), regardless of 
 
 * **Effect:** Score 70 is kept. Since it has no student name, the name column is NULL. Charlie is dropped.
 
+```sql
 SELECT s.name, g.score  
 FROM Students AS s  
-RIGHT JOIN Grades AS g ON s.id \= g.student_id;
+RIGHT JOIN Grades AS g ON s.id = g.student_id;
+```
 
 **Result:**
 
@@ -206,9 +212,11 @@ The FULL OUTER JOIN returns every row from both tables, "zipping" them where pos
 
 * **Effect:** Everyone is kept. Charlie has a NULL score, and Score 70 has a NULL name.
 
+```sql
 SELECT s.name, g.score  
 FROM Students AS s  
-FULL OUTER JOIN Grades AS g ON s.id \= g.student_id;
+FULL OUTER JOIN Grades AS g ON s.id = g.student_id;
+```
 
 **Result:**
 
@@ -229,7 +237,7 @@ In the examples above, we used AS s and AS g. These are **Table Aliases**. When 
 
 1. **The Enrollment Audit:** Use a LEFT JOIN to connect students to enrollment. Filter to show only students where the course_id is NULL.  
 2. **The Academic Advisor Lookup:** Perform a **Self-Join** on the staff table. Display staff_name and their supervisor_name. Use aliases like AS subordinate and AS manager.  
-3. **The Revenue Risk Report:** Join Profiles, Enrollment, and Financials. Find students enrolled in \> 12 credits but with an account_balance \> $5,000.  
+3. **The Revenue Risk Report:** Join Profiles, Enrollment, and Financials. Find students enrolled in > 12 credits but with an account_balance > $5,000.  
 4. **The 5-Table Synthesis:** Connect Profiles, Financials, Courses, Enrollment, and Grades. Generate a report showing Student Name, Major, Course Name, Grade, and Balance.
 
 ### **6. Frequently Asked Questions & Common Pitfalls**

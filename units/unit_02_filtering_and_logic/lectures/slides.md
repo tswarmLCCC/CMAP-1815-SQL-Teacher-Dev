@@ -75,7 +75,7 @@ WHERE retail_price >= 100.00;
 | `<>`, `!=` | Not equal to | `WHERE is_active != FALSE` |
 | `>`, `<` | Greater than / Less than | `WHERE salary > 75000` |
 | `>=`, `<=` | Greater/Less than or equal | `WHERE stock_quantity <= 10` |
-| `BETWEEN` | Inclusive range ($A \le x \le B$) | `WHERE retail_price BETWEEN 20 AND 50` |
+| `BETWEEN` | Inclusive range (A <= x <= B) | `WHERE retail_price BETWEEN 20 AND 50` |
 
 ---
 

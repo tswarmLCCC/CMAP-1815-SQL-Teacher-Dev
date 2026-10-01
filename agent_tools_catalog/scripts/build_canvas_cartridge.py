@@ -8,6 +8,9 @@ import shutil
 import datetime
 import xml.etree.ElementTree as ET
 
+sys.stdout.reconfigure(line_buffering=True)
+sys.stderr.reconfigure(line_buffering=True)
+
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 UNITS_DIR = os.path.join(BASE_DIR, "units")
 COURSE_SPECS_DIR = os.path.join(BASE_DIR, "course_specs")
@@ -481,7 +484,12 @@ def load_and_clean_unit_overview(unit_num: int) -> str:
 def format_inline(s: str) -> str:
     """Formats inline markdown syntax to HTML."""
     s = re.sub(r'\\([*_#!\\[\\]\.\-+=\<\>~|`])', r'\1', s)
-    s = re.sub(r'`([^`]+)`', r'<code style="background: #f1f5f9; color: #0369a1; padding: 0.15rem 0.35rem; border-radius: 3px; font-size: 0.9em; font-family: Consolas, monospace; font-weight: 600;">\1</code>', s)
+
+    def replace_inline_code(match):
+        code_text = html.escape(match.group(1))
+        return f'<code style="background: #f1f5f9; color: #0369a1; padding: 0.15rem 0.35rem; border-radius: 3px; font-size: 0.9em; font-family: Consolas, monospace; font-weight: 600;">{code_text}</code>'
+
+    s = re.sub(r'`([^`]+)`', replace_inline_code, s)
     s = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', s)
     s = re.sub(r'(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)', r'<em>\1</em>', s)
     s = s.replace(r'$\rightarrow$', '&rarr;')
