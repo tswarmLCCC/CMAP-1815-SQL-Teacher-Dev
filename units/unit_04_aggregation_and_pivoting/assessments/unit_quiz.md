@@ -95,10 +95,10 @@ GROUP BY department
 HAVING COUNT(*) >= 5;
 ```
 In what sequence does PostgreSQL process these operations?
-* A) `FROM` $\rightarrow$ `SELECT` $\rightarrow$ `WHERE` $\rightarrow$ `GROUP BY` $\rightarrow$ `HAVING`
-* B) `FROM` $\rightarrow$ `WHERE` $\rightarrow$ `GROUP BY` $\rightarrow$ `HAVING` $\rightarrow$ `SELECT`
-* C) `FROM` $\rightarrow$ `GROUP BY` $\rightarrow$ `HAVING` $\rightarrow$ `WHERE` $\rightarrow$ `SELECT`
-* D) `SELECT` $\rightarrow$ `FROM` $\rightarrow$ `WHERE` $\rightarrow$ `GROUP BY` $\rightarrow$ `HAVING`
+* A) `FROM` → `SELECT` → `WHERE` → `GROUP BY` → `HAVING`
+* B) `FROM` → `WHERE` → `GROUP BY` → `HAVING` → `SELECT`
+* C) `FROM` → `GROUP BY` → `HAVING` → `WHERE` → `SELECT`
+* D) `SELECT` → `FROM` → `WHERE` → `GROUP BY` → `HAVING`
 
 ---
 
@@ -200,11 +200,11 @@ Will the 'Research' department appear in the final result?
 | **5** | **A** | `WHERE` operates on individual rows *before* aggregation. `HAVING` operates on aggregated metric buckets *after* grouping has collapsed the rows. |
 | **6** | **B** | PostgreSQL enforces strict aggregation semantics: because `job_title` is not in an aggregate function or in `GROUP BY`, the engine rejects the query. |
 | **7** | **B** | `COUNT(*)` returns all 100 rows. `COUNT(ship_date)` ignores the 10 `NULL`s and returns 90. |
-| **8** | **B** | Correct execution sequence: `FROM` $\rightarrow$ `WHERE` $\rightarrow$ `GROUP BY` $\rightarrow$ `HAVING` $\rightarrow$ `SELECT`. |
+| **8** | **B** | Correct execution sequence: `FROM` → `WHERE` → `GROUP BY` → `HAVING` → `SELECT`. |
 | **9** | **B** | `UNION` incurs an expensive sort and duplicate removal pass. If duplicates are impossible or acceptable, `UNION ALL` provides superior performance. |
 | **10** | **A** | When the condition is false, `CASE` defaults to `NULL` (since no `ELSE` is specified). `COUNT` ignores `NULL`s, counting only true occurrences. |
 | **11** | **B** | `AVG` ignores `NULL` values in both numerator and denominator: (100 + 200 + 300) / 3 = 200. |
-| **12** | **C** | `EXCEPT` returns items in Query 1 that do NOT appear in Query 2. `{1, 2, 3, 4} \ {3, 4, 5, 6} = {1, 2}`. |
+| **12** | **C** | `EXCEPT` returns items in Query 1 that do NOT appear in Query 2: {1, 2, 3, 4} - {3, 4, 5, 6} = {1, 2}. |
 | **13** | **B** | `INTERSECT` returns the mathematical intersection (elements common to both sets): `{20, 30}`. |
 | **14** | **A** | Placing a `CASE` statement inside `SUM` adds `sales` when the condition is met and `0` otherwise, cleanly aggregating category revenue. |
 | **15** | **A** | `WHERE is_active = TRUE` discards the inactive employee first. The surviving active payroll ($110k + $110k = $220k) passes the `HAVING` check ($220k > $200k). |

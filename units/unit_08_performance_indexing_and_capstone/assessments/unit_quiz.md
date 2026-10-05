@@ -156,10 +156,10 @@ Which view in PostgreSQL allows a database administrator to inspect how many tim
 
 ### Question 15
 In the context of the Course Capstone, which sequence represents the professional lifecycle of relational database development?
-* A) Write queries $\rightarrow$ Guess indexes $\rightarrow$ Build tables $\rightarrow$ Normalize data
-* B) Domain modeling & 3NF Normalization $\rightarrow$ DDL Schema with declarative constraints $\rightarrow$ Data Ingestion & Staging $\rightarrow$ Analytical Reporting (CTEs/Windows) $\rightarrow$ Profiling (`EXPLAIN`) & Index Tuning
-* C) Load raw data into production $\rightarrow$ Add constraints later $\rightarrow$ Drop primary keys $\rightarrow$ Run `SELECT *`
-* D) Build frontend $\rightarrow$ Let the ORM generate random tables $\rightarrow$ Never optimize
+* A) Write queries → Guess indexes → Build tables → Normalize data
+* B) Domain modeling & 3NF Normalization → DDL Schema with declarative constraints → Data Ingestion & Staging → Analytical Reporting (CTEs/Windows) → Profiling (`EXPLAIN`) & Index Tuning
+* C) Load raw data into production → Add constraints later → Drop primary keys → Run `SELECT *`
+* D) Build frontend → Let the ORM generate random tables → Never optimize
 
 ---
 
@@ -171,7 +171,7 @@ In the context of the Course Capstone, which sequence represents the professiona
 | **2** | **B** | A Sequential Scan inspects every disk page and tuple in the table heap sequentially from start to finish. |
 | **3** | **B** | When a table fits in a couple of pages or a query fetches a massive percentage of rows, sequential I/O is faster than index pointer lookups. |
 | **4** | **B** | The Write Penalty is the cumulative performance hit on mutating queries (`INSERT`, `UPDATE`, `DELETE`) caused by maintaining multiple index structures. |
-| **5** | **B** | The default index type in PostgreSQL is the Balanced Tree (B-Tree), providing $O(\log N)$ search complexity for equality and range queries. |
+| **5** | **B** | The default index type in PostgreSQL is the Balanced Tree (B-Tree), providing O(log N) search complexity for equality and range queries. |
 | **6** | **B** | B-Tree composite indexes require filtering on the leading column (`department`) to navigate the tree structure effectively. |
 | **7** | **B** | Without a predicate on the leading column (`department`), the optimizer cannot traverse the hierarchical branches of the composite B-Tree. |
 | **8** | **B** | A Partial Index includes a `WHERE` predicate, indexing only rows meeting the criteria, saving disk storage and write overhead. |

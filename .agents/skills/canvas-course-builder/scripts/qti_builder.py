@@ -88,6 +88,9 @@ def parse_quiz_md(filepath: str) -> List[Dict]:
             options = []
 
         correct_ans, rationale = key_map.get(q_num, ("A", ""))
+        prompt = clean_quiz_text(prompt)
+        options = [(opt_letter, clean_quiz_text(opt_text)) for opt_letter, opt_text in options]
+        rationale = clean_quiz_text(rationale)
         questions.append({
             "num": q_num,
             "prompt": prompt,
@@ -99,48 +102,141 @@ def parse_quiz_md(filepath: str) -> List[Dict]:
     return questions
 
 
+def clean_quiz_text(s: str) -> str:
+    """Cleans up escape characters, LaTeX arrows, and markdown escapes in quiz text."""
+    if not s:
+        return ""
+    # LaTeX arrows and math symbols
+    s = s.replace(r'$\rightarrow$', '→').replace(r'\rightarrow', '→')
+    s = s.replace(r'\|\|', '||')
+    s = s.replace(r'$A \le x \le B$', 'A <= x <= B').replace(r'\le', '<=')
+    s = s.replace(r'$M \times N$', 'M × N').replace(r'\times', '×')
+    s = s.replace(r'$4 \times 5 = 20$', '4 × 5 = 20')
+    s = s.replace(r'\{1, 2, 3, 4\} \ \{3, 4, 5, 6\} = \{1, 2\}', '{1, 2, 3, 4} - {3, 4, 5, 6} = {1, 2}')
+    s = s.replace(r'$X \rightarrow Y \rightarrow Z$', 'X → Y → Z')
+    s = s.replace(r'$O(\log N)$', 'O(log N)').replace(r'\log', 'log')
+    # Strip backslashes before special characters
+    s = re.sub(r'\\([*_#!\\[\\]\.\-+=\<\>~|`])', r'\1', s)
+    return s
+
+
+def format_quiz_prompt_html(prompt: str) -> str:
+    """Formats markdown quiz prompt into clean, DesignPLUS-compatible HTML."""
+    prompt = clean_quiz_text(prompt)
+
+    # 1. Code blocks ```sql ... ``` or ``` ... ```
+    def replace_code_block(match):
+        code_content = match.group(2).strip()
+        escaped_code = html.escape(code_content)
+        return f'<div style="background: #0f172a; color: #f8fafc; padding: 0.75rem 1rem; border-radius: 4px; font-family: Consolas, Monaco, monospace; font-size: 0.9em; line-height: 1.45; margin: 0.75rem 0; overflow-x: auto;"><pre style="margin: 0; background: transparent; color: inherit; font-family: inherit;"><code>{escaped_code}</code></pre></div>'
+
+    prompt = re.sub(r'```([a-zA-Z0-9_-]*)\n(.*?)```', replace_code_block, prompt, flags=re.DOTALL)
+
+    # 2. Markdown tables
+    def replace_table(match):
+        table_text = match.group(0).strip()
+        lines = [line.strip() for line in table_text.splitlines() if line.strip()]
+        if len(lines) < 2:
+            return table_text
+        
+        headers = [c.strip() for c in lines[0].split('|')[1:-1]]
+        data_rows = []
+        for line in lines[2:]:
+            if line.startswith('|'):
+                data_rows.append([c.strip() for c in line.split('|')[1:-1]])
+        
+        th_html = "".join(f'<th style="border: 1px solid #cbd5e1; padding: 6px 12px; background: #1e3a8a; color: #ffffff; text-align: left; font-size: 0.9em;">{html.escape(h)}</th>' for h in headers)
+        tr_rows = []
+        for row_idx, row in enumerate(data_rows):
+            bg = "#f8fafc" if row_idx % 2 == 1 else "#ffffff"
+            tds = "".join(f'<td style="border: 1px solid #cbd5e1; padding: 6px 12px; background: {bg}; font-size: 0.9em;">{html.escape(c)}</td>' for c in row)
+            tr_rows.append(f'<tr>{tds}</tr>')
+        
+        return f'<table style="border-collapse: collapse; margin: 0.75rem 0; width: auto; font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;"><thead><tr>{th_html}</tr></thead><tbody>{"".join(tr_rows)}</tbody></table>'
+
+    table_pattern = re.compile(r'(?:^[ \t]*\|.+?\|[ \t]*\n)+(?:^[ \t]*\|[-: |]+\|[ \t]*\n)(?:^[ \t]*\|.+?\|[ \t]*\n*)+', re.MULTILINE)
+    prompt = table_pattern.sub(replace_table, prompt)
+
+    # 3. Inline code
+    def replace_inline_code(match):
+        code_text = html.escape(match.group(1))
+        return f'<code style="background: #f1f5f9; color: #0369a1; padding: 0.15rem 0.35rem; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.9em; font-weight: 600;">{code_text}</code>'
+
+    prompt = re.sub(r'`([^`\n]+)`', replace_inline_code, prompt)
+
+    # 4. Bold and italics
+    prompt = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', prompt)
+    prompt = re.sub(r'(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)', r'<em>\1</em>', prompt)
+
+    # 5. Convert paragraphs and line breaks
+    blocks = re.split(r'\n{2,}', prompt.strip())
+    html_blocks = []
+    for b in blocks:
+        b = b.strip()
+        if not b:
+            continue
+        if b.startswith('<div') or b.startswith('<table') or b.startswith('<pre'):
+            html_blocks.append(b)
+        else:
+            b_clean = b.replace('\n', '<br/>')
+            html_blocks.append(f'<p style="margin: 0.5rem 0; line-height: 1.6;">{b_clean}</p>')
+
+    return f'<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, sans-serif; font-size: 1rem; line-height: 1.6; color: #1e293b;">{"".join(html_blocks)}</div>'
+
+
 def build_qti_xml(quiz_id: str, quiz_title: str, questions: List[Dict], max_attempts: int = 3) -> str:
-    """Generates standard QTI 1.2 XML matching the exact Canvas Common Cartridge profile."""
+    """Generates standard QTI 1.2 XML matching the exact Canvas Multiple Choice profile."""
     items_xml = []
     for q in questions:
         q_num = q["num"]
         item_id = make_canvas_id(f"{quiz_id}_q_{q_num}")
 
         opt_labels = []
-        cond_elements = []
+        correct_opt_id = None
         for opt_letter, opt_text in q["options"]:
             opt_id = make_canvas_id(f"{item_id}_opt_{opt_letter}")
+            clean_text = clean_quiz_text(opt_text)
             opt_labels.append(f"""              <response_label ident="{opt_id}">
                 <material>
-                  <mattext texttype="text/plain">{html.escape(opt_text)}</mattext>
+                  <mattext texttype="text/plain">{html.escape(clean_text)}</mattext>
                 </material>
               </response_label>""")
 
             if opt_letter == q["correct_answer"]:
-                cond_elements.append(f"""                <varequal respident="response1">{opt_id}</varequal>""")
-            else:
-                cond_elements.append(f"""                <not>
-                  <varequal respident="response1">{opt_id}</varequal>
-                </not>""")
+                correct_opt_id = opt_id
+
+        if not correct_opt_id:
+            correct_opt_id = make_canvas_id(f"{item_id}_opt_A")
 
         options_block = "\n".join(opt_labels)
-        condition_block = "\n".join(cond_elements)
-        prompt_clean = html.escape(q["prompt"]).replace("\n", "<br/>")
+        prompt_html = format_quiz_prompt_html(q["prompt"])
 
         items_xml.append(f"""      <item ident="{item_id}" title="Question {q_num}">
         <itemmetadata>
           <qtimetadata>
             <qtimetadatafield>
+              <fieldlabel>question_type</fieldlabel>
+              <fieldentry>multiple_choice_question</fieldentry>
+            </qtimetadatafield>
+            <qtimetadatafield>
+              <fieldlabel>points_possible</fieldlabel>
+              <fieldentry>2.0</fieldentry>
+            </qtimetadatafield>
+            <qtimetadatafield>
+              <fieldlabel>assessment_question_identifierref</fieldlabel>
+              <fieldentry>{item_id}</fieldentry>
+            </qtimetadatafield>
+            <qtimetadatafield>
               <fieldlabel>cc_profile</fieldlabel>
-              <fieldentry>cc.multiple_response.v0p1</fieldentry>
+              <fieldentry>cc.multiple_choice.v0p1</fieldentry>
             </qtimetadatafield>
           </qtimetadata>
         </itemmetadata>
         <presentation>
           <material>
-            <mattext texttype="text/html">&lt;div&gt;{prompt_clean}&lt;/div&gt;</mattext>
+            <mattext texttype="text/html">{html.escape(prompt_html)}</mattext>
           </material>
-          <response_lid ident="response1" rcardinality="Multiple">
+          <response_lid ident="response1" rcardinality="Single">
             <render_choice>
 {options_block}
             </render_choice>
@@ -152,9 +248,7 @@ def build_qti_xml(quiz_id: str, quiz_title: str, questions: List[Dict], max_atte
           </outcomes>
           <respcondition continue="No">
             <conditionvar>
-              <and>
-{condition_block}
-              </and>
+              <varequal respident="response1">{correct_opt_id}</varequal>
             </conditionvar>
             <setvar action="Set" varname="SCORE">100</setvar>
           </respcondition>

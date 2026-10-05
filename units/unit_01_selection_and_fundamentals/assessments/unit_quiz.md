@@ -35,10 +35,10 @@ SELECT first_name, salary
 FROM employees 
 ORDER BY salary DESC;
 ```
-* A) `SELECT` $\rightarrow$ `FROM` $\rightarrow$ `ORDER BY`
-* B) `FROM` $\rightarrow$ `ORDER BY` $\rightarrow$ `SELECT`
-* C) `FROM` $\rightarrow$ `SELECT` $\rightarrow$ `ORDER BY`
-* D) `ORDER BY` $\rightarrow$ `FROM` $\rightarrow$ `SELECT`
+* A) `SELECT` → `FROM` → `ORDER BY`
+* B) `FROM` → `ORDER BY` → `SELECT`
+* C) `FROM` → `SELECT` → `ORDER BY`
+* D) `ORDER BY` → `FROM` → `SELECT`
 
 ---
 
@@ -209,7 +209,7 @@ How does PostgreSQL order the rows?
 | **5** | **C** | `SELECT` statements are strictly read-only. Data on disk is never altered by a projection or calculation. |
 | **6** | **B** | A trailing comma after the final column signals to the parser that another expression is expected. Hitting `FROM` instead creates a syntax error. |
 | **7** | **A** | The standard keyword `AS` followed by an unquoted or double-quoted identifier is the ANSI/PostgreSQL syntax for column aliases. |
-| **8** | **C** | In PostgreSQL and ANSI SQL, string concatenation is performed using the double-pipe operator `\|\|`. (In SQL Server `+` is used, but in Postgres `+` is strictly mathematical addition). |
+| **8** | **C** | In PostgreSQL and ANSI SQL, string concatenation is performed using the double-pipe operator `||`. (In SQL Server `+` is used, but in Postgres `+` is strictly mathematical addition). |
 | **9** | **B** | `SELECT *` creates bandwidth bottlenecks, risks accidental leakage of confidential columns, and causes client code to fail if columns are reordered or added. |
 | **10** | **B** | Semicolons terminate SQL commands. Without one, `psql` prompts `mydb-#` indicating a multi-line continuation prompt. |
 | **11** | **C** | The unique states in the table are `WY`, `CO`, and `KS` (3 distinct values). |

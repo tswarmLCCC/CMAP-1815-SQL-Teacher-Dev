@@ -84,9 +84,9 @@ Controls Canvas SpeedGrader settings:
 
 ## 5. QTI 1.2 Quiz Profile for Canvas
 
-Canvas imports multiple-choice questions cleanly when formatted under the `cc.multiple_response.v0p1` profile with single correct answers:
+Canvas imports multiple-choice questions cleanly when formatted under the `cc.multiple_choice.v0p1` profile with single correct answers:
 - Prompt wrapped in `<mattext texttype="text/html">&lt;div&gt;Prompt...&lt;/div&gt;</mattext>`.
-- Choices wrapped in `<response_label>` with `<varequal>` scoring conditions.
+- Choices wrapped in `<response_label>` with Single cardinality and direct `<varequal>` scoring conditions.
 - Maximum attempts and scoring policy set in `assessment_meta.xml`:
   ```xml
   <allowed_attempts>3</allowed_attempts>

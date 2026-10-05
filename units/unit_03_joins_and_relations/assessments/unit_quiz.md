@@ -237,7 +237,7 @@ What will appear at the very top of the query output?
 | :---: | :---: | :--- |
 | **1** | **B** | Foreign Keys enforce referential integrity, ensuring child table records accurately reference existing parent table Primary Keys. |
 | **2** | **B** | An `INNER JOIN` evaluates the `ON` condition and includes only rows where matching values exist in both tables. |
-| **3** | **A** | A Cartesian product (CROSS JOIN) pairs every row of Table A with every row of Table B ($M \times N$ rows). |
+| **3** | **A** | A Cartesian product (CROSS JOIN) pairs every row of Table A with every row of Table B (M × N rows). |
 | **4** | **B** | `LEFT JOIN` preserves all left-table master records (e.g. all customers), even if they have zero activity in the child table, preventing silent record loss. |
 | **5** | **B** | The Anti-Join pattern uses `LEFT JOIN ... WHERE right.pk IS NULL` to isolate orphaned or inactive records. |
 | **6** | **B** | When the same column name appears in multiple joined tables, PostgreSQL requires an explicit table alias prefix (`e.department` vs. `d.department`) to disambiguate. |
@@ -248,5 +248,5 @@ What will appear at the very top of the query output?
 | **11** | **B** | Alice (10), Bob (10), and Charlie (20) match. David has `dept_id = NULL` and Finance has no staff, so only 3 rows match. |
 | **12** | **A** | `LEFT JOIN` preserves all 4 employees: Alice, Bob, Charlie, and David (with `dept_name = NULL`). |
 | **13** | **B** | This Anti-Join finds departments with zero employees. Only Finance (dept 30) has no staff assigned (1 row). |
-| **14** | **B** | A comma join with no `WHERE` condition produces a Cartesian product ($4 \times 5 = 20$ rows). |
+| **14** | **B** | A comma join with no `WHERE` condition produces a Cartesian product (4 × 5 = 20 rows). |
 | **15** | **B** | `ORDER BY ... NULLS FIRST` places all `NULL` values at the beginning of the result set, surfacing unsold products first. |

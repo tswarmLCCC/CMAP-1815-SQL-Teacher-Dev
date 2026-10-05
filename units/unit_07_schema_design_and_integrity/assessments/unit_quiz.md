@@ -30,7 +30,7 @@ What is a **Partial Functional Dependency**, and which Normal Form explicitly pr
 
 ### Question 3
 What is a **Transitive Dependency**, and which Normal Form explicitly eliminates it?
-* A) An attribute depends on the primary key via another non-key attribute ($X \rightarrow Y \rightarrow Z$); eliminated by 3NF.
+* A) An attribute depends on the primary key via another non-key attribute (X → Y → Z); eliminated by 3NF.
 * B) An attribute depends on multiple parent tables simultaneously; eliminated by 1NF.
 * C) A table contains both uppercase and lowercase column names; eliminated by 2NF.
 * D) A foreign key uses `ON DELETE CASCADE`; eliminated by 4NF.

@@ -213,9 +213,9 @@ If an employee named Waldo works in `Research` with a salary of `$45,000`, will 
 | **2** | **B** | In SQL's Three-Valued Logic, comparing an unknown value using `=` produces `UNKNOWN`. Rows only pass a `WHERE` filter when the test evaluates to `TRUE`. `IS NULL` must be used instead. |
 | **3** | **B** | Under short-circuit boolean logic, `FALSE AND <anything>` is conclusively `FALSE`, because both operands must be true for `AND` to succeed. |
 | **4** | **A** | Conjunction (`AND`) has higher algebraic operator precedence than disjunction (`OR`), mirroring mathematical multiplication over addition. |
-| **5** | **B** | Logical execution order: `FROM` $\rightarrow$ `WHERE` $\rightarrow$ `SELECT`. The alias is assigned during the `SELECT` phase and is unknown during `WHERE`. |
+| **5** | **B** | Logical execution order: `FROM` → `WHERE` → `SELECT`. The alias is assigned during the `SELECT` phase and is unknown during `WHERE`. |
 | **6** | **A** | In SQL standard and PostgreSQL, double quotes `"..."` denote database object identifiers (tables/columns). String literals must use single quotes `'...'`. |
-| **7** | **B** | `BETWEEN` provides inclusive range filtering ($A \le x \le B$). Option D is exclusive ($>$ and $<$). |
+| **7** | **B** | `BETWEEN` provides inclusive range filtering (A <= x <= B). Option D is exclusive (> and <). |
 | **8** | **C** | The underscore `_` matches exactly one character. The percent sign `%` matches zero or more characters. |
 | **9** | **B** | `ILIKE` is PostgreSQL's case-insensitive pattern matching operator. `LIKE` is strictly case-sensitive. |
 | **10** | **A** | Page 1: `OFFSET 0` (rows 1–10). Page 2: `OFFSET 10` (rows 11–20). Page 3: `LIMIT 10 OFFSET 20` (rows 21–30). |
