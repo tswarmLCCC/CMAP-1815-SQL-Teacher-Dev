@@ -837,14 +837,26 @@ def parse_quiz_md(filepath):
         q_num = int(q_blocks[i])
         block_text = q_blocks[i+1].strip()
 
-        opt_matches = list(re.finditer(r'^\s*[*•-]\s*([A-D])\)\s*(.+)$', block_text, flags=re.MULTILINE))
-        if opt_matches:
+        opt_matches = list(re.finditer(r'^[ \t]*[*•-][ \t]+([A-D])\)[ \t]*', block_text, flags=re.MULTILINE))
+        if len(opt_matches) == 4:
+            prompt_end = opt_matches[0].start()
+            prompt = block_text[:prompt_end].strip()
+            sep_idx = block_text.find('\n---', opt_matches[-1].end())
+            last_end = sep_idx if sep_idx != -1 else len(block_text)
+            options = []
+            for j, m in enumerate(opt_matches):
+                opt_letter = m.group(1).upper()
+                start = m.end()
+                end = opt_matches[j + 1].start() if j + 1 < 4 else last_end
+                opt_text = block_text[start:end].strip()
+                options.append((opt_letter, opt_text))
+        elif opt_matches:
             prompt_end = opt_matches[0].start()
             prompt = block_text[:prompt_end].strip()
             options = []
             for m in opt_matches:
                 opt_letter = m.group(1).upper()
-                opt_text = m.group(2).strip()
+                opt_text = block_text[m.end():].splitlines()[0].strip()
                 options.append((opt_letter, opt_text))
         else:
             prompt = block_text
@@ -956,7 +968,15 @@ def build_qti_xml(quiz_id: str, quiz_title: str, questions: list) -> str:
         for opt_letter, opt_text in q["options"]:
             opt_id = make_id(f"{item_id}_opt_{opt_letter}")
             clean_text = clean_quiz_text(opt_text)
-            opt_labels.append(f"""              <response_label ident="{opt_id}">
+            if "```" in clean_text or "\n" in clean_text:
+                opt_html = format_quiz_prompt_html(clean_text)
+                opt_labels.append(f"""              <response_label ident="{opt_id}">
+                <material>
+                  <mattext texttype="text/html">{html.escape(opt_html)}</mattext>
+                </material>
+              </response_label>""")
+            else:
+                opt_labels.append(f"""              <response_label ident="{opt_id}">
                 <material>
                   <mattext texttype="text/plain">{html.escape(clean_text)}</mattext>
                 </material>
