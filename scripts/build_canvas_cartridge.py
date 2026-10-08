@@ -491,15 +491,18 @@ def format_inline(s: str) -> str:
 
     s = re.sub(r'`([^`]+)`', replace_inline_code, s)
     s = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', s)
-    s = re.sub(r'(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)', r'<em>\1</em>', s)
     s = s.replace(r'$\rightarrow$', '&rarr;')
     s = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2" target="_blank" rel="noopener">\1</a>', s)
+    s = s.replace('⚠️', '').replace('❌', '')
     return s
 
 def parse_markdown_to_html(md: str) -> str:
     """Converts structured markdown (tables, code blocks, lists, details) into clean styled HTML."""
     if not md:
         return ""
+
+    # Strip decorative emojis
+    md = md.replace('⚠️', '').replace('❌', '')
 
     # Unescape markdown punctuation and operators first (\+, \=, \*, 1\., \_, etc.)
     md = re.sub(r'\\([*_#!\\[\\]\.\-+=\<\>~|`])', r'\1', md)
@@ -806,6 +809,95 @@ def render_video_embed(title: str, video_id: str, start_sec: int) -> str:
     <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" title="{html.escape(title)}" src="https://www.youtube.com/embed/{video_id}?start={start_sec}" loading="lazy" allowfullscreen="allowfullscreen" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
   </div>
   <p style="font-size: 0.85em; color: #64748b; margin-top: 0.25rem;"><a href="https://www.youtube.com/watch?v={video_id}&amp;t={start_sec}s" target="_blank" rel="noopener">Open video segment in new tab ({mins}:{secs:02d})</a></p>
+</div>"""
+
+def load_video_map():
+    """Parses shared_assets/VideoMap.md to extract custom instructor videos."""
+    video_map_path = os.path.join(BASE_DIR, "shared_assets", "VideoMap.md")
+    videos = []
+    if not os.path.exists(video_map_path):
+        return videos
+    
+    with open(video_map_path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            
+            # Find the URL anywhere in the line
+            m_url = re.search(r'(https?://\S+)', line)
+            if not m_url:
+                continue
+            url = m_url.group(1).strip()
+            label_text = line[:m_url.start()].strip().rstrip("-").strip()
+            
+            # Extract YouTube video id
+            yt_id = None
+            m_short = re.search(r'youtu\.be/([a-zA-Z0-9_-]+)', url)
+            m_watch = re.search(r'youtube\.com/watch\?v=([a-zA-Z0-9_-]+)', url)
+            m_embed = re.search(r'youtube\.com/embed/([a-zA-Z0-9_-]+)', url)
+            if m_short:
+                yt_id = m_short.group(1)
+            elif m_watch:
+                yt_id = m_watch.group(1)
+            elif m_embed:
+                yt_id = m_embed.group(1)
+            
+            embed_url = f"https://www.youtube.com/embed/{yt_id}" if yt_id else url
+
+            # Determine type, unit number, and specific page target
+            vtype = "custom"
+            unit_num = None
+            
+            label_lower = label_text.lower()
+            if "orientation" in label_lower:
+                vtype = "orientation"
+            elif "codespace" in label_lower or "github" in label_lower:
+                vtype = "codespaces"
+            else:
+                u_match = re.search(r'(?:unit|week)\s*(\d+)', label_lower)
+                if u_match:
+                    unit_num = int(u_match.group(1))
+                    if "lab" in label_lower:
+                        vtype = "unit_lab"
+                    else:
+                        vtype = "unit_lecture"
+                elif "lab" in label_lower:
+                    lab_match = re.search(r'lab\s*(\d+)', label_lower)
+                    if lab_match:
+                        unit_num = int(lab_match.group(1))
+                    vtype = "unit_lab"
+            
+            display_title = label_text.split(" - ")[-1] if " - " in label_text else label_text
+
+            videos.append({
+                "raw_label": label_text,
+                "label": display_title,
+                "url": url,
+                "video_id": yt_id,
+                "embed_url": embed_url,
+                "type": vtype,
+                "unit_num": unit_num
+            })
+    return videos
+
+def render_custom_video_card(title: str, url: str, embed_url: str) -> str:
+    """Generates DesignPLUS-compliant responsive 16:9 card for custom instructor videos."""
+    return f"""<div style="margin: 1.5rem 0; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <div style="background: #1e3a8a; color: #ffffff; padding: 0.6rem 1rem; font-weight: 600; font-size: 0.95em;">
+    <i class="fas fa-play-circle"></i> {html.escape(title)}
+  </div>
+  <div class="dp-embed-wrapper" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;">
+    <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
+            src="{embed_url}" 
+            title="{html.escape(title)}" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen="allowfullscreen" 
+            loading="lazy"></iframe>
+  </div>
+  <div style="padding: 0.5rem 1rem; background: #f8fafc; font-size: 0.85em; color: #64748b;">
+    <a href="{url}" target="_blank" rel="noopener">Open {html.escape(title)} in new tab</a>
+  </div>
 </div>"""
 
 def parse_quiz_md(filepath):
@@ -1219,6 +1311,7 @@ def main():
     src_docx = os.path.join(COURSE_SPECS_DIR, "CMAP_1815_Master_Syllabus.docx")
     dst_docx_name = "CMAP 1815 Syllabus Fall 2026 - Swarm.docx"
     dst_docx_path = os.path.join(syllabi_dir, dst_docx_name)
+    syllabus_docx_res_id = make_id("res_syllabus_docx")
     if os.path.exists(src_docx):
         with open(src_docx, "rb") as sf, open(dst_docx_path, "wb") as df:
             df.write(sf.read())
@@ -1235,6 +1328,15 @@ def main():
     if os.path.exists(src_thumb):
         with open(src_thumb, "rb") as sf, open(dst_thumb, "wb") as df:
             df.write(sf.read())
+
+    # Load custom instructor videos from shared_assets/VideoMap.md
+    custom_videos = load_video_map()
+    orient_videos = [v for v in custom_videos if v["type"] == "orientation"]
+    orient_video = orient_videos[0] if orient_videos else None
+
+    orient_syllabus_link = ""
+    if orient_video:
+        orient_syllabus_link = f'\n<p style="margin-top: 0.75rem;"><strong>Course Orientation Video:</strong> <a href="{orient_video["url"]}" target="_blank" rel="noopener">Watch Course Orientation Video on YouTube</a></p>'
 
     # Build Native Syllabus HTML
     syllabus_body = f"""<html>
@@ -1254,7 +1356,7 @@ def main():
 <p>&nbsp;</p>
 <h3 class="dp-has-icon dp-locked"><i class="far fa-file-alt"><span class="dp-icon-content" style="display: none;">&nbsp;</span></i> <span>Downloadable Syllabus</span></h3>
 <p><span>The syllabus is a comprehensive guide to this course. It outlines class expectations, grading policy, course learning outcomes, and institutional policies. Review your syllabus carefully, and ask questions of your instructor to make sure your understanding is clear.</span></p>
-<p><a class="instructure_file_link instructure_scribd_file inline_disabled" title="{dst_docx_name}" href="$IMS-CC-FILEBASE$/syllabi/{dst_docx_name.replace(' ', '%20')}?canvas_=1&amp;canvas_qs_wrap=1" target="_blank">Download Master Syllabus (Word .docx)</a></p>
+<p><a class="instructure_file_link instructure_scribd_file inline_disabled" title="{dst_docx_name}" href="$IMS-CC-FILEBASE$/syllabi/{dst_docx_name.replace(' ', '%20')}?canvas_=1&amp;canvas_qs_wrap=1" target="_blank">Download Master Syllabus (Word .docx)</a></p>{orient_syllabus_link}
 <hr>
 <h3 class="dp-has-icon dp-locked"><i class="far fa-check-circle"><span class="dp-icon-content" style="display: none;">&nbsp;</span></i><span style="color: var(--bs-heading-color); font-size: calc(1.3rem + 0.6vw);">Grade Scale &amp; Evaluation Breakdown</span></h3>
 <hr>
@@ -1298,6 +1400,12 @@ def main():
     # Page: Start Here (start-here.html)
     p_start_here_id = make_id("page_start_here")
     p_start_here_file = "start-here.html"
+    orient_video_embed = ""
+    if orient_video:
+        orient_video_embed = render_custom_video_card(
+            orient_video["label"], orient_video["url"], orient_video["embed_url"]
+        )
+
     start_here_html = f"""<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -1319,6 +1427,7 @@ def main():
   <div class="dp-content-block">
     <p><strong>Welcome to CMAP 1815: Introduction to Modern SQL!</strong> This 100% asynchronous course provides comprehensive training in professional relational database engineering using modern PostgreSQL 16.</p>
     <p>You will gain mastery through guided tutorials, embedded micro-video lectures, hands-on SQL laboratory assignments with direct Canvas check-in, supplemental AI practice, and weekly knowledge checks.</p>
+    {orient_video_embed}
   </div>
   <div class="dp-panels-wrapper dp-accordion-plus dp-panel-color-dp-primary dp-panel-active-color-dp-accent dp-panel-hover-color-dp-accent">
     <div class="dp-panel-group">
@@ -1327,7 +1436,7 @@ def main():
         <ul>
           <li><strong>Home:</strong> Returns to the course landing page with the interactive module accordion.</li>
           <li><strong>Modules:</strong> The primary hub of the course where all weekly readings, labs, assignments, and quizzes are organized in sequence.</li>
-          <li><strong>Syllabus:</strong> Download your master Word (.docx) syllabus and review grading criteria.</li>
+          <li><strong>Syllabus:</strong> Download your <a class="instructure_file_link instructure_scribd_file inline_disabled" title="{dst_docx_name}" href="$IMS-CC-FILEBASE$/syllabi/{dst_docx_name.replace(' ', '%20')}?canvas_=1&amp;canvas_qs_wrap=1" target="_blank">Master Word (.docx) Syllabus</a> and review official grading criteria on the <a href="$CANVAS_COURSE_REFERENCE$/assignments/syllabus">Course Syllabus</a> page.</li>
           <li><strong>Grades:</strong> Track your weekly scores and instructor feedback across labs and quizzes.</li>
         </ul>
       </div>
@@ -1408,12 +1517,12 @@ def main():
   <nav class="dp-link-grid container-fluid dp-link-grid-item-s-rounded dp-link-grid-item-bg-dp-primary dp-link-grid-hover-dp-accent dp-link-grid-icon-s-brdr-r dp-link-grid-icon-brdr-dp-secondary dp-link-grid-icon-brdr-w-2">
     <ul class="row">
       <li class="col-sm-12 col-md-4 col-lg-4"><a title="Course Overview" href="$WIKI_REFERENCE$/pages/{p_start_here_id}" data-course-type="wikiPages"><i class="fas fa-flag" aria-hidden="true"></i> Course Overview</a></li>
-      <li class="col-sm-12 col-md-4 col-lg-4"><a title="Syllabus" href="$CANVAS_COURSE_REFERENCE$/assignments/syllabus" data-course-type="navigation"><i class="fas fa-file-alt" aria-hidden="true"></i> Syllabus</a></li>
-      <li class="col-sm-12 col-md-4 col-lg-4"><a class="dp-has-icon" href="https://lcccwy.sharepoint.com/sites/StudentSuccessResources" target="_blank"><i class="fas fa-external-link-alt" aria-hidden="true"></i> Student Resources</a></li>
+      <li class="col-sm-12 col-md-4 col-lg-4"><a title="Syllabus" href="$CANVAS_COURSE_REFERENCE$/assignments/syllabus" data-course-type="navigation"><i class="fas fa-file-alt" aria-hidden="true"></i> Course Syllabus</a></li>
+      <li class="col-sm-12 col-md-4 col-lg-4"><a class="dp-has-icon" href="https://lcccwy.sharepoint.com/sites/StudentSuccessResources" target="_blank" rel="noopener"><i class="fas fa-external-link-alt" aria-hidden="true"></i> Student Resources</a></li>
     </ul>
   </nav>
   <div class="dp-content-block">
-    <p style="text-align: left;"><strong>Welcome to CMAP 1815: Introduction to Modern SQL! Please review the Course Overview, Syllabus, and Student Resources above to get started.</strong></p>
+    <p style="text-align: left;"><strong>Welcome to CMAP 1815: Introduction to Modern SQL! Please review the Course Overview, the Course Syllabus, and Student Resources above to get started.</strong></p>
   </div>
   <div class="dp-module-list dp-module-list-flag-completed dp-module-list-show-locked dp-quick-links-panels-accordion-plus dp-auto-update dp-panel-color-dp-primary dp-panel-active-color-dp-accent dp-panel-hover-color-dp-accent dp-quick-links-all dp-module-list-current-none">
     <nav class="dp-module-list-item-group">
@@ -1466,7 +1575,7 @@ def main():
     p_setup_file = "database-setup-guide.html"
     setup_lead = "<p>Welcome to your hands-on SQL laboratory! In CMAP 1815, you will write and execute queries against a live, industry-standard <strong>PostgreSQL 16</strong> database running in your browser via <strong>GitHub Codespaces</strong>. This guide walks you through launching your environment, querying visually or via terminal, using starter files, and submitting your weekly lab work.</p>"
     setup_panels = [
-        ("🚀 Step 1: Create Your Personal Student Repository",
+        ("Step 1: Create Your Personal Student Repository",
          """<p>Before launching Codespaces, create your own copy of the course template repository:</p>
 <ol style="line-height: 1.7;">
   <li>Navigate to the template repository: <a href="https://github.com/tswarmLCCC/CMAP-1815-Student-Sandbox" target="_blank" rel="noopener" style="color: #2563eb; font-weight: 600;">github.com/tswarmLCCC/CMAP-1815-Student-Sandbox</a>.</li>
@@ -1477,7 +1586,7 @@ def main():
   <strong style="color: #991b1b;"><i class="fas fa-exclamation-triangle"></i> CRITICAL WARNING — DO NOT WORK IN THE BASE TEMPLATE:</strong>
   <p style="margin: 0.25rem 0 0 0; color: #7f1d1d; font-size: 0.95em;">Always launch and resume Codespaces from <strong>YOUR OWN personal repository</strong> (verify your username is in the URL). If you work in the instructor's base template, you cannot push git commits, and your work will be permanently deleted when the container shuts down!</p>
 </div>"""),
-        ("💻 Step 2: Launching & Resuming Your Codespace",
+        ("Step 2: Launching & Resuming Your Codespace",
          """<h4 style="color: #1e3a8a; margin-top: 0.5rem;">First-Time Launch:</h4>
 <ol style="line-height: 1.7;">
   <li>In <strong>your personal repository</strong> on GitHub, click the green <strong>Code</strong> button &rarr; select the <strong>Codespaces</strong> tab &rarr; click <strong>Create codespace on main</strong>.</li>
@@ -1492,14 +1601,14 @@ def main():
 </ol>
 
 <div style="background: #f0fdf4; border-left: 4px solid #16a34a; padding: 0.75rem 1rem; margin-top: 1rem; border-radius: 0 4px 4px 0;">
-  <strong>💡 Conserving Cloud Hours &amp; Auto-Suspension:</strong>
+  <strong>Conserving Cloud Hours &amp; Auto-Suspension:</strong>
   <ul style="margin: 0.35rem 0 0 0; padding-left: 1.25rem; font-size: 0.95em;">
     <li>Codespaces automatically suspends itself after <strong>30 minutes of inactivity</strong> to prevent hour runaway.</li>
     <li>Personal accounts get 60 free hours/month. Claim the <a href="https://education.github.com/pack" target="_blank" rel="noopener" style="color: #15803d; text-decoration: underline;">GitHub Student Developer Pack</a> with your <code>.edu</code> email for <strong>180 free hours/month</strong>!</li>
     <li>To stop manually when finished: press <code>Ctrl+Shift+P</code> &rarr; select <code>Codespaces: Stop Current Codespace</code>, or close the browser tab.</li>
   </ul>
 </div>"""),
-        ("🛠️ Step 3: Two Ways to Query PostgreSQL",
+        ("Step 3: Two Ways to Query PostgreSQL",
          """<h4 style="color: #1e3a8a; margin-top: 0.5rem;">Option A: The Visual GUI (SQLTools Sidebar) — Recommended for Exploring</h4>
 <ol style="line-height: 1.7;">
   <li>Click the <strong>Database (cylinder) icon</strong> on the far-left sidebar of VS Code.</li>
@@ -1515,7 +1624,7 @@ def main():
   <li>Run any query: <code>SELECT first_name, last_name, salary FROM employees LIMIT 5;</code></li>
   <li>Type <code>\\q</code> and press Enter to exit back to bash.</li>
 </ol>"""),
-        ("💾 Step 4: Saving Query Outputs (Terminal & GUI)",
+        ("Step 4: Saving Query Outputs (Terminal & GUI)",
          """<h4 style="color: #1e3a8a; margin-top: 0.5rem;">Saving Output from the Terminal (psql):</h4>
 <ul style="line-height: 1.7; padding-left: 1.25rem;">
   <li><strong>Inside psql with <code>\\o</code>:</strong> Type <code>\\o lab1_output.txt</code>, run your query, then type <code>\\o</code> to close file redirection.</li>
@@ -1528,7 +1637,7 @@ def main():
   <li>Click <strong>Export Results</strong> (or the download icon) in the Results toolbar &rarr; choose <strong>Save as CSV</strong> or <strong>Save as JSON</strong>.</li>
   <li>Click <strong>Copy All</strong> or select rows and right-click &rarr; <strong>Copy</strong> to paste output directly into notes or submission comments.</li>
 </ul>"""),
-        ("📝 Step 5: The 5-Step Weekly Lab Submission Workflow (100 Points Total)",
+        ("Step 5: The 5-Step Weekly Lab Submission Workflow (100 Points Total)",
          """<ol style="line-height: 1.8;">
   <li><strong>Open Starter Template:</strong> In the VS Code file explorer, open <code>units/{current_unit}/lab{N}_starter.sql</code> (or copy the starter template code block from Canvas).</li>
   <li><strong>Write &amp; Verify Every Query:</strong> Write your SQL statements beneath each challenge block. Run every query against PostgreSQL to ensure zero errors.</li>
@@ -1536,7 +1645,7 @@ def main():
   <li><strong>Commit &amp; Push to GitHub:</strong> In the terminal, run: <code>git add . &amp;&amp; git commit -m "Complete Lab {N}" &amp;&amp; git push origin main</code>. This permanently secures your work in the cloud.</li>
   <li><strong>Submit to Canvas:</strong> Save as <code>lab{N}_yourlastname.sql</code>, right-click &rarr; <strong>Download...</strong>, and upload the <code>.sql</code> file to the weekly Canvas Lab Assignment for SpeedGrader evaluation (100 Points).</li>
 </ol>"""),
-        ("🔄 Step 6: Disaster Recovery (./reset_database.sh)",
+        ("Step 6: Disaster Recovery (./reset_database.sh)",
          """<p>Accidentally delete a table or corrupt rows during an experiment? Don't panic! You can restore all pristine tables in 2 seconds:</p>
 <div style="background: #0f172a; color: #f8fafc; padding: 0.5rem 0.75rem; border-radius: 4px; font-family: Consolas, monospace; margin: 0.5rem 0;"><pre style="margin: 0; background: transparent; color: inherit;"><code>./reset_database.sh</code></pre></div>
 <p style="color: #475569; font-size: 0.9em; margin-bottom: 0;">This script drops and recreates all starter tables (employees, locations, products, orders, order_lines). <strong>It will NOT delete your <code>.sql</code> files in your repository.</strong></p>""")
@@ -1548,70 +1657,128 @@ def main():
     # Page: Student Guide - Navigating Codespaces & SQLTools
     p_codespace_guide_id = make_id("page_student_codespace_guide")
     p_codespace_guide_file = "student-codespaces-sqltools-guide.html"
-    codespace_lead = "<p>A visual, step-by-step walkthrough for launching your cloud development environment, browsing relational tables with the <strong>SQLTools</strong> GUI, executing live queries with <code>Ctrl+Enter</code>, using the <code>psql</code> terminal, and submitting weekly lab assignments.</p>"
+    codespace_lead = "<p>A visual, step-by-step walkthrough for launching your cloud development environment, configuring and connecting SQLTools, optimizing the workspace layout, executing queries, and submitting weekly laboratory assignments.</p>"
+    
+    codespace_videos = [v for v in custom_videos if v["type"] == "codespaces"]
+    codespace_video_cards = ""
+    if codespace_videos:
+        codespace_video_cards = "\n".join([
+            render_custom_video_card(f"{v['label']} Walkthrough", v["url"], v["embed_url"])
+            for v in codespace_videos
+        ]) + "\n"
+
     codespace_panels = [
         ("1. Launching Your Codespace & Interface Layout",
-         "<p>In CMAP 1815, you have an entire Linux cloud workstation with PostgreSQL 16 and VS Code pre-configured—zero local software installation required!</p>"
-         "<ol><li>Open your personal student sandbox repository on GitHub.</li>"
-         "<li>Click the green <strong>Code</strong> button &rarr; select the <strong>Codespaces</strong> tab &rarr; click <strong>Create codespace on main</strong>.</li>"
-         "<li>Your Codespace will open in any modern web browser. The primary workspace areas are:</li></ol>"
-         "<ul><li><strong>Activity Bar (Far Left):</strong> Access the File Explorer (📁), Search (🔍), Git Source Control (🔀), and the <strong>SQLTools Database Manager</strong> (stacked cylinder icon).</li>"
-         "<li><strong>Editor (Center/Top):</strong> Where you write, format, and execute your SQL queries.</li>"
-         "<li><strong>Panel Area (Bottom):</strong> Displays interactive <strong>SQLTools Results</strong> tables and the integrated Linux <strong>Terminal</strong> (<code>Ctrl + `</code>).</li></ul>"),
+         f"""{codespace_video_cards}<p>In CMAP 1815, you have an entire Linux cloud workstation with PostgreSQL 16 and VS Code pre-configured—zero local software installation required!</p>
+<ol style="line-height: 1.7;">
+  <li>Open your personal student sandbox repository on GitHub.</li>
+  <li>Click the green <strong>Code</strong> button &rarr; select the <strong>Codespaces</strong> tab &rarr; click <strong>Create codespace on main</strong>.</li>
+  <li>Your Codespace will open in any modern web browser. The primary workspace areas are:</li>
+</ol>
+<ul style="line-height: 1.7;">
+  <li><strong>Activity Bar (Far Left):</strong> Access the File Explorer (📁), Search (🔍), Git Source Control (🔀), and the <strong>SQLTools Database Manager</strong> (stacked cylinder icon).</li>
+  <li><strong>Editor (Center/Top):</strong> Where you write, format, and execute your SQL queries.</li>
+  <li><strong>Panel Area (Bottom):</strong> Displays interactive <strong>SQLTools Results</strong> tables and the integrated Linux <strong>Terminal</strong> (<code>Ctrl + `</code>).</li>
+</ul>"""),
         
-        ("2. Connecting & Browsing Tables with SQLTools",
-         "<p><strong>SQLTools</strong> is your built-in graphical database client (similar to DBeaver or pgAdmin):</p>"
-         "<ol><li>Click the <strong>SQLTools icon</strong> (database cylinder) in the far-left Activity Bar.</li>"
-         "<li>In the <strong>CONNECTIONS</strong> panel, locate the pre-configured connection (<strong>cmap1815</strong> or <strong>mydb</strong>).</li>"
-         "<li>Click the connection name or the plug icon to connect. A green indicator confirms you are active!</li>"
-         "<li>Expand the connection &rarr; expand <code>public</code> &rarr; expand <code>Tables</code>. You will see all 5 core tables: <code>employees</code>, <code>locations</code>, <code>products</code>, <code>orders</code>, and <code>order_lines</code>.</li>"
-         "<li>Expand any table's <code>Columns</code> folder to inspect column names, types (e.g. <code>varchar</code>, <code>numeric</code>, <code>integer</code>), and primary keys.</li>"
-         "<li>Click the small table icon next to any table name to instantly view a 50-row data preview!</li></ol>"),
+        ("2. Connecting an Active File to the Database (cmap1815)",
+         """<p>To execute queries successfully, your active <code>.sql</code> file must be connected to the target database. If you see connection errors or 'No database connected', your editor file is detached.</p>
+<h4 style="color: #1e3a8a; margin-top: 1rem; margin-bottom: 0.5rem;">Method 1: The VS Code Status Bar (Recommended)</h4>
+<ol style="line-height: 1.7;">
+  <li>Open your <code>.sql</code> script (e.g., <code>sql/week1_orientation.sql</code> or <code>lab1_starter.sql</code>) in the Codespaces editor.</li>
+  <li>Look at the <strong>status bar</strong> at the very bottom right of the screen.</li>
+  <li>Locate the <strong>SQLTools</strong> section. If the status reads <em>'Detached'</em> or prompts for a connection, click the text.</li>
+  <li>Select <strong><code>cmap1815</code></strong> from the quick-pick menu that appears at the top center of the screen.</li>
+</ol>
+<h4 style="color: #1e3a8a; margin-top: 1.25rem; margin-bottom: 0.5rem;">Method 2: The Command Palette</h4>
+<ol style="line-height: 1.7;">
+  <li>If the status bar is hidden, open the Command Palette: press <code>Ctrl + Shift + P</code> (Mac: <code>Cmd + Shift + P</code>).</li>
+  <li>Type <strong><code>SQLTools: Select Connection</code></strong> and press Enter.</li>
+  <li>Choose <strong><code>cmap1815</code></strong> from the menu.</li>
+</ol>
+<h4 style="color: #1e3a8a; margin-top: 1.25rem; margin-bottom: 0.5rem;">Browsing Tables in SQLTools</h4>
+<p>Click the <strong>SQLTools icon</strong> (stacked cylinder) in the far-left Activity Bar &rarr; expand <strong>cmap1815</strong> &rarr; <code>public</code> &rarr; <code>Tables</code>. You can inspect all 5 core tables (<code>employees</code>, <code>locations</code>, <code>products</code>, <code>orders</code>, <code>order_lines</code>), examine column types, and click the table icon to view a live 50-row data preview!</p>"""),
         
-        ("3. Writing & Executing Queries with Keyboard Shortcuts",
-         "<p>Executing SQL in Codespaces is lightning-fast:</p>"
-         "<ol><li>Open an existing query script (like <code>sql/week1_orientation.sql</code> or <code>sql/lab_solutions_annotated.sql</code>) or create a new file named <code>lab1_yourname.sql</code>.</li>"
-         "<li>Type your query with keywords in <strong>UPPERCASE</strong> (<code>SELECT</code>, <code>FROM</code>, <code>WHERE</code>, <code>ORDER BY</code>).</li>"
-         "<li>Place your text cursor anywhere inside the SQL statement.</li>"
-         "<li>Press <strong>Ctrl + Enter</strong> (Windows / Linux / Chromebook) or <strong>Cmd + Enter</strong> (Mac) to execute! You can also click the floating <em>'Run on active connection'</em> link right above the query.</li>"
-         "<li>The <strong>SQLTools Results</strong> panel immediately opens, displaying the live result table, column headers, and total row count. You can click column headers to sort, search within the results, or copy rows to your clipboard.</li></ol>"),
+        ("3. Executing Specific Queries & Keyboard Shortcuts",
+         """<p>Executing SQL queries in Codespaces can be done individually or as a complete script.</p>
+<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 0.75rem 1rem; margin: 1rem 0; border-radius: 4px;">
+  <p style="margin: 0; color: #991b1b; font-weight: 600;">Browser Shortcut Collision Warning:</p>
+  <p style="margin: 0.25rem 0 0 0; color: #7f1d1d; font-size: 0.95em;">The standard desktop VS Code shortcut <code>Ctrl + R</code> is intercepted by web browsers in GitHub Codespaces to open recent workspaces and <strong>will not execute SQL code</strong>. Always use the SQLTools shortcuts below instead!</p>
+</div>
+<h4 style="color: #1e3a8a; margin-top: 1rem; margin-bottom: 0.5rem;">How to Execute Queries:</h4>
+<ul style="line-height: 1.8;">
+  <li><strong>Execute Query at Cursor:</strong> Place your cursor inside any statement and press <strong><code>Ctrl + Enter</code></strong> (Mac: <code>Cmd + Enter</code>). You can also click the floating <em>'Run on active connection'</em> link above the query.</li>
+  <li><strong>Execute Highlighted / Specific Queries:</strong> Highlight the specific lines of code you wish to run, then press <strong><code>Ctrl + E</code></strong>, followed immediately by <strong><code>Ctrl + E</code></strong> a second time (Mac: <code>Cmd + E, Cmd + E</code>).</li>
+  <li><strong>Context Menu Execution:</strong> Highlight the specific query lines, right-click anywhere on the selection, and choose <strong>Run Selected Query</strong>.</li>
+</ul>"""),
         
-        ("4. Using the Integrated Terminal & psql",
-         "<p>In addition to the visual GUI, you can interact with the PostgreSQL engine directly via the professional command-line utility, <strong>psql</strong>:</p>"
-         "<ol><li>Open the terminal by pressing <strong>Ctrl + `</strong> (or menu: <strong>Terminal &rarr; New Terminal</strong>).</li>"
-         "<li>Type <code>psql -U postgres -d cmap1815</code> (or <code>psql -U postgres</code>) and press Enter.</li></ol>"
-         "<p><strong>Essential psql Meta-Commands:</strong></p>"
-         "<table style='width: 100%; border-collapse: collapse; border: 1px solid #cbd5e1; margin: 1rem 0;'>"
-         "<thead><tr style='background: #1e3a8a; color: #ffffff;'><th style='padding: 0.6rem 0.75rem; text-align: left; border: 1px solid #cbd5e1;'>Command</th><th style='padding: 0.6rem 0.75rem; text-align: left; border: 1px solid #cbd5e1;'>Name</th><th style='padding: 0.6rem 0.75rem; text-align: left; border: 1px solid #cbd5e1;'>Purpose</th></tr></thead>"
-         "<tbody>"
-         "<tr style='background: #ffffff;'><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'><code>\\l</code></td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>List Databases</td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Displays all databases on the PostgreSQL instance.</td></tr>"
-         "<tr style='background: #f8fafc;'><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'><code>\\dt</code></td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>List Tables</td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Lists all user tables in the current schema.</td></tr>"
-         "<tr style='background: #ffffff;'><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'><code>\\d [table]</code></td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Describe Table</td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Shows column types, nullability, defaults, and constraints (e.g., <code>\\d employees</code>).</td></tr>"
-         "<tr style='background: #f8fafc;'><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'><code>\\x</code></td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Expanded Display</td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Toggles vertical record display (ideal for wide tables).</td></tr>"
-         "<tr style='background: #ffffff;'><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'><code>\\q</code></td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Quit</td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Exits psql back to the bash terminal prompt.</td></tr>"
-         "</tbody></table>"),
+        ("4. Adjusting Workspace Layout (Moving Results to Bottom)",
+         """<p>By default, SQLTools opens query result tables in a split pane on the <strong>right side</strong> of the screen. For wide tables with many columns, this compresses your editor horizontally.</p>
+<h4 style="color: #1e3a8a; margin-top: 1rem; margin-bottom: 0.5rem;">How to Move Results to the Bottom:</h4>
+<ol style="line-height: 1.7;">
+  <li>Click and hold the <strong>Results tab</strong> at the top of the editor split pane.</li>
+  <li>Drag your cursor straight down toward the bottom-center of the editor workspace.</li>
+  <li>Release the mouse when a blue highlighted drop box appears covering the bottom half of the screen.</li>
+  <li>GitHub Codespaces automatically retains this split layout preference for your future sessions!</li>
+</ol>"""),
         
-        ("5. Standard Lab Workflow & Submission Protocol",
-         "<p>Follow this routine for every weekly laboratory assignment:</p>"
-         "<ol><li><strong>Read the Lab Guide:</strong> Review the assignment objectives, scenarios, and challenge questions in Canvas.</li>"
-         "<li><strong>Create Your Submission Script:</strong> In your Codespace Explorer, create a new file named <code>labX_yourname.sql</code> (e.g. <code>lab1_jane_doe.sql</code>).</li>"
-         "<li><strong>Draft and Execute:</strong> Write each query one by one. Use <strong>Ctrl + Enter</strong> to test execution against live PostgreSQL.</li>"
-         "<li><strong>Verify Outputs:</strong> Check your live row counts and data against the annotated lab solution reference (<code>sql/lab_solutions_annotated.sql</code>).</li>"
-         "<li><strong>Save Frequently:</strong> Press <strong>Ctrl + S</strong> (Cmd + S on Mac) to save your work.</li>"
-         "<li><strong>Submit to Canvas:</strong> Right-click your completed <code>.sql</code> file in the Codespace Explorer &rarr; select <strong>Download...</strong> &rarr; upload the file directly to the Canvas Applied SQL Lab Assignment!</li></ol>"),
+        ("5. Coding Efficiency: Auto-Formatting & Auto-Complete",
+         """<p>Take advantage of built-in SQLTools features to maintain professional code standards with zero effort:</p>
+<h4 style="color: #1e3a8a; margin-top: 1rem; margin-bottom: 0.5rem;">Auto-Formatting Code</h4>
+<p>SQLTools automatically standardizes indentation, clause alignment, and uppercase keywords:</p>
+<ol style="line-height: 1.7;">
+  <li>Highlight the SQL query you wish to format.</li>
+  <li>Right-click the selection and choose <strong>Format Selection</strong>.</li>
+  <li>Your query is instantly reformatted to professional standards!</li>
+</ol>
+<h4 style="color: #1e3a8a; margin-top: 1.25rem; margin-bottom: 0.5rem;">Database-Aware Auto-Complete (IntelliSense)</h4>
+<p>Because SQLTools is actively connected to PostgreSQL, it knows every table and column name in your database:</p>
+<ul style="line-height: 1.7;">
+  <li>Begin typing a table or column name in your query.</li>
+  <li>Press <strong><code>Ctrl + Space</code></strong> (Mac: <code>Cmd + Space</code>) to open the live database suggestion dropdown.</li>
+  <li>Use the arrow keys to select the column and press <strong>Enter</strong> to complete. This eliminates typo errors!</li>
+</ul>"""),
         
-        ("6. Troubleshooting & Emergency Database Reset",
-         "<p><strong>Q: SQLTools says 'Connection Refused' or disconnects.</strong><br/>"
-         "PostgreSQL runs inside your container. If it stopped, open the terminal (<code>Ctrl + `</code>) and run: <code>sudo service postgresql start</code>, then reconnect in SQLTools.</p>"
-         "<p><strong>Q: I modified or corrupted table data during an experiment. How do I reset?</strong><br/>"
-         "You can reset the entire database to factory condition in 2 seconds. Run this terminal command:<br/>"
-         "<code style='background: #0f172a; color: #38bdf8; padding: 0.3rem 0.6rem; border-radius: 4px; display: inline-block; margin-top: 0.3rem;'>psql -U postgres -d cmap1815 -f sql/setup_chap1.sql</code></p>"
-         "<p><strong>Q: My Codespace stopped after being idle. Did I lose my work?</strong><br/>"
-         "No! Codespaces automatically suspends after 30 minutes of inactivity to save compute hours. All saved files and git commits are permanently stored on your persistent cloud volume. Simply click <strong>Restart Codespace</strong> to resume immediately.</p>")
+        ("6. Using the Integrated Terminal & psql CLI",
+         """<p>In addition to the visual GUI, you can interact with the PostgreSQL engine directly via the professional command-line utility, <strong>psql</strong>:</p>
+<ol style="line-height: 1.7;">
+  <li>Open the terminal by pressing <strong>Ctrl + `</strong> (or menu: <strong>Terminal &rarr; New Terminal</strong>).</li>
+  <li>Type <code>psql -U postgres -d cmap1815</code> (or <code>psql -U postgres</code>) and press Enter.</li>
+</ol>
+<p><strong>Essential psql Meta-Commands:</strong></p>
+<table style='width: 100%; border-collapse: collapse; border: 1px solid #cbd5e1; margin: 1rem 0;'>
+<thead><tr style='background: #1e3a8a; color: #ffffff;'><th style='padding: 0.6rem 0.75rem; text-align: left; border: 1px solid #cbd5e1;'>Command</th><th style='padding: 0.6rem 0.75rem; text-align: left; border: 1px solid #cbd5e1;'>Name</th><th style='padding: 0.6rem 0.75rem; text-align: left; border: 1px solid #cbd5e1;'>Purpose</th></tr></thead>
+<tbody>
+<tr style='background: #ffffff;'><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'><code>\\l</code></td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>List Databases</td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Displays all databases on the PostgreSQL instance.</td></tr>
+<tr style='background: #f8fafc;'><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'><code>\\dt</code></td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>List Tables</td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Lists all user tables in the current schema.</td></tr>
+<tr style='background: #ffffff;'><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'><code>\\d [table]</code></td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Describe Table</td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Shows column types, nullability, defaults, and constraints (e.g., <code>\\d employees</code>).</td></tr>
+<tr style='background: #f8fafc;'><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'><code>\\x</code></td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Expanded Display</td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Toggles vertical record display (ideal for wide tables).</td></tr>
+<tr style='background: #ffffff;'><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'><code>\\q</code></td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Quit</td><td style='padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1;'>Exits psql back to the bash terminal prompt.</td></tr>
+</tbody></table>"""),
+        
+        ("7. Standard Lab Workflow & Submission Protocol",
+         """<p>Follow this routine for every weekly laboratory assignment:</p>
+<ol style="line-height: 1.8;">
+  <li><strong>Read the Lab Guide:</strong> Review the assignment objectives, scenarios, and challenge questions in Canvas.</li>
+  <li><strong>Create Your Submission Script:</strong> In your Codespace Explorer, create a new file named <code>labX_yourname.sql</code> (e.g. <code>lab1_jane_doe.sql</code>).</li>
+  <li><strong>Draft and Execute:</strong> Write each query one by one. Use <strong>Ctrl + Enter</strong> or <strong>Ctrl + E, Ctrl + E</strong> to test execution against live PostgreSQL.</li>
+  <li><strong>Verify Outputs:</strong> Check your live row counts and data against the annotated lab solution reference (<code>sql/lab_solutions_annotated.sql</code>).</li>
+  <li><strong>Save Frequently:</strong> Press <strong>Ctrl + S</strong> (Cmd + S on Mac) to save your work.</li>
+  <li><strong>Submit to Canvas:</strong> Right-click your completed <code>.sql</code> file in the Codespace Explorer &rarr; select <strong>Download...</strong> &rarr; upload the file directly to the Canvas Applied SQL Lab Assignment!</li>
+</ol>"""),
+        
+        ("8. Troubleshooting & Emergency Database Reset",
+         """<p><strong>Q: SQLTools says 'Connection Refused' or disconnects.</strong><br/>
+PostgreSQL runs inside your container. If it stopped, open the terminal (<code>Ctrl + `</code>) and run: <code>sudo service postgresql start</code>, then reconnect in SQLTools.</p>
+<p><strong>Q: I modified or corrupted table data during an experiment. How do I reset?</strong><br/>
+You can reset the entire database to factory condition in 2 seconds. Run this terminal command:<br/>
+<code style='background: #0f172a; color: #38bdf8; padding: 0.3rem 0.6rem; border-radius: 4px; display: inline-block; margin-top: 0.3rem;'>./reset_database.sh</code></p>
+<p><strong>Q: My Codespace stopped after being idle. Did I lose my work?</strong><br/>
+No! Codespaces automatically suspends after 30 minutes of inactivity to save compute hours. All saved files and git commits are permanently stored on your persistent cloud volume. Simply click <strong>Restart Codespace</strong> to resume immediately.</p>""")
     ]
     with open(os.path.join(wiki_dir, p_codespace_guide_file), "w", encoding="utf-8") as f:
-        f.write(render_standard_page_html("Student Guide: Navigating Codespaces & SQLTools", codespace_lead, codespace_panels, p_codespace_guide_id))
-    pages_manifest.append((p_codespace_guide_file, "Student Guide: Navigating Codespaces & SQLTools", p_codespace_guide_id))
+        f.write(render_standard_page_html("Student Guide: Configuring and Using SQLTools in GitHub Codespaces", codespace_lead, codespace_panels, p_codespace_guide_id))
+    pages_manifest.append((p_codespace_guide_file, "Student Guide: Configuring and Using SQLTools in GitHub Codespaces", p_codespace_guide_id))
 
     # Page: External Resources Guide
     p_res_id = make_id("page_resources")
@@ -1633,9 +1800,10 @@ def main():
         "title": "Course Orientation & Database Setup",
         "items": [
             {"type": "WikiPage", "title": "Start Here: Course Overview & Orientation", "ref": p_start_here_id, "indent": 0, "state": "active"},
+            {"type": "Attachment", "title": "Master Course Syllabus (Word .docx)", "ref": syllabus_docx_res_id, "indent": 1, "state": "active"},
             {"type": "WikiPage", "title": "Orientation: Learn with AI — Course Guidelines & Free Tools", "ref": p_orient_ai_id, "indent": 1, "state": "active"},
             {"type": "WikiPage", "title": "Student Guide: How to Complete & Submit Weekly SQL Labs", "ref": p_setup_id, "indent": 1, "state": "active"},
-            {"type": "WikiPage", "title": "Student Guide: Navigating Codespaces & SQLTools", "ref": p_codespace_guide_id, "indent": 1, "state": "active"},
+            {"type": "WikiPage", "title": "Student Guide: Configuring and Using SQLTools in GitHub Codespaces", "ref": p_codespace_guide_id, "indent": 1, "state": "active"},
             {"type": "WikiPage", "title": "External Learning Resources & Media Guide", "ref": p_res_id, "indent": 1, "state": "active"}
         ]
     })
@@ -1709,8 +1877,15 @@ def main():
         overview_md = load_and_clean_unit_overview(u_num)
         overview_html = parse_markdown_to_html(overview_md) if overview_md else ""
 
-        # Section 4: Institutional Video Embeds Placeholder
-        institutional_embed_html = """<div style="background: #f8fafc; border: 2px dashed #94a3b8; border-radius: 6px; padding: 1.5rem; margin: 1rem 0; text-align: center;">
+        # Section 4: Institutional Video Embeds (Custom videos from VideoMap.md or placeholder)
+        unit_lectures = [v for v in custom_videos if v["type"] == "unit_lecture" and v["unit_num"] == u_num]
+        if unit_lectures:
+            institutional_embed_html = "\n".join([
+                render_custom_video_card(v["label"], v["url"], v["embed_url"])
+                for v in unit_lectures
+            ])
+        else:
+            institutional_embed_html = """<div style="background: #f8fafc; border: 2px dashed #94a3b8; border-radius: 6px; padding: 1.5rem; margin: 1rem 0; text-align: center;">
   <p style="font-size: 1.1em; font-weight: 600; color: #1e3a8a; margin-top: 0; margin-bottom: 0.5rem;"><i class="fas fa-video"></i> Custom Institutional Video Embed Slot</p>
   <p style="color: #475569; margin-bottom: 0.5rem; font-size: 0.95em;">This section is reserved for custom institutional lecture recordings (Canvas Studio, Panopto, Kaltura, or unlisted media embeds).</p>
   <p style="color: #64748b; font-size: 0.85em; margin-bottom: 0;"><em>[Instructor Notice: Use the Canvas Rich Content Editor to insert your Canvas Studio or campus video iframe directly into this placeholder.]</em></p>
@@ -1775,13 +1950,23 @@ def main():
             with open(lab_path, "r", encoding="utf-8") as lf:
                 lab_content_html = parse_markdown_to_html(lf.read())
 
-        # Load Coding Clinic Walkthrough Challenges
+        # Load Coding Clinic Walkthrough Challenges & Custom Lab Walkthrough Videos
+        unit_labs = [v for v in custom_videos if v["type"] == "unit_lab" and v["unit_num"] == u_num]
+        lab_video_cards = ""
+        if unit_labs:
+            lab_video_cards = "\n".join([
+                render_custom_video_card(v["label"], v["url"], v["embed_url"])
+                for v in unit_labs
+            ]) + "\n"
+
         challenges_path = os.path.join(UNITS_DIR, u_folder, "sync", "inclass_challenges.sql")
         challenges_html = "<p>Refer to your course repository for self-paced coding clinic challenges.</p>"
         if os.path.exists(challenges_path):
             with open(challenges_path, "r", encoding="utf-8") as cf:
-                challenges_html = f"""<p style="margin-bottom: 0.75rem;">These follow-along challenges follow the <strong>Gradual Release of Responsibility</strong> model (&quot;I Do, We Do, You Do&quot;). Attempt each query on your own in your Codespace sandbox before or while watching the instructor video walkthrough, then compare your query logic and formatting against the instructor's demonstration!</p>
+                challenges_html = f"""{lab_video_cards}<p style="margin-bottom: 0.75rem;">These follow-along challenges follow the <strong>Gradual Release of Responsibility</strong> model (&quot;I Do, We Do, You Do&quot;). Attempt each query on your own in your Codespace sandbox before or while watching the instructor video walkthrough, then compare your query logic and formatting against the instructor's demonstration!</p>
 <div style='background: #0f172a; color: #f8fafc; padding: 1rem 1.25rem; border-radius: 6px; overflow-x: auto; font-family: Consolas, Monaco, monospace; font-size: 0.9em; line-height: 1.5;'><pre style='margin: 0; background: transparent; color: inherit;'><code>{html.escape(cf.read().strip())}</code></pre></div>"""
+        elif lab_video_cards:
+            challenges_html = lab_video_cards
 
         # Check for starter template SQL file to embed copy-paste starter block
         starter_sql_path = os.path.join(UNITS_DIR, u_folder, f"lab{u_num}_starter.sql")

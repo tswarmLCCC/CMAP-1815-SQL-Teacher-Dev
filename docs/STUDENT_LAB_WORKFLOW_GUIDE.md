@@ -6,8 +6,7 @@
 **Student Sandbox Repository:** [tswarmLCCC/CMAP-1815-Student-Sandbox](https://github.com/tswarmLCCC/CMAP-1815-Student-Sandbox)
 
 ---
-
-## 🚀 1-Click Quick Start (GitHub Codespaces)
+## 1-Click Quick Start (GitHub Codespaces)
 
 In this course, you will write and execute queries against a live, industry-standard **PostgreSQL 16** server running directly in your browser. You do **not** need to install PostgreSQL, configure local system services, or open firewall ports on your computer.
 
@@ -37,7 +36,7 @@ Click the badge below to spin up your personal, cloud-hosted lab sandbox:
 
 ---
 
-## 🛠️ Two Ways to Query Your PostgreSQL Database
+## Two Ways to Query Your PostgreSQL Database
 
 ### Option A: The Visual GUI (SQLTools Sidebar) — *Best for Exploring Tables*
 1. Click the **Database (plug/server) icon** on the far-left sidebar of VS Code.
@@ -68,7 +67,7 @@ Click the badge below to spin up your personal, cloud-hosted lab sandbox:
 
 ---
 
-## 📝 The 5-Step Weekly Lab Submission Workflow
+## The 5-Step Weekly Lab Submission Workflow
 
 Follow this uniform recipe for all weekly labs across Units 1 through 8:
 
@@ -78,7 +77,7 @@ Weekly Lab Submission Workflow:
 ├── 2. Review Challenges (lab_guide.md or Canvas)
 ├── 3. Open Starter Template (labX_starter.sql)
 ├── 4. Write & Test Queries in PostgreSQL (SQLTools or psql)
-└── 5. Save as labX_yourlastname.sql & Upload to Canvas Assignment
+├── 5. Save as labX_yourlastname.sql & Upload to Canvas Assignment
 ```
 
 ### Step 1: Open the Unit Folder
@@ -105,7 +104,7 @@ Write your SQL statement directly beneath each challenge comment block.
 
 ---
 
-## 📐 LCCC SQL Style & Grading Standards
+## LCCC SQL Style & Grading Standards
 
 All lab submissions are evaluated using the standard Canvas rubric (50 points total):
 
@@ -135,7 +134,7 @@ ORDER BY
 
 ---
 
-## 🔄 Disaster Recovery: Screwed Up Your Data? (`./reset_database.sh`)
+## Disaster Recovery: Screwed Up Your Data? (`./reset_database.sh`)
 
 In **Unit 5 (Safe DML)** and **Unit 7 (Schema Design)**, you will write real data modification and schema statements (`INSERT`, `UPDATE`, `DELETE`, `CREATE TABLE`, `DROP TABLE`).
 
@@ -150,7 +149,7 @@ If you accidentally delete all records, alter the wrong column, or drop a core t
 
 ---
 
-## 🆘 Troubleshooting Quick Reference
+## Troubleshooting Quick Reference
 
 | Issue | Cause | Fix |
 | :--- | :--- | :--- |

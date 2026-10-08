@@ -72,28 +72,28 @@ When you finish a study session or lab, cleanly stop your Codespace to conserve 
 |  [Menu] [File] [Edit] [Selection] ...                           [Codespace Name]  |
 +----+------------------------------------+-----------------------------------------+
 |    | EXPLORER                           | EDITOR                                  |
-| 📁 | v STUDENT-SANDBOX                  | units/unit_01_.../lab1_starter.sql      |
+|Exp | v STUDENT-SANDBOX                  | units/unit_01_.../lab1_starter.sql      |
 |    |   > .devcontainer                  | --------------------------------------- |
-| 🔍 |   > docs                           | 1  SELECT product_name, retail_price    |
+|Src |   > docs                           | 1  SELECT product_name, retail_price    |
 |    |   v sql                            | 2  FROM products                        |
-| 🔀 |     setup_chap1.sql                | 3  ORDER BY retail_price DESC;          |
+|Git |     setup_chap1.sql                | 3  ORDER BY retail_price DESC;          |
 |    |     lab_solutions_annotated.sql    |                                         |
-| 🗄️ |     week1_orientation.sql          |                                         |
+|SQL |     week1_orientation.sql          |                                         |
 |    |                                    +-----------------------------------------+
-| ⚙️ |                                    | SQLTOOLS RESULTS / TERMINAL             |
+|Set |                                    | SQLTOOLS RESULTS / TERMINAL             |
 |    |                                    | [Results Tab] [Terminal: bash] [Ports]  |
 +----+------------------------------------+-----------------------------------------+
-| 🚀 main*  [0 ⚠️  0 ❌]                     | UTF-8   PostgreSQL   Spaces: 2   Port: 5432 |
+| main*  [0 alerts, 0 errors]             | UTF-8   PostgreSQL   Spaces: 2   Port: 5432 |
 +-----------------------------------------------------------------------------------+
 ```
 
 ### Key Interface Sections:
 1. **Activity Bar (Far Left):**
-   - 📁 **Explorer (`Ctrl + Shift + E` / `Cmd + Shift + E`):** Browse directories, open scripts, create new files.
-   - 🔍 **Search (`Ctrl + Shift + F` / `Cmd + Shift + F`):** Search for text across your entire repository.
-   - 🔀 **Source Control (`Ctrl + Shift + G`):** Commit and push your saved query files to GitHub.
-   - 🗄️ **SQLTools Icon (Database Cylinder):** Open your database connections, browse tables, and inspect schemas.
-   - ⚙️ **Settings (Bottom Left):** Manage color themes, hotkeys, and account settings.
+   - **File Explorer (📁)** (`Ctrl + Shift + E` / `Cmd + Shift + E`): Browse directories, open scripts, create new files.
+   - **Search (🔍)** (`Ctrl + Shift + F` / `Cmd + Shift + F`): Search for text across your entire repository.
+   - **Source Control (🔀)** (`Ctrl + Shift + G`): Commit and push your saved query files to GitHub.
+   - **SQLTools Database Manager (stacked cylinder icon):** Open your database connections, browse tables, and inspect schemas.
+   - **Settings (gear icon):** Manage color themes, hotkeys, and account settings.
 2. **Editor Area (Center/Top):** Where you view, write, format, and execute SQL statements.
 3. **Panel Area (Bottom):** Displays the **SQLTools Results** table, **Terminal** (`bash` command prompt), and **Ports** tab.
 4. **Status Bar (Bottom Strip):** Shows your active branch (`main`), active SQL connection, and database port `5432`.
