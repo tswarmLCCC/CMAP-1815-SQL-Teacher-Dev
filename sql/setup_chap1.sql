@@ -2,17 +2,32 @@
 -- CMAP 1815: Introduction to Modern SQL
 -- Master Database Seed & Architecture: setup_chap1.sql
 -- Compatible with all 8 Units, In-Class Demos, and SpeedGrader Labs
+-- Style: Modular "DROP TABLE IF EXISTS ... CASCADE" and Recreate
+-- ============================================================================
+-- HOW TO RUN / APPLY THIS UPDATE:
+-- If your database was already initialized and you need to apply this update
+-- to build/repair 'orders', 'order_lines', and 'superstore':
+--
+-- Option 1: VS Code Terminal (Codespace / Bash / Command Line):
+--   psql -U postgres -d cmap1815 -f datasets/setup_chap1.sql
+--   (or: ./reset_database.sh)
+--
+-- Option 2: Interactive psql Shell:
+--   \i datasets/setup_chap1.sql
+--
+-- Option 3: VS Code SQLTools or Database Client:
+--   Press Ctrl+A (Cmd+A on macOS) to select all, then click
+--   "Run Query on Active Connection" (or press Ctrl+E, Ctrl+E).
+--
+-- Note: Each section contains "DROP TABLE IF EXISTS ... CASCADE", making this
+-- script 100% idempotent and safe to re-run against an existing database.
 -- ============================================================================
 
--- Drop tables in reverse order of foreign key dependencies
-DROP TABLE IF EXISTS superstore CASCADE;
-DROP TABLE IF EXISTS order_lines CASCADE;
-DROP TABLE IF EXISTS orders CASCADE;
-DROP TABLE IF EXISTS products CASCADE;
-DROP TABLE IF EXISTS employees CASCADE;
+-- ============================================================================
+-- 1. Locations Table
+-- ============================================================================
 DROP TABLE IF EXISTS locations CASCADE;
 
--- 1. Create Locations Table
 CREATE TABLE locations (
     location_id SERIAL PRIMARY KEY,
     city VARCHAR(50) NOT NULL,
@@ -20,7 +35,22 @@ CREATE TABLE locations (
     facility_type VARCHAR(50)
 );
 
--- 2. Create Employees Table
+INSERT INTO locations (city, state, facility_type) VALUES
+('Cheyenne', 'WY', 'Headquarters'),
+('Laramie', 'WY', 'Research & Development'),
+('Denver', 'CO', 'Distribution Center'),
+('Topeka', 'KS', 'Support Center'),
+('Fort Collins', 'CO', 'Retail Store'),
+('Salt Lake City', 'UT', 'Warehouse'),
+('Chicago', 'IL', 'Regional Office'),
+('Phoenix', 'AZ', 'Retail Store');
+
+
+-- ============================================================================
+-- 2. Employees Table
+-- ============================================================================
+DROP TABLE IF EXISTS employees CASCADE;
+
 CREATE TABLE employees (
     employee_id SERIAL PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
@@ -34,82 +64,6 @@ CREATE TABLE employees (
     is_active BOOLEAN DEFAULT TRUE
 );
 
--- 3. Create Products Table
--- Includes both cost_to_produce & wholesale_cost for backwards/forward compatibility
-CREATE TABLE products (
-    product_id SERIAL PRIMARY KEY,
-    sku VARCHAR(50) DEFAULT ('SKU-' || LPAD(FLOOR(RANDOM() * 10000)::TEXT, 4, '0')),
-    product_name VARCHAR(100) NOT NULL,
-    category VARCHAR(50),
-    cost_to_produce DECIMAL(10, 2),
-    wholesale_cost DECIMAL(10, 2),
-    retail_price DECIMAL(10, 2) NOT NULL,
-    stock_quantity INT NOT NULL,
-    description TEXT,
-    release_date DATE,
-    discontinued_date DATE,
-    is_discontinued BOOLEAN DEFAULT FALSE
-);
-
--- 4. Create Orders Table (Header)
--- Includes customer_id and total_amount for Unit 4/6 advanced analytics
-CREATE TABLE orders (
-    order_id SERIAL PRIMARY KEY,
-    employee_id INT REFERENCES employees(employee_id),
-    customer_id INT DEFAULT 101,
-    order_date DATE NOT NULL,
-    status VARCHAR(20) DEFAULT 'Completed',
-    shipping_method VARCHAR(50),
-    total_amount DECIMAL(10, 2) DEFAULT 0.00
-);
-
--- 5. Create Order Lines Table (Details)
--- Includes line_id alias for backwards compatibility
-CREATE TABLE order_lines (
-    order_line_id SERIAL PRIMARY KEY,
-    line_id INT,
-    order_id INT REFERENCES orders(order_id) ON DELETE CASCADE,
-    product_id INT REFERENCES products(product_id),
-    quantity INT NOT NULL CHECK (quantity > 0),
-    unit_price DECIMAL(10, 2) NOT NULL -- Historical unit price at time of order
-);
-
--- 6. Create Superstore Benchmark Table (for Units 4/5/8 analytics)
-CREATE TABLE superstore (
-    row_id SERIAL PRIMARY KEY,
-    order_id VARCHAR(50),
-    order_date DATE,
-    customer_id VARCHAR(50),
-    customer_name VARCHAR(100),
-    segment VARCHAR(50),
-    city VARCHAR(50),
-    state VARCHAR(50),
-    region VARCHAR(50),
-    category VARCHAR(50),
-    sub_category VARCHAR(50),
-    product_name VARCHAR(200),
-    sales DECIMAL(10, 2),
-    quantity INT,
-    discount DECIMAL(4, 2),
-    profit DECIMAL(10, 2)
-);
-
--- ============================================================================
--- DATA INSERTION SUITE
--- ============================================================================
-
--- Insert Locations
-INSERT INTO locations (city, state, facility_type) VALUES
-('Cheyenne', 'WY', 'Headquarters'),
-('Laramie', 'WY', 'Research & Development'),
-('Denver', 'CO', 'Distribution Center'),
-('Topeka', 'KS', 'Support Center'),
-('Fort Collins', 'CO', 'Retail Store'),
-('Salt Lake City', 'UT', 'Warehouse'),
-('Chicago', 'IL', 'Regional Office'),
-('Phoenix', 'AZ', 'Retail Store');
-
--- Insert Employees (Expanded 28-member roster)
 INSERT INTO employees (first_name, last_name, department, title, hire_date, salary, bonus, location_id, is_active) VALUES
 ('Harry', 'Dresden', 'Security', 'Field Investigator', '2015-10-31', 65000.00, 1500.00, 1, TRUE),
 ('Karrin', 'Murphy', 'Security', 'Director', '2012-04-15', 95000.00, NULL, 1, TRUE),
@@ -140,7 +94,27 @@ INSERT INTO employees (first_name, last_name, department, title, hire_date, sala
 ('Nathan', 'MacKinnon', 'Sales', 'Top Performer', '2013-09-01', 150000.00, 25000.00, 3, TRUE),
 ('Cale', 'Makar', 'Engineering', 'Defense Architect', '2019-10-01', 145000.00, 20000.00, 3, TRUE);
 
--- Insert Products (Expanded with wholesale_cost and is_discontinued)
+
+-- ============================================================================
+-- 3. Products Table
+-- ============================================================================
+DROP TABLE IF EXISTS products CASCADE;
+
+CREATE TABLE products (
+    product_id SERIAL PRIMARY KEY,
+    sku VARCHAR(50) DEFAULT ('SKU-' || LPAD(FLOOR(RANDOM() * 10000)::TEXT, 4, '0')),
+    product_name VARCHAR(100) NOT NULL,
+    category VARCHAR(50),
+    cost_to_produce DECIMAL(10, 2),
+    wholesale_cost DECIMAL(10, 2),
+    retail_price DECIMAL(10, 2) NOT NULL,
+    stock_quantity INT NOT NULL,
+    description TEXT,
+    release_date DATE,
+    discontinued_date DATE,
+    is_discontinued BOOLEAN DEFAULT FALSE
+);
+
 INSERT INTO products (sku, product_name, category, cost_to_produce, wholesale_cost, retail_price, stock_quantity, description, release_date, discontinued_date, is_discontinued) VALUES
 ('FIT-001', 'Saris Fluid2 Indoor Bike Trainer', 'Fitness', 150.00, 150.00, 299.99, 15, 'Quiet and consistent resistance for indoor cycling. Compatible with Zwift and MyWhoosh.', '2021-01-15', NULL, FALSE),
 ('FIT-002', 'Magene Bluetooth Speed & Cadence Sensor', 'Fitness', 12.00, 12.00, 24.50, 42, 'Dual protocol ANT+/Bluetooth tracking for cycling.', '2022-03-10', NULL, FALSE),
@@ -173,7 +147,24 @@ INSERT INTO products (sku, product_name, category, cost_to_produce, wholesale_co
 ('SFT-001', 'DaVinci Resolve Studio License Key', 'Software', 0.00, 0.00, 295.00, 99, 'Professional video editing, color grading, and AI transcription.', '2022-04-18', NULL, FALSE),
 ('FUR-001', 'Vintage Oak End Table', 'Furniture', 45.00, 45.00, 125.00, 2, 'Restored solid oak with original brass hardware. Auction acquisition.', '2024-03-12', NULL, FALSE);
 
--- Insert Orders (with customer_id and populated total_amount)
+
+-- ============================================================================
+-- 4. Orders Table (Header)
+-- ============================================================================
+-- Drop dependent child table first to ensure clean recreate
+DROP TABLE IF EXISTS order_lines CASCADE;
+DROP TABLE IF EXISTS orders CASCADE;
+
+CREATE TABLE orders (
+    order_id SERIAL PRIMARY KEY,
+    employee_id INT REFERENCES employees(employee_id),
+    customer_id INT DEFAULT 101,
+    order_date DATE NOT NULL,
+    status VARCHAR(20) DEFAULT 'Completed',
+    shipping_method VARCHAR(50),
+    total_amount DECIMAL(10, 2) DEFAULT 0.00
+);
+
 INSERT INTO orders (employee_id, customer_id, order_date, status, shipping_method, total_amount) VALUES
 (1, 101, '2024-01-15', 'Completed', 'Standard', 50.97),
 (5, 102, '2024-02-10', 'Completed', 'Express', 59.99),
@@ -192,11 +183,25 @@ INSERT INTO orders (employee_id, customer_id, order_date, status, shipping_metho
 (18, 107, '2024-10-01', 'Shipped', 'Standard', 59.97),
 (7, 102, '2024-10-15', 'Pending', 'Express', 59.99),
 (14, 103, '2024-11-02', 'Completed', 'Standard', 125.00),
-(29, 104, '2024-11-18', 'Completed', 'Overnight', 389.99),
+(28, 104, '2024-11-18', 'Completed', 'Overnight', 389.99),
 (23, 101, '2024-12-05', 'Processing', 'Standard', 183.96),
 (24, 105, '2024-12-12', 'Completed', 'Express', 69.98);
 
--- Insert Order Lines (Mapping Order ID to Product ID)
+
+-- ============================================================================
+-- 5. Order Lines Table (Details)
+-- ============================================================================
+DROP TABLE IF EXISTS order_lines CASCADE;
+
+CREATE TABLE order_lines (
+    order_line_id SERIAL PRIMARY KEY,
+    line_id INT,
+    order_id INT REFERENCES orders(order_id) ON DELETE CASCADE,
+    product_id INT REFERENCES products(product_id),
+    quantity INT NOT NULL CHECK (quantity > 0),
+    unit_price DECIMAL(10, 2) NOT NULL -- Historical unit price at time of order
+);
+
 INSERT INTO order_lines (order_id, product_id, quantity, unit_price) VALUES
 (1, 12, 2, 18.99), -- Order 1 bought Hickory Pellets
 (1, 16, 1, 12.99), -- Order 1 bought Prime Rib Rub
@@ -240,7 +245,31 @@ FROM (
 ) sub
 WHERE o.order_id = sub.order_id;
 
--- Insert Superstore Benchmark Data (60 diverse rows across regions & categories)
+
+-- ============================================================================
+-- 6. Superstore Benchmark Table
+-- ============================================================================
+DROP TABLE IF EXISTS superstore CASCADE;
+
+CREATE TABLE superstore (
+    row_id SERIAL PRIMARY KEY,
+    order_id VARCHAR(50),
+    order_date DATE,
+    customer_id VARCHAR(50),
+    customer_name VARCHAR(100),
+    segment VARCHAR(50),
+    city VARCHAR(50),
+    state VARCHAR(50),
+    region VARCHAR(50),
+    category VARCHAR(50),
+    sub_category VARCHAR(50),
+    product_name VARCHAR(200),
+    sales DECIMAL(10, 2),
+    quantity INT,
+    discount DECIMAL(4, 2),
+    profit DECIMAL(10, 2)
+);
+
 INSERT INTO superstore (
     order_id, order_date, customer_id, customer_name, segment, 
     city, state, region, category, sub_category, 
@@ -307,7 +336,10 @@ INSERT INTO superstore (
 ('IN-2014-61792', '2014-08-05', 'MW-18220', 'Mitch Webber', 'Consumer', 'Geraldton', 'Western Australia', 'Oceania', 'Office Supplies', 'Appliances', 'Breville Refrigerator, White', 4191.51, 9, 0.10, 1164.27),
 ('CA-2014-129021', '2014-08-24', 'PO-18850', 'Patrick O''Brill', 'Consumer', 'Tallahassee', 'Florida', 'South', 'Technology', 'Phones', 'Samsung Galaxy Mega 6.3', 4367.90, 13, 0.20, 327.59);
 
--- Print confirmation
+
+-- ============================================================================
+-- 7. Verification & Health Check
+-- ============================================================================
 SELECT 
     (SELECT COUNT(*) FROM locations) AS locations_count,
     (SELECT COUNT(*) FROM employees) AS employees_count,
